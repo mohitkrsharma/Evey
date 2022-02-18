@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1164" height="714.493" viewBox="0 0 1164 714.493">
+  <g id="Group_4" data-name="Group 4" transform="translate(-2097 906)">
+    <g id="Group_3" data-name="Group 3">
+      <g id="Group_2" data-name="Group 2">
+        <text id="Well_Done" data-name="Well Done" transform="translate(2679 -339.507)" font-size="120" font-family="Helvetica-Bold, Helvetica" font-weight="700" letter-spacing="0.03em"><tspan x="-303.355" y="0">Well Done</tspan></text>
+        <text id="There_is_no_pending_Open_Care_for_this_shift" data-name="There is no pending Open Care for this shift" transform="translate(2679 -205.507)" font-size="60" font-family="Helvetica"><tspan x="-581.982" y="0">There is no pending Open Care for this shift</tspan></text>
+      </g>
+      <path id="Path_124" data-name="Path 124" d="M426.985,628.493A184.493,184.493,0,1,1,242.493,444,184.486,184.486,0,0,1,426.985,628.493ZM242.493,484.934A143.558,143.558,0,1,0,386.051,628.493,143.557,143.557,0,0,0,242.493,484.934Z" transform="translate(2437 -1350)" fill="#06a53d"/>
+    </g>
+    <g id="Group_1" data-name="Group 1">
+      <circle id="Ellipse_28" data-name="Ellipse 28" cx="161.671" cy="161.671" r="161.671" transform="translate(2518.222 -880.384)" fill="#06a53d"/>
+      <path id="Path_125" data-name="Path 125" d="M268.241,471.916,124.52,615.638,65.2,556.314,85,536.507l40.563,40.563L249.509,452.945Z" transform="translate(2512.774 -1255.799)" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.25"/>
+    </g>
+  </g>
+</svg>

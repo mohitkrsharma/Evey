@@ -1,0 +1,66 @@
+<div class="login-page">
+    <div class="content">
+        <form [formGroup]="loginForm" class="login-form" *ngIf="loginStage == 1" (ngSubmit)="onSubmit()">
+            <div class="text-center">
+                <h2 class="app-name"><img src="assets/logo/logo.svg" /></h2>
+                <!-- <h2 class="mt-0">Sign In</h2> -->
+                <div>
+                    <mat-form-field class="w-100" appearance="outline" color="primary">
+                        <mat-label>Enter Username</mat-label>
+                        <input matInput name="username" placeholder="Enter Username" formControlName="username"
+                            (keypress)="_commonService.allwoAlphaNumLogin($event)" maxlength="50">
+                    </mat-form-field>
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Enter Password</mat-label>
+
+                        <input matInput [type]="'password'" name="password" placeholder="Enter Password"
+                            formControlName="password" id="showpass">
+                        <mat-icon matSuffix *ngIf="!isshowPassword" (click)="showPassword()">visibility</mat-icon>
+                        <mat-icon matSuffix *ngIf="isshowPassword" (click)="showPassword()">visibility_off</mat-icon>
+                    </mat-form-field>
+                    <!-- <span *ngIf="sec>0" class="color-grey small-font"
+                        [style.color]="areTenSecsRemainings?'green':'red'">Your account has been locked, please try
+                        after
+                        {{timerValue?.minutes|number :'2.0'}}:{{timerValue?.seconds.toFixed() |number :'2.0'
+                        }}<br></span> -->
+                    <div>
+                        <button type="button" mat-raised-button color="primary" (click)="onSubmit()"
+                            class="mt-10 mb-10 btn_login">Continue</button>
+                    </div>
+                    <a class="sec-heading" [routerLink]="['./forgot']">Forgot Password</a>
+                    <span class="color-grey"> | </span>
+                    <a class="sec-heading" (click)="openDialog()">Contact</a>
+                    <p class="color-grey small-font text_custom">© {{date| date:'yyyy'}} Koble Technologies</p>
+                    <p class="color-grey small-font text_custom">Evey™ is a Trade Mark of Koble Technologies.</p>
+                </div>
+            </div>
+        </form>
+        <div class="login-form text-center" *ngIf="loginStage == 2">
+            <h2 class="app-name"><img src="assets/logo/logo.svg" /></h2>
+            <!-- <h2 class="mt-0">Verify OTP</h2> -->
+            <div>
+                <mat-form-field class="w-100" appearance="outline" color="primary">
+                    <mat-label>Enter One Time Password</mat-label>
+                    <input autofocus matInput type="number" name="otp" placeholder="Enter One Time Password"
+                        [formControl]="otpControl" (keyup)="otpEntered($event)">
+                    <div class="invalid-OTP" *ngIf="otpControl.invalid && otpControl.touched">Invalid OTP</div>
+                </mat-form-field>
+                <div>
+                    <button  mat-raised-button color="primary" #OTPVerify class="mt-0 mb-10 btn_login"
+                        (click)="onSubmitOTP()">
+                        Verify OTP
+                    </button>
+                </div>
+                <a class="sec-heading pr-10" (click)="resentOTP()">Resend OTP</a>
+                <span *ngIf="areOTPexpried==false" class="color-grey small-font"
+                    [style.color]="areTenSecsRemainings?'red':''">OTP will expire in
+                    {{timerValue?.minutes|number :'2.0'}}:{{timerValue?.seconds.toFixed() |number :'2.0' }}</span>
+                <span *ngIf="areOTPexpried==true" class="color-grey small-font" style="color: red;">OTP has expired
+                    Please
+                    Resend OTP</span>
+                <p class="color-grey small-font text_custom">© {{date| date:'yyyy'}} Koble Technologies</p>
+                <p class="color-grey small-font text_custom">Evey™ is a Trade Mark of Koble Technologies.</p>
+            </div>
+        </div>
+    </div>
+</div>

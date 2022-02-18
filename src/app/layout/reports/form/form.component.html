@@ -1,0 +1,1444 @@
+<mat-card>
+  <mat-card-header class="d-flex justify-content-between align-center">
+    <mat-card-title>Reports
+    </mat-card-title>
+  </mat-card-header>
+  <!-- <mat-card-content class="mb-0">
+        <div class="d-flex wrap row-margin">
+
+            <div *ngIf="commonService.checkPrivilegeModule('build_custom_report')" class="grid" (click)="getReport()">
+                <mat-icon>insert_chart</mat-icon>
+                Build Custom Report
+            </div>
+            <div *ngIf="commonService.checkPrivilegeModule('shift_performance_report')" class="grid" (click)="openShiftPerformance()">
+                <mat-icon>insert_chart</mat-icon>
+                Shift Performance Report
+            </div>
+            <div *ngIf="commonService.checkPrivilegeModule('care_within_24_hours_report')" class="grid" (click)="carechart()">
+                <mat-icon> insert_chart</mat-icon>
+                Care Volume by Shift
+            </div>
+            <div *ngIf="commonService.checkPrivilegeModule('activity_report')" class="grid" (click)="activity_list()">
+                <mat-icon> insert_chart</mat-icon>
+                Activity
+            </div>
+            <div *ngIf="commonService.checkPrivilegeModule('missed_level_1_checkin_report')" class="grid" (click)="missedCheckin()">
+                <mat-icon> insert_chart</mat-icon>
+                Missed Level 1 Check-in Report by Shift
+            </div>
+            
+            <div *ngIf="commonService.checkPrivilegeModule('room_clean_report')" class="grid" [routerLink]="['/reports/roomcleaningreport']">
+                <mat-icon> insert_chart</mat-icon>
+                Room clean report
+            </div>
+            
+            <div *ngIf="commonService.checkPrivilegeModule('vital_report')" class="grid" [routerLink]="['/reports/vitalreport']">
+                <mat-icon> insert_chart</mat-icon>
+                Vital report
+            </div>
+            <div *ngIf="commonService.checkPrivilegeModule('virus_care_report')" class="grid" [routerLink]="['/reports/virusreport']">
+                <mat-icon> insert_chart</mat-icon>
+                Virus Check report
+            </div>
+        </div>
+
+    </mat-card-content> -->
+
+  <div class="operation">
+    <h4>Operations</h4>
+    <div class="row">
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" *ngIf="checkUserPrivilegeModule('reports', 'view')"
+        (click)="openShiftPerformance()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-shift-perfmance-icon.svg" width="22">
+        <p>Shift Performance</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" *ngIf="checkUserPrivilegeModule('reports','view')"
+        (click)="openMissedCheckIns()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-missed-check-ins-icon.svg" width="22">
+        <p>Missed Level 1 Check-Ins</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" *ngIf="checkUserPrivilegeModule('reports','view')"
+        (click)="openHouseKeeping()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-cleaning-icon.svg" width="22">
+        <p>Cleaning</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" *ngIf="checkUserPrivilegeModule('reports','view')"
+        (click)="openCarechart()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-24hours-icon.svg" width="22">
+        <p>Care Volume by Shift</p>
+      </div>
+      <!-- IO-1404 -->
+      <!-- <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-efficiency-icon.svg" width="22">
+        <p>Efficiency</p>
+      </div> -->
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openCensusReport()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-census-icon.svg" width="22">
+        <p>Census</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail activity"
+        *ngIf="checkUserPrivilegeModule('reports','view')" (click)="activity_list()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-activity-icon-96.svg" width="22">
+        <p>Activity</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openTimeonLevelsreport()"
+        *ngIf="checkUserPrivilegeModule('reports','view')">
+        <img _ngcontent-vup-c4="" alt="TimeonLevels" height="20.321"
+          src="./assets/images/report/reports-activity-icon-96.svg" width="22">
+        <p>Time on Levels</p>
+      </div>
+    </div>
+  </div>
+  <div class="operation care">
+    <h4>Care</h4>
+    <div class="row">
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openVitalsReport()"
+        *ngIf="checkUserPrivilegeModule('reports','view')">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-vitals-icon.svg" width="22">
+        <p>Vitals</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openVirusCheck()"
+        *ngIf="checkUserPrivilegeModule('reports','view')">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-virus-check-icon.svg" width="22">
+        <p>Virus Check</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openrefusedcare()"
+        *ngIf="checkUserPrivilegeModule('reports','view')">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-virus-check-icon.svg" width="22">
+        <p>Refused Care</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openfallcare()"
+        *ngIf="checkUserPrivilegeModule('reports','view')">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-virus-check-icon.svg" width="22">
+        <p>Falls</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openTestingReport()"
+        *ngIf="checkUserPrivilegeModule('reports','view')">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-virus-check-icon.svg" width="22">
+        <p>COVID Testing</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" *ngIf="checkUserPrivilegeModule('reports','view')"
+        (click)="getReport()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-custom-icon.svg" width="22">
+        <p>Custom Report</p>
+      </div>
+      <!-- custom med report -->
+      <!-- *ngIf="commonService.checkPrivilegeModule('build_custom_med_report')" -->
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="getCustomMedReport()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-custom-icon.svg" width="22">
+        <p>Custom Med Report</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openDNRReport()">
+        <img _ngcontent-vup-c4="" alt="announcement" height="20.321"
+          src="./assets/images/report/reports-custom-icon.svg" width="22">
+        <p>DNR Report</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openInventoryReport()">
+        <img _ngcontent-vup-c4="" alt="inventory" height="20.321" src="./assets/images/report/reports-custom-icon.svg"
+          width="22">
+        <p>Inventory</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openAssessmentReport()">
+        <img _ngcontent-vup-c4="" alt="inventory" height="20.321" src="./assets/images/report/reports-custom-icon.svg"
+          width="22">
+        <p>Assessments</p>
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 shift_detail" (click)="openMedicationReport()">
+        <img _ngcontent-vup-c4="" alt="medication_status" height="20.321" src="./assets/images/report/reports-custom-icon.svg"
+          width="22">
+        <p>Medication Status</p>
+      </div>
+    </div>
+  </div>
+</mat-card>
+
+<!-- Shift Performance Report Popup -->
+<ng-template #shiftPerformance>
+  <div class="">
+    <form (ngSubmit)="shiftPerformanceSubmit(shiftperformancereport,ShiftreportForm.valid)"
+      [formGroup]="ShiftreportForm" class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Shift Performance</h3>
+        <div class="switch_ann_header d-flex align-items-center include_susp_custm font_style">
+          <p class="m-0">Include Suspended Performers</p>
+          <span class="activ">
+            <mat-slide-toggle color="primary"
+              (change)="isArchiveData($event.checked,'shift');shiftperformancereport.isachive=$event.checked"
+              [(ngModel)]="shiftperformancereport.isachive" [ngModelOptions]="{standalone: true}">
+            </mat-slide-toggle>
+          </span>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select User</mat-label>
+            <mat-select [(ngModel)]="shiftperformancereport.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{shiftperformancereport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select Users"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('shift_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'shift')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="shiftperformancereport.shift"
+              (selectionChange)="changeShiftForVitals($event.value)" formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <!-- <mat-form-field class="w-100 shift_pop_perfor"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd 
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <!-- <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)"
+            placeholder="Select date range" [options]="options">
+          </ngx-mat-drp> -->
+          <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+        <div class="w-50 pl-15">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelShift()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary"
+                    (click)="shiftPerformanceSubmit(shiftperformancereport,ShiftreportForm.valid)" class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<ng-template #missedCheckIns>
+  <div>
+    <form #f="ngForm" (ngSubmit)="missedCheckInSubmit(f,missedcheckl1,picker)" class="custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Missed Check-Ins</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row font_style">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput name="date" (click)="picker.open()" (ngModelChange)="dateChange($event)"
+              [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="missedcheckl1.date"
+              onPaste="return false" (keypress)="checkAllwoNum($event)" required [max]="maxDate">
+            <mat-datepicker-toggle matSuffix [for]="picker" #picker>
+              <mat-icon matDatepickerToggleIcon>
+                <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+                  height="20.321">
+              </mat-icon>
+
+            </mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="missedcheckl1.shift" (selectionChange)="changeShift($event.value)" name="shiftype"
+              required>
+              <ngx-mat-select-search [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelMissed()"
+          type="button">Cancel</button>
+
+        <button mat-flat-button color="primary" class="btn_main_done" type="submit">Run</button>
+
+        <!-- <button mat-flat-button color="primary" [disabled]="!f.valid"
+                    (click)="missedCheckInSubmit(f,missedcheckl1,picker)" class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<ng-template #censusReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="CensusSubmit(picker)" class="custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Census Report</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row font_style">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput name="date" (click)="picker.open()" (ngModelChange)="dateChange($event)"
+              [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="censusreport.date"
+              onPaste="return false" (keypress)="checkAllwoNum($event)" required [max]="newMaxDate">
+            <mat-datepicker-toggle matSuffix [for]="picker" #picker>
+              <mat-icon matDatepickerToggleIcon>
+                <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+                  height="20.321">
+              </mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <!--         <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select shift</mat-label>
+            <mat-select [(ngModel)]="missedcheckl1.shift" (selectionChange)="changeShift($event.value)" name="shiftype"
+              required>
+              <ngx-mat-select-search [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelMissed()"
+          type="button">Cancel</button>
+
+        <button mat-flat-button color="primary" class="btn_main_done" type="submit">Run</button>
+
+        <!-- <button mat-flat-button color="primary" [disabled]="!f.valid"
+                    (click)="missedCheckInSubmit(f,missedcheckl1,picker)" class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<ng-template #virsuCheck>
+  <div>
+    <form #f="ngForm" (ngSubmit)="virusReportSubmit(virusreport,virusReportForm.valid)" [formGroup]="virusReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Virus Check</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="virusreport.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'virus');virusreport.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Suspended Performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="virusreport.isachive" [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'virus');virusreport.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select User</mat-label>
+            <mat-select [(ngModel)]="virusreport.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{virusreport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('virus_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'virus')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="virusreport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Resident</mat-label>
+            <mat-select [(ngModel)]="virusreport.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="virusreport.resident && virusreport.resident.length">
+                {{allresident ? virusreport.resident.length : virusreport.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Resident"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('virus')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'virus')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="virusreport.daterange"
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp  (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range"  [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelVirus()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary" (click)="virusReportSubmit(virusreport,virusReportForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<ng-template #vitalsReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)" [formGroup]="vitalsReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Vitals</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="vitalreport.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'vital');vitalreport.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Suspended Performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="vitalreport.isachive" [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'vital');vitalreport.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select User</mat-label>
+            <mat-select [(ngModel)]="vitalreport.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{vitalreport.user.includes(0) ? vitalreport.user.length - 1 : vitalreport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('vital_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'vital')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="vitalreport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="vitalreport.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="vitalreport.resident && vitalreport.resident.length">
+                {{allresident ? vitalreport.resident.length : vitalreport.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('vital')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'vital')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd 
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp  (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" 
+             [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelVital()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary" (click)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<!-- Refused Care Report -->
+<ng-template #refusedcare>
+  <div>
+    <form #f="ngForm" (ngSubmit)="refusedCareSubmit(refusedcareData,refusedCareForm.valid)"
+      [formGroup]="refusedCareForm" class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Refused Care</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="refusedcareData.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'refused');refusedcareData.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Suspended Performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="refusedcareData.isachive"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'refused');refusedcareData.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select User</mat-label>
+            <mat-select [(ngModel)]="refusedcareData.user" formControlName="user" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger>
+                {{refusedcareData.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('refused_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'refused')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="refusedcareData.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="refusedcareData.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="refusedcareData.resident && refusedcareData.resident.length">
+                {{allresident ? refusedcareData.resident.length : refusedcareData.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('refused')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'refused')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!--             <input matInput type="text" color="primary" ngxDaterangepickerMd 
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp  (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" 
+             [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelVital()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary" (click)="refusedCareSubmit(refusedcareData,refusedCareForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<ng-template #fallcare>
+  <div>
+    <form #f="ngForm" (ngSubmit)="fallCareSubmit(fallCareData,fallCareForm.valid)" [formGroup]="fallCareForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Falls</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="fallCareData.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'fall');fallCareData.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Suspended Performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="fallCareData.isachive"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'fall');fallCareData.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Performer(s)</mat-label>
+            <mat-select [(ngModel)]="fallCareData.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{fallCareData.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('fall_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'fall')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Shift(s)</mat-label>
+            <mat-select [(ngModel)]="fallCareData.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Resident(s)</mat-label>
+            <mat-select [(ngModel)]="fallCareData.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="fallCareData.resident && fallCareData.resident.length">
+                {{allresident ? fallCareData.resident.length : fallCareData.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('fall')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'fall')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Fall Type</mat-label>
+            <mat-select [(ngModel)]="fallCareData.fallType" formControlName="fallTypeSearch" required>
+              <ngx-mat-select-search formControlName="fallTypeSearch" [(ngModel)]="fallTypeSearch"
+                placeholderLabel="Fall Type" noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of Falltypes |stringFilterBy:fallTypeSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!--             <input matInput type="text" color="primary" ngxDaterangepickerMd 
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Date(s)" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp  (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" 
+             [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelFall()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+
+        <!-- <button mat-flat-button color="primary" (click)="fallCareSubmit(fallCareData,fallCareForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<!-- House Clean Start -->
+<ng-template #houseReport>
+  <div>
+    <form (ngSubmit)="HouseReportSubmit(roomcleanreport,houseReportForm.valid)" [formGroup]="houseReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Room Clean</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="roomcleanreport.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'house');roomcleanreport.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Suspended Performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="roomcleanreport.isachive"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'house');roomcleanreport.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select User</mat-label>
+            <mat-select [(ngModel)]="roomcleanreport.user" formControlName="user" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger>
+                {{roomcleanreport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('house_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id)">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="roomcleanreport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="roomcleanreport.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="roomcleanreport.resident && roomcleanreport.resident.length">
+                {{allresident ? roomcleanreport.resident.length : roomcleanreport.resident.length - 1}}
+                items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('house')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'house')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd 
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp  (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" 
+             [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10" color="warn" (click)="cancel()" type="button"
+          class="btn_main_cancle">Cancel</button>
+
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+
+        <!-- <button mat-flat-button color="primary"
+                    (click)="HouseReportSubmit(roomcleanreport,houseReportForm.valid)" class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!-- House Clean End -->
+
+<!-- testing Start -->
+<ng-template #testingReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="testingReportSubmit(testingReportData,testingForm.valid)" [formGroup]="testingForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Testing History Report</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="testingReportData.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'testing');testingReportData.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <!-- <div class="switch_ann_header font_style">
+                        <p class="m-0">Include suspended performers</p>
+                        <span class="activ">
+                            <mat-slide-toggle color="primary" [(ngModel)]="testingReportData.isachive"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="isArchiveData($event.checked,'vital');testingReportData.isachive=$event.checked">
+                            </mat-slide-toggle>
+                        </span>
+                    </div> -->
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <!-- <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select user</mat-label>
+                        <mat-select [(ngModel)]="testingReportData.user" formControlName="user" [multiple]="true" #multiSelect
+                            required>
+                            <mat-select-trigger>
+                                {{vitalreport.user.length}} items selected
+                            </mat-select-trigger>
+                            <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch"
+                                placeholderLabel="Select user" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngIf="userlist" #allSelected (click)="selectAll('vital_all')" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'"
+                                [value]="item._id" (click)="selectUser(allSelected.viewValue,item._id,'vital')">
+                                {{item.value}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div> -->
+
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="testingReportData.resident" formControlName="resident" [multiple]="true"
+              #multiSelect required>
+              <mat-select-trigger *ngIf="testingReportData.resident && testingReportData.resident.length">
+                {{allresident ? testingReportData.resident.length : testingReportData.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('testing')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'testing')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="testingReportData.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Status</mat-label>
+            <mat-select [(ngModel)]="testingReportData.testingStatus" formControlName="testingStatus" required>
+              <ngx-mat-select-search formControlName="testingStatus" [(ngModel)]="shiSearch"
+                placeholderLabel="Select Status" noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of testingStatusList |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd 
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" 
+             [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelTesting()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary" (click)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+<!-- testing Start -->
+
+<!-- Start Care By Shift & Time 24 Hours  -->
+<ng-template #careChartData>
+  <div>
+    <form (ngSubmit)="careChartSubmit(f,careChart,picker)" #f="ngForm" (keydown.enter)="$event.preventDefault()"
+      class="custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Care Volume by Shift</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput name="date" (click)="picker.open()" [matDatepicker]="picker" placeholder="Choose a date"
+              [(ngModel)]="careChart.date" onPaste="return false" (keypress)="checkAllwoNum($event)" required
+              [max]="maxDate">
+
+            <mat-datepicker-toggle matSuffix [for]="picker" #picker>
+              <mat-icon matDatepickerToggleIcon>
+                <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+                  height="20.321">
+              </mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <!-- <div class="w-33 pr-15 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label class="cus_label">
+              Select One</mat-label>
+            <mat-select [(ngModel)]="careChart.cType" name="cType" (selectionChange)="changeCType(careChart.cType)"
+              required>
+              <mat-option [value]="1">According to time</mat-option>
+              <mat-option [value]="2">According to shift</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+        <div class="w-50 pl-15">
+          <!-- IO-1403 -->
+          <!-- <div class="w-70" pr-15 *ngIf="tType==1">
+            <label class="w-100 d-block time-label">Start Time</label>
+            <ejs-timepicker [(ngModel)]="careChart.startTime" [ngModelOptions]="{standalone: true}" (change)="updateCareTimeChanged(careChart, $event)" [class]="'pickerBorder' " [format]='formatString' [min]="addPopupStartMin" [value]="careChart.startTime" [required]="true" [step]='15' [showClearButton]=false></ejs-timepicker>
+          </div> -->
+          <!-- *ngIf="tType==2" -->
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <mat-label>Select shift</mat-label>
+              <mat-select [(ngModel)]="careChart.shift" (selectionChange)="changeCareShift($event.value)"
+                name="shifCareType" required>
+                <ngx-mat-select-search [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of shiftArrCare |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                  {{item.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button color="warn" (click)="cancelCareChart()" class="btn_main_cancle"
+          type="button">Cancel</button>
+
+        <button mat-flat-button color="primary" class="btn_main_done" type="submit">Run</button>
+
+
+        <!-- <button mat-flat-button color="primary" (click)="careChartSubmit(f,careChart,picker)"
+                    class="btn_main_done">Run</button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+<!-- End Care By Shift & Time 24 Hours  -->
+
+<!-- openTimeonLevel starts -->
+<ng-template #openTimeonLevelsReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="timeOnLevelsReportSubmit(mdltimeOnLevelReport,timeOnLevelReportForm.valid)"
+      [formGroup]="timeOnLevelReportForm" class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Time on Levels Report</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include Archived Residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="mdltimeOnLevelReport.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'c');mdltimeOnLevelReport.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Care Level</mat-label>
+            <mat-select  [(ngModel)]="mdltimeOnLevelReport.residentLevel" formControlName="residentLevel" required>
+                 <!-- <mat-select-trigger *ngIf="mdltimeOnLevelReport.residentLevel && mdltimeOnLevelReport.residentLevel.length">
+                    {{alllevel ? mdltimeOnLevelReport.residentLevel.length : mdltimeOnLevelReport.residentLevel.length -1 }} items
+                    selected
+                </mat-select-trigger> -->
+                <ngx-mat-select-search formControlName="carSearch" [(ngModel)]="carSearch" placeholderLabel="Care Level" noEntriesFoundLabel="Not Found"
+                name="search"></ngx-mat-select-search>
+               <!-- <mat-option *ngIf="carelevelData && carelevelData.length" #selectedLevel
+                    (click)="selectAllLevel()" [value]="0">All
+                </mat-option> -->
+                <mat-option *ngFor="let item of carelevelsWithGoals |stringFilterBy:carSearch:'label'" [value]="item.value" (click)="selectLevel(item.label,item.value)" >
+                {{item.label}}
+               </mat-option>
+            </mat-select>           
+        </mat-form-field>
+
+          <!-- <mat-form-field class="w-100">
+            <mat-label>Select User</mat-label>
+            <mat-select [(ngModel)]="mdltimeOnLevelReport.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{mdltimeOnLevelReport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('timeOnlevel_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'timeOnlevel')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select Shift</mat-label>
+            <mat-select [(ngModel)]="mdltimeOnLevelReport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Resident</mat-label>
+            <mat-select [(ngModel)]="mdltimeOnLevelReport.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="mdltimeOnLevelReport.resident && mdltimeOnLevelReport.resident.length">
+                {{allresident ? mdltimeOnLevelReport.resident.length : mdltimeOnLevelReport.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="resSearch" [(ngModel)]="resSearch" placeholderLabel="Resident"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('timeOnlevel')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:resSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'timeOnlevel')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">          
+          <ngx-mat-drp  (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelTimeOnLevelReport()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>  
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+<!-- openTimeonLevel Ends -->
+
+<!-- inventoryReport starts -->
+<ng-template #inventoryReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="inventoryReportSubmit(inventoryReportData, inventoryReportForm.valid)" [formGroup]="inventoryReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Inventory</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="inventoryReportData.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="inventoryReportData.resident && inventoryReportData.resident.length">
+                {{allresident ? inventoryReportData.resident.length : inventoryReportData.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('inventory')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'inventory')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)"
+            placeholder="Select date range" [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelInventory()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+<!-- inventoryReport ends -->
+
+
+<!-- Assessment starts -->
+<ng-template #assessmentReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="assessmentReportSubmit(assessmentReportData, assessmentReportForm.valid)" [formGroup]="assessmentReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Assessment</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="assessmentReportData.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="assessmentReportData.resident && assessmentReportData.resident.length">
+                {{allresident ? assessmentReportData.resident.length : assessmentReportData.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('assessment')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'assessment')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)"
+            placeholder="Select date range" [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+        </div>
+      </div>
+      
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Assessment Type</mat-label>
+            <mat-select [(ngModel)]="assessmentReportData.assessment_type" (selectionChange)="changeAssessmentType($event.value)" formControlName="assessment_type"
+              required>
+              <ngx-mat-select-search formControlName="tSearch" [(ngModel)]="tSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let filters of assessmentTypeList |stringFilterBy:tSearch:'value'" [value]="filters.type">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelAssessment()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+<!-- Assessment ends -->
+
+<!-- Medication status starts -->
+<ng-template #medicationReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="medicationReportSubmit(medicationReportData, medicationReportForm.valid)" [formGroup]="medicationReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Assessment</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="medicationReportData.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="medicationReportData.resident && medicationReportData.resident.length">
+                {{allresident ? medicationReportData.resident.length : medicationReportData.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('medication')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'medication')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)"
+            placeholder="Select date range" [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelAssessment()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+<!-- Medication status ends -->

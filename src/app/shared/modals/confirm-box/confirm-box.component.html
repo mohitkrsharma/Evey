@@ -1,0 +1,8 @@
+<div mat-dialog-content>
+    <p class="text-center mt-0">{{title}}</p>
+  
+</div>
+<div mat-dialog-actions class="text-center justify-content-center">
+    <button mat-flat-button (click)="onNoClick()" color="primary" class="mr-10">{{cancelBtn}}</button>
+     <button mat-flat-button cdkFocusInitial   (click)="onYesClick()" color="warn">{{successBtn}}</button>
+</div>

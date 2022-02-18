@@ -1,0 +1,120 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title class="mb-0">
+
+            Care Volume by Shift
+        </mat-card-title>
+        <div class="d-flex justify-content-end"
+            *ngIf="  commonService.checkPrivilegeModule('reports','export')">
+            <div class="report_export_btn">
+                <button mat-flat-button color="primary" (click)="openCarechart()" class="btn_Secondary">Run Another
+                </button>
+            </div>
+        </div>
+    </mat-card-header>
+    <mat-card-content>
+
+        <mat-card-content class="mt-20">
+            <div class="shifttimencreated d-flex align-items-center mb-20">
+                <div class="shifttime">
+                    
+                        <h4 class="m-0">{{label_shift}}</h4>
+                </div>
+                <div class="created">
+                    <h4>Created by: {{last_name}}, {{first_name}}</h4>
+                    <ng-container *ngIf="!isPopUpOpen; else popUpDate">
+                        <span>{{getTimeZoneDateFromStringDate(label_date)}}</span>
+                      
+                    </ng-container>
+                    <ng-template #popUpDate>
+                        <span>{{getTimeZoneDateFromStringDate(careChart.date )}}</span>
+                       
+                    </ng-template>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-content *ngIf="!noRecord">
+            <p style="text-align: center; color: #969393">No Data Found</p>
+        </mat-card-content>
+        
+    </mat-card-content>
+
+    <mat-card-content [style.display]="noRecord ? 'block' : 'none'">
+        <canvas id="lineChart"></canvas>
+    </mat-card-content>
+
+
+    <ng-container *ngIf="noRecord">
+        <mat-card-content>
+            <div class="table-wrapper w-100">
+                <div class="d-flex justify-content-end"
+                    *ngIf="isexport  &&  commonService.checkPrivilegeModule('reports','export')">
+                    <!-- <button mat-flat-button color="primary" (click)="excelExport()"
+                        class="btn_Secondary">Export</button> -->
+                    <img *ngIf="isexport  &&  commonService.checkPrivilegeModule('reports','export')" (click)="excelExport()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+                </div>
+                <mat-table #table [dataSource]="dataSource" matSort class="w-100 listing">
+
+                    <ng-container matColumnDef="care">
+                        <mat-header-cell *matHeaderCellDef> Care Name</mat-header-cell>
+                        <mat-cell *matCellDef="let element">{{element.careName}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="total">
+                        <mat-header-cell *matHeaderCellDef> Total</mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.total}} </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+            </div>
+        </mat-card-content>
+    </ng-container>
+</mat-card>
+
+<!-- Start Care By Shift & Time 24 Hours  -->
+<ng-template #careChartData>
+    <div>
+        <form #f="ngForm" (ngSubmit)="onRunAnother(f,careChart,picker)" (keydown.enter)="$event.preventDefault()" class="custom_font">
+            <div class="d-flex justify-content-between form-row pop_heading">
+                <h3>Care Volume by Shift</h3>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput name="date" (click)="picker.open()" [matDatepicker]="picker" [max]="maxDate"
+                            placeholder="Choose a date" [(ngModel)]="careChart.date" onPaste="return false" (keypress)="checkAllwoNum($event)" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker" #picker></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                
+                <div class="w-70 pl-15">
+                   
+                    <div class="w-100">
+                        <mat-form-field class="w-100">
+                            <mat-label>Select shift</mat-label>
+                            <mat-select [(ngModel)]="careChart.shift" (selectionChange)="changeShift($event.value)"
+                                name="shifType" required>
+                                <ngx-mat-select-search [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                                    noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'"
+                                    [value]="item.no">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between btn_report_pop">
+                <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle" type="button">Cancel</button>
+
+                <button mat-flat-button color="primary" class="btn_main_done" type="submit">Run</button>
+
+               
+            </div>
+        </form>
+
+    </div>
+</ng-template>
+<!-- End Care By Shift & Time 24 Hours  -->

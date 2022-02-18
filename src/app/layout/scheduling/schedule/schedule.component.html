@@ -1,0 +1,114 @@
+<mat-card>
+  <mat-card-header class="d-flex justify-content-between align-center mb-3">
+    <mat-card-title>Scheduling
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    
+    <ng-template #customCellTemplate let-day="day" let-locale="locale">
+      <div class="cal-cell-top">
+        <!-- <span class="cal-day-badge" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span> -->
+        <span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+      </div>
+      <!-- <div class="cell-totals" *ngIf="day.events.length" >
+        <div class="as-un">
+          <span class="un cares">{{ getUnAssignedRuleCount(day.events) }}</span>
+        </div>
+        <div class="as-un">
+          <span class="as cares">{{ getUnAssignedCount(day.events) }}</span>
+        </div>
+        <div class="as-un">
+          <span class="total cares">{{ getAssignedCount(day.events) }}</span>
+        </div>
+        
+      </div> -->
+      <div class="cell-totals" *ngIf="day.events.length" >
+        <div class="as-un">
+          <span class="un cares">{{ getScheduleEventCountData(day.events,day.date,'missed')}}</span>
+        </div>
+        <div class="as-un">
+          <span class="as cares">{{ getScheduleEventCountData(day.events,day.date,'unassign') }}</span>
+        </div>
+        <div class="as-un">
+          <span class="total cares">{{ getScheduleEventCountData(day.events,day.date,'assign') }}</span>
+        </div>
+        
+      </div>
+    </ng-template>
+
+
+    <div class="d-flex justify-content-between  mb-1">
+
+      <div class="aslabels">
+        <div class="un crlbl">Missed Cares</div>
+        <div class="as crlbl">Unassigned Care</div>
+        <div class="total crlbl">Total Assigned Cares</div>
+      </div>
+  
+      <a *ngIf="_commonService.checkPrivilegeModule('scheduling','add')" [routerLink]="['/scheduling/create']"  color="primary" class="ml-3 btn_main_don myborder mat-stroked-button">Schedule Care</a>
+      
+    </div>
+
+    <div class="d-flex justify-content-between form-row sticky_outer">
+            
+      <div class="w-100 pr-15 calenderholder">
+        <mwl-utils-calendar-header
+          [(view)]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="fetchEventsNewApis()"
+          (viewChange)="fetchEventsNewApis()"
+        >
+        </mwl-utils-calendar-header>
+        <!-- <mwl-utils-calendar-header-two
+          [(view)]="view"
+          [(viewDate)]="viewDate"
+          (viewDateChange)="fetchEvents()"
+          (viewChange)="fetchEvents()"
+        >
+        </mwl-utils-calendar-header-two> -->
+        <div [ngSwitch]="view">
+          <mwl-calendar-month-view
+            *ngSwitchCase="CalendarView.Month"
+            [viewDate]="viewDate"
+            [events]="events"
+            [weekStartsOn]="0"
+            [refresh]="refresh"
+            [cellTemplate]="customCellTemplate"
+            [activeDayIsOpen]="activeDayIsOpen"
+            (dayClicked)="dayClicked($event.day)"
+            (eventTimesChanged)="eventTimesChanged($event)"
+            (beforeViewRender)="beforeMonthViewRender($event)"
+          >
+          </mwl-calendar-month-view>
+          
+          <!-- <mwl-calendar-week-view
+            *ngSwitchCase="CalendarView.Week"
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            [snapDraggedEvents]="false"
+            (eventClicked)="handleEvent('Clicked', $event.event)"
+            (eventTimesChanged)="eventDropped($event)"
+          >
+          </mwl-calendar-week-view>
+
+          <mwl-calendar-day-view
+            *ngSwitchCase="CalendarView.Day"
+            [viewDate]="viewDate"
+            [events]="events"
+            [refresh]="refresh"
+            [snapDraggedEvents]="false"
+            (eventTimesChanged)="eventDropped($event)"
+          >
+          </mwl-calendar-day-view>  -->
+        </div>
+        
+        <!-- (beforeViewRender)="updateCalendarEvents($event)"
+          (beforeViewRender)="updateCalendarEvents($event)" -->
+        
+      </div>
+    
+    </div>
+
+  </mat-card-content>
+</mat-card>

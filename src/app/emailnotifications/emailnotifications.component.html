@@ -1,0 +1,45 @@
+<header>
+  <div class="nav-brand d-flex align-center"><img src="assets/logo/dashboard_logo.svg" width="90px"><span>Control Center</span></div>
+</header>
+<div class="container mt-1">
+<mat-card class="view-height mat-card">
+  <mat-card-header class="mat-card-header">
+      <mat-card-title class="mat-card-title">Care Notifications </mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="view-height-center mat-card-content">
+    <div class="table-responsive mt-20 header-fixed-table-wrpper">
+       <table class="mat-table highlight w-100">
+    <thead class="">
+      <!-- Resident | Care | Notes | Time of Notification | Time Notification was turned off | Who Turned the Notification off | That person's notes -->
+      <tr class="mat-row">
+        <th class="mat-header-cell">Care</th>
+        <th class="mat-header-cell">Resident</th>
+        <th class="mat-header-cell">Notes</th>
+        <th class="mat-header-cell">Time of Notification</th>
+        <th class="mat-header-cell">Notify Turn Off Time</th>
+        <th class="mat-header-cell">Turn Off By</th>
+        <th class="mat-header-cell">Notes By User Who Turned Off Notification</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let item of notifydata">
+      <tr>
+        <td class="mat-cell"><img width="20" src="{{item.care_image.location}}" class="img-fluid" alt="profile-pic"><span> {{item.care_name}}</span></td>
+        <!-- <td class="mat-cell text-left">{{item.care.name}}</td> -->
+        <td class="mat-cell text-left">{{item.resident_last_name}}, {{item.resident_first_name}}</td>
+        <td class="mat-cell text-left">{{item.care_notes_true ? item.care_notes_true :'-'}}</td>
+        <td class="mat-cell text-left">{{item.time_true}}</td>
+        <td class="mat-cell text-left">{{item.time}}</td>
+        <td class="mat-cell text-left">{{item.user && item.user.last_name ?item.user.last_name:'-'}}, {{item.user && item.user.first_name?item.user.first_name:''}}</td>
+        <td class="mat-cell text-left">{{item.care_notes ? item.care_notes :'-'}}</td>
+      </tr>
+    </tbody>
+  </table>
+    </div>
+  </mat-card-content>
+  
+</mat-card>
+</div>
+
+<!-- <div class="d-flex align-items-center justify-content-end mt-20" mat-dialog-actions>
+    <button mat-button color="primary" cdkFocusInitial (click)="onNoClick()">Ok</button>
+  </div> --> 

@@ -1,0 +1,142 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title>Virus Check Report
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form #f="ngForm" [formGroup]="reportForm" class="example-form virusreport custom_font">
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select user</mat-label>
+                            <mat-select  [(ngModel)]="virusreport.user" formControlName="user" [multiple]="true" #multiSelect required>
+                                 <mat-select-trigger>
+                                    {{virusreport.user.length}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="userlist" #allSelected (click)="selectAll()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id" (click)="selectUser(allSelected.viewValue,item._id)" >
+                                {{item.value}}
+                               </mat-option>
+                            </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select shift</mat-label>
+                        <mat-select  [(ngModel)]="virusreport.shift"(selectionChange)="changeShift($event.value)"  formControlName="shiftype"  required>
+                        <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift" noEntriesFoundLabel="Not Found"
+                        name="search"></ngx-mat-select-search>
+                          <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                            {{item.name}}
+                          </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Resident</mat-label>
+                            <mat-select  [(ngModel)]="virusreport.resident" formControlName="resident"  [multiple]="true" #multiSelect required>
+                                <mat-select-trigger *ngIf="virusreport.resident && virusreport.resident.length" >
+                                    {{allresident ? virusreport.resident.length : virusreport.resident.length - 1}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Resident" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                                (click)="selectAllresidents()" [value]="0">All
+                            </mat-option>
+                                <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key" >
+                                {{filters.value | titlecase}}
+                               </mat-option>
+                            </mat-select>
+                      
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="virusreport.daterange" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true" [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false" [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true" drops="down" opens="right" placeholder="Select date range" onPaste="return false" (keypress)="checkAllwoNum($event)" />
+                        <mat-icon class="calender_icon">
+                                today
+                            </mat-icon>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle">Cancel</button>
+                <button mat-flat-button color="primary" (click)="submit(virusreport,reportForm.valid)" class="btn_main_done">Run
+                    Report</button>
+            </div>
+        </form>
+        
+    </mat-card-content>
+    <mat-card-content class="mt-20" *ngIf="show == 'nodata'">
+        <p style="text-align: center; color: #969393">No Data Found</p>
+    </mat-card-content>
+    <mat-card-content class="mt-20" *ngIf="show == 'data'">
+        <ng-container *ngFor="let item of virusReportResult">
+            <hr>
+            <div class="datareport">
+                <h3 class="rescustom m-0 pb-5 mt-20" >{{item.residentData.last_name}}, {{item.residentData.first_name}}</h3>
+                <div class="chart-wrapper">
+                    <div class="count">
+                        {{ caredate(item) }}
+                    </div>
+                    
+                    <div class="chart-container mt-20">
+                        <span><strong>Unit:</strong> {{item.roomData.room}}</span>
+                        <span><strong>Date of Birth (DOB):</strong> {{ dob_date(item) }}</span>
+                        <span><strong>Age:</strong> {{ cal_age(item)}}</span> 
+                        <span><strong>Current Status:</strong> {{item.residentData.resident_status}}</span>
+                        <span><strong>Care Level:</strong> {{item.residentData.care_level}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class=" mt-10 mb-20 padding20" *ngIf="item.track_details && item.track_details.questions" >
+                <h4 class="m-0 pb-5  mt-20" >Screening Questions</h4>
+                <ol >
+                    <li *ngFor="let question of item.track_details.questions" >
+                        {{ question.question }}&nbsp;&nbsp;{{ question.answer }}
+                    </li>
+                </ol>
+            </div>
+            <div  class=" mt-10 mb-20 padding20" *ngIf="item.symtomsData.length">
+                <h4 class="m-0 pb-5  mt-20">Symptoms</h4>
+                <ol>
+                    <li *ngFor="let symp of item.symtomsData">
+                        {{symp.name}}
+                    </li>
+                </ol>
+            </div>
+            <div class="table-responsive mt-10 mb-20 header-fixed-table-wrpper padding20">
+                <table cellpadding="0" cellspacing="0" class="table w-100">
+                    <thead>
+                        <th >Vital</th>
+                        <th >Outcome</th>
+                        <th >Notes</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of item.vitalData">
+                            <td>{{ care_name(data) }}</td>
+                            <td>{{ care_outcome(data) }}</td>
+                            <td>{{ care_note(data) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-container *ngIf="item.care_notes && item.care_notes != '' ">
+                <div class="addional_notes mb-20">
+                    <h3 class="m-0 pb-5" >Addional Notes</h3>
+                    <div>{{ item.care_notes }}</div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </mat-card-content>
+
+</mat-card>

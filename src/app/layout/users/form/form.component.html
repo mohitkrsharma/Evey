@@ -1,0 +1,614 @@
+<mat-card>
+  <form #f="ngForm">
+
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+
+      <mat-card-title>{{paramId?'Edit User':'Add User'}}</mat-card-title>
+
+      <!--       <div class="d-flex align-center w-30 justify-content-end pr-15 cs_font" *ngIf="paramId">
+        Email Access
+        <mat-slide-toggle color="primary" class="pl-15 " [checked]="enable_livedashboard"
+          [(ngModel)]="user.email_access" name="email_access">
+        </mat-slide-toggle>
+      </div> -->
+      <!-- <div class="d-flex align-center w-30 justify-content-end pr-15 cs_font" *ngIf="paramId">
+        Enable Livedashboard
+        <mat-slide-toggle color="primary" class="pl-15 " [checked]="enable_livedashboard"
+          [(ngModel)]="user.enable_livedashboard" name="enable_livedashboard" (change)="onChangelivedashboard($event)">
+        </mat-slide-toggle>
+      </div> -->
+      <div class="d-flex align-center w-33 justify-content-end pr-10 cs_font">
+        Casual Part-time
+        <mat-slide-toggle color="primary" class="pl-15" [(ngModel)]="user.isCasualPartTime" name="parttime"
+          (change)="updateType($event,user._id, 'parttime')">
+        </mat-slide-toggle>
+      </div>
+      <div class="d-flex align-center w-20 justify-content-end pr-10 cs_font">
+        Agency
+        <mat-slide-toggle color="primary" class="pl-15 " [(ngModel)]="user.isAgencyType" name="agency"
+          (change)="updateType($event,user._id, 'agency')">
+        </mat-slide-toggle>
+      </div>
+      <div class="d-flex align-center w-20 justify-content-end pr-15 cs_font" *ngIf="paramId">
+        Active
+        <mat-slide-toggle color="primary" class="pl-15 " [checked]="active" [(ngModel)]="user.active" name="active"
+          (change)="suspendUser($event,user._id)">
+        </mat-slide-toggle>
+      </div>
+      <button mat-flat-button color="primary" class="mr-10 btn_modual w-auto" (click)="onSave(f,user,'mail')">Send
+        invite</button>
+
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100 ng-pristine ng-invalid submitted">
+            <input matInput placeholder="First Name" name="first_name" [(ngModel)]="user.first_name"
+              (keypress)="checkAlpha($event)" required>
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Last Name" name="last_name" [(ngModel)]="user.last_name"
+              (keypress)="checkAlpha($event)" required>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Position</mat-label>
+            <mat-select #job_title="ngModel" [(ngModel)]="user.job_title" (selectionChange)="changePosition($event)"
+              name="job_title" required>
+              <ngx-mat-select-search [(ngModel)]="posSearch" placeholderLabel="Select Position"
+                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+              <mat-option *ngFor="let item of positionsz |stringFilterBy:posSearch:'position_name'" [value]="item._id">
+                {{item.position_name}}
+              </mat-option>
+            </mat-select>
+            <!--  <mat-select name="job_title" [(ngModel)]="user.job_title" (selectionChange)="changePosition($event)"
+              required>
+              <mat-option *ngFor="let item of positionsz" [value]="item._id">
+                {{item.position_name}}
+              </mat-option>
+            </mat-select> -->
+          </mat-form-field>
+        </div>
+        <div class="w-100 pr-15 pl-15" *ngIf="job_type == 'other'">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Job Title" name="other_job_title" [(ngModel)]="user.other_job_title"
+              (keypress)="checkAlpha($event)" required>
+
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Employee Id" maxlength="75" name="employeeId"
+                    (change)="user.employeeId = prependZeros(user.employeeId)" [(ngModel)]="user.employeeId" required>
+                </mat-form-field>
+          <!-- <mat-form-field class="w-100">
+            <mat-label>
+              Access Level</mat-label>
+            <mat-select #Role="ngModel" [(ngModel)]="user.role_id" (selectionChange)="changeAccesslevel($event.value)"
+              name="Role" required>
+              <ngx-mat-select-search [(ngModel)]="rolSearch" placeholderLabel="Select Access Level"
+                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+              <mat-option *ngFor="let item of userTypeList |stringFilterBy:rolSearch:'role_name'" [value]="item._id">
+                {{item.role_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
+
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput type="email" placeholder="Personal Email" name="email" [(ngModel)]="user.email"
+              pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+              (keyup)="user.email = $event.target.value.toLowerCase()" required>
+          </mat-form-field>
+
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput type="email" placeholder="Confirm Personal Email" name="confirmEmail"
+              [(ngModel)]="user.confirmEmail"
+              pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+              (keyup)="corrCheEmail($event,'0',f); user.confirmEmail = $event.target.value.toLowerCase()" required>
+            <mat-error *ngIf="emailNotMatch" class="invalid-email">Your personal email doesn't match.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput type="email" (keyup)="user.work_email = $event.target.value.toLowerCase()"
+              placeholder="Work Email" name="work_email" [(ngModel)]="user.work_email"
+              pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$" required>
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput type="email" placeholder="Confirm Work Email" name="confirmWork_email"
+              [(ngModel)]="user.confirmWork_email"
+              pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+              (keyup)="corrCheEmail($event,'1',f); user.confirmWork_email = $event.target.value.toLowerCase()" required>
+            <mat-error *ngIf="workingEmailNotMatch" class="invalid-email">Your work email doesn't match.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput type="text" placeholder="Work Phone" maxlength="14" mask="(000) 000-0000" name="home_phone"
+              [(ngModel)]="user.home_phone" required>
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput type="text" placeholder="Mobile Phone" name="mobile_phone" [(ngModel)]="user.mobile_phone"
+              maxlength="14" mask="(000) 000-0000" required>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Security Phrase" name="security_phrase" [(ngModel)]="user.security_phrase">
+          </mat-form-field>
+        </div>
+      </div> -->
+
+      <!-- Facility Blocks -->
+      <div class="block_facility no_drop_shadow bdr_crd">
+        <mat-card class="no-shadow py-0 px-0">
+          <mat-card-header class="d-flex justify-content-between align-center">
+            <mat-card-title class="ann_heading">Assigned Building</mat-card-title>
+            <span class="pop_heading">
+              <mat-icon aria-hidden="true"
+                class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color mat-icon-font-24"
+                role="img" (click)="addFaclities()"> add_circle </mat-icon>
+
+            </span>
+          </mat-card-header>
+
+          <div class="selected_data">
+            <div class="selected selected-tile" *ngFor="let item of facListDone;let i=index;">
+              <div class="info">
+                <div class="info_im">
+                  <span class="pi pi-home"></span>
+                </div>
+                <div class="info_cnt">
+                  <h4>{{item.fac_name}} </h4>
+                  <div class="d-flex custom_flex">
+                    <span>{{item.org_name}}</span>
+                  </div>
+                  <p matTooltip="Demo Note" aria-label="tooltip"> {{item.fac_address1}}</p>
+                  <p matTooltip="Demo Note" aria-label="tooltip"> {{item.fac_city}}, {{item.fac_state}}
+                    {{item.fac_zip1}}</p>
+                  <!-- <p matTooltip="Demo Note"  aria-label="tooltip"> {{item.fac_address1}}</p> -->
+                </div>
+              </div>
+              <div class="act">
+                <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                  class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color remove-icon"
+                  mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+
+      <div class="block_facility no_drop_shadow bdr_crd">
+        <mat-card class=" no-shadow py-0 px-0">
+          <mat-card-content>
+            <div class="table-responsive mt-20 listing">
+              <table rules="rows" cellspacing="0" style="width: 100%" class="rolestable" border="1">
+                <thead>
+                  <tr class="headd">
+                    <th colspan="2">Access</th>
+                    <th colspan="4">App Notification</th>
+                    <th colspan="2">Email</th>
+                  </tr>
+                  <tr>
+                    <td class="bold">App</td>
+                    <td class="bold">iPad</td>
+                    <td class="bold">Live Dashboard</td>
+                    <td class="bold">Open Care</td>
+                    <td class="bold">Notify Care</td>
+                    <td class="bold">Emergency</td>
+                    <td class="bold">Scheduled</td>
+                    <td class="bold">Email Notification</td>
+                    <td class="bold">Daily Census</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 " [checked]="user.app_access" [(ngModel)]="user.app_access" name="app_access"
+                      (change)="onChangeAppAccess($event)"></mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 " [checked]="user.ipad_access"
+                      [(ngModel)]="user.ipad_access" name="ipad_access" (change)="onChangeAppAccess($event)">
+                    </mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 " [checked]="user.enable_livedashboard" [(ngModel)]="user.enable_livedashboard"
+                      name="enable_livedashboard" (change)="onChangelivedashboard($event)"></mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 "
+                      [checked]="app_notification.care_notification_access"
+                      [(ngModel)]="user.app_notification[0].care_notification_access" name="care_notification_access">
+                    </mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 " [checked]="app_notification.care_notify_access"
+                      [(ngModel)]="user.app_notification[0].care_notify_access" name="care_notify_access">
+                    </mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 "
+                      [checked]="app_notification.emergency_notification_access"
+                      [(ngModel)]="user.app_notification[0].emergency_notification_access"
+                      name="emergency_notification_access"></mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 "
+                      [checked]="app_notification.schedule_notification_access"
+                      [(ngModel)]="user.app_notification[0].schedule_notification_access"
+                      name="schedule_notification_access"></mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 " [checked]="user.email_notification_access" [(ngModel)]="user.email_notification_access"
+                      name="email_notification_access"></mat-slide-toggle>
+                  </td>
+                  <td>
+                    <mat-slide-toggle color="primary" class="pl-15 " [checked]="user.email_access" [(ngModel)]="user.email_access"
+                      name="email_access"></mat-slide-toggle>
+                  </td>
+                </tbody>
+              </table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="block_facility no_drop_shadow bdr_crd">
+
+        <mat-card class=" no-shadow py-0 px-0">
+
+          <!-- Start Module section details -->
+          <mat-card-content>
+            <div class="w-33 pr-15 mr-15">
+              <mat-form-field class="w-100">
+                <mat-select #permission_access="ngModel" name="module" [(ngModel)]="access"
+                  (selectionChange)="addmodule($event.value)" placeholder="Select by permissions and roles">
+                  <ngx-mat-select-search placeholderLabel="Search by permissions and roles"
+                    noEntriesFoundLabel="Not Found" name="search" [(ngModel)]="moduleSearch"></ngx-mat-select-search>
+                  <mat-option *ngFor="let modl of modules |stringFilterBy:moduleSearch:'module_name'"
+                    [value]="modl._id">
+                    {{modl.module_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="w-70">
+              <div class="clearfix"></div>
+            </div>
+            <table cellspacing="0" rules="rows" class="rolestable" style="width:100%" border="1">
+              <thead>
+                <tr>
+                  <th>Module</th>
+                  <th>View</th>
+                  <th>Add</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                  <th>Export</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let role of userAcsData; let positionIndex = index" style="text-align: center;">
+                  <td>{{role.module_name}}</td>
+                  <td>
+                    <ng-container>
+                      <mat-slide-toggle color="primary" (change)="onChangeActive($event,role.module_id,'view')"
+                        [checked]="role.access.view"></mat-slide-toggle>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container>
+                      <mat-slide-toggle color="primary" (change)="onChangeActive($event,role.module_id,'add')"
+                        [checked]="role.access.add" [disabled]="!role.access.view"></mat-slide-toggle>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container>
+                      <mat-slide-toggle color="primary" (change)="onChangeActive($event,role.module_id,'edit')"
+                        [checked]="role.access.edit" [disabled]="!role.access.view"></mat-slide-toggle>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container>
+                      <mat-slide-toggle color="primary" (change)="onChangeActive($event,role.module_id,'delete')"
+                        [checked]="role.access.delete" [disabled]="!role.access.view"></mat-slide-toggle>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container>
+                      <mat-slide-toggle color="primary" (change)="onChangeActive($event,role.module_id,'export')"
+                        [checked]="role.access.export" [disabled]="!role.access.view"></mat-slide-toggle>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container>
+                      <button class="delete_icon" mat-mini-fab color="primary" (click)="onModuleRemove(positionIndex)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                      <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                      class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+                      mat-raised-button="" role="img" (click)="onModuleRemove(positionIndex)">remove_circle
+                    </mat-icon> -->
+                    </ng-container>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <!-- End Module section details -->
+
+      <!--           <div class="block_facility no_drop_shadow bdr_crd"> -->
+      <mat-card class=" no-shadow py-0 px-0">
+        <mat-card-actions>
+          <div class="d-flex justify-content-between form-row mt-10">
+            <div class="w-50 terms_condition no_drop_shadow bdr_crd">
+              <div class="checkbox">
+                <mat-checkbox color="primary" [(ngModel)]="user.text_permission" name="text_permission"></mat-checkbox>
+              </div>
+              <div class="terms_content">
+                I agree to allow iKoble’s Evey support team to send me text messages regarding support requests, account
+                information such as the One Time Password (OTP) requires when setting up my account or resetting my
+                password,
+                or other related work information. I understand text message rates may apply and I am responsible for
+                paying
+                those fees.
+              </div>
+            </div>
+            <!-- <div class="w-50">
+                <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"> </mat-paginator>
+            </div> -->
+          </div>
+
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- </div> -->
+    </mat-card-content>
+  </form>
+</mat-card>
+<div class="d-flex justify-content-between mt-50">
+  <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle">Cancel</button>
+  <button mat-flat-button type="submit" color="primary" class="ml-10 btn_main_done" (click)="onSave(f,user,'save')"
+    *ngIf="_commonService.checkPrivilegeModule('users',privilege)">{{paramId?'Done':'Done'}}</button>
+</div>
+
+
+<!-- Start Pop up For Add Facilities -->
+<ng-template #addFacility>
+  <div class="popup_design addUser_modal">
+    <div class="pop_heading">
+      <h3>{{(paramId?"Assign":"Assign")}} Building</h3>
+    </div>
+
+    <div class="newrule">
+
+      <!-- Add new Row  -->
+      <ng-container *ngIf="showNew">
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100 pr-15">
+
+            <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Organization</mat-label>
+                <mat-select #organization="ngModel" [(ngModel)]="user.organization" [disabled]=true 
+                  (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                  name="organization" required>
+                  <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                    noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                    (focus)="select(item.org_name,'',1)">
+                    {{item.org_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+
+            <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Organization</mat-label>
+                <mat-select #organization="ngModel" [(ngModel)]="user.organization"
+                  (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                  name="organization" required>
+                  <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                    noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                    (focus)="select(item.org_name,'',1)">
+                    {{item.org_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          </div>
+          <div class="w-100 pl-15 pr-15">
+            <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Building</mat-label>
+                <mat-select #facility="ngModel" [(ngModel)]="user.fac" (selectionChange)="changeFac($event.value,user)"
+                  (selectionChange)="select('',$event,0)" name="facility" required>
+                  <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Building"
+                    noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'" [value]="item._id"
+                    (focus)="select('',item,1)">
+                    {{item.fac_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+
+            <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Building</mat-label>
+                <mat-select #facility="ngModel" [(ngModel)]="user.fac" (selectionChange)="changeFac($event.value,user)"
+                  (selectionChange)="select('',$event,0)" name="facility" required>
+                  <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                    noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'" [value]="item._id"
+                    (focus)="select('',item,1)">
+                    {{item.fac_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+
+          </div>
+          <div class="ic_plus pl-15">
+            <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="userFacilityList && userFacilityList.length>0"
+               class="mat-icon-remove material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+               mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon> -->
+            <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+              class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+              mat-raised-button="" role="img" (click)="addFacilityList(user)">add_circle
+            </mat-icon>
+          </div>
+
+        </div>
+      </ng-container>
+
+      <div *ngFor="let item of userFacilityList;let i=index;">
+        <ng-container>
+          <div class="d-flex justify-content-between form-row">
+            <div class="w-100 pr-15">
+              <mat-form-field class="w-100">
+                <input class="added_field" matInput placeholder="Organization" name="orgg" [value]="item.org_name"
+                  [disabled]=true>
+              </mat-form-field>
+
+            </div>
+
+            <div class="w-100 pl-15 pr-15">
+              <mat-form-field class="w-100">
+                <input class="added_field" matInput placeholder="Facility" name="faccc" [value]="item.fac_name"
+                  [disabled]=true>
+              </mat-form-field>
+            </div>
+            <!-- <div class="w-100 pr-15">
+
+          <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>Organization</mat-label>
+                <mat-select #organization="ngModel" [(ngModel)]="item.org_id"
+                  (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)" name="organization"  >
+                  <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                    noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                    (focus)="select(item.org_name,'',1)" disabled>
+                    {{item.org_name}}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+          </span>
+
+          <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>Organization</mat-label>
+              <mat-select #organization="ngModel" [(ngModel)]="item.org_id"
+                (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)" name="organization"
+                required  >
+                <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                  (focus)="select(item.org_name,'',1)" disabled>
+                  {{item.org_name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+
+        </div>
+        <div class="w-100 pl-15 pr-15">
+
+          <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>Facility</mat-label>
+              <mat-select #facility="ngModel" [(ngModel)]="item.fac_id" (selectionChange)="changeFac($event.value,user)"
+                (selectionChange)="select('',$event,0)" name="facility">
+                <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option [value]="item.fac_id"
+                  (focus)="select('',item,1)" disabled>
+                  {{item.fac_name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+
+          <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>Facility</mat-label>
+              <mat-select #facility="ngModel" [(ngModel)]="item.fac_id" (selectionChange)="changeFac($event.value,user)"
+                (selectionChange)="select('',$event,0)" name="facility" required>
+                <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option  [value]="item.fac_id"
+                  (focus)="select('',item,1)" disabled>
+                  {{item.fac_name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+
+        </div> -->
+
+            <div class="act pl-15">
+              <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+          class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+          mat-raised-button="" role="img" (click)="addFacilityList(user)">add_circle
+        </mat-icon> -->
+              <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon>
+            </div>
+
+          </div>
+        </ng-container>
+      </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between" style="height: 33px;">
+      <button mat-flat-button color="warn" class="mr-0 cancel_btn btn_window_cancle" *ngIf="paramId"
+        (click)="editFacilityCancel(user)">Cancel</button>
+
+      <button mat-flat-button color="warn" class="mr-0 cancel_btn btn_window_cancle" *ngIf="!paramId"
+        (click)="addFacilityCancel(user)">Cancel</button>
+
+      <button mat-flat-button color="primary" class="ml-10 done_btn btn_window_done"
+        (click)="addFacilityDone(user)">Done</button>
+    </div>
+
+  </div>
+</ng-template>
+<!-- End Pop up For Add Facilities -->

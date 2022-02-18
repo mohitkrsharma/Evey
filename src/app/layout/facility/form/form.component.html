@@ -1,0 +1,220 @@
+<mat-card>
+	<mat-card-header class="d-flex justify-content-between align-center">
+		<mat-card-title>{{paramId?'Edit Building':'Add Building'}}
+		</mat-card-title>
+	</mat-card-header>
+
+	<mat-card-content>
+		<form #f="ngForm">
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<mat-label>
+							Organization</mat-label>
+						<mat-select #fac_org="ngModel" [(ngModel)]="facility.fac_org" name="fac_org" [disabled]="flag"
+							required>
+							<ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+								noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+							<mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+								[value]="item._id">
+								{{item.org_name}}
+							</mat-option>
+						</mat-select>
+						<!--  <mat-select [(ngModel)]="facility.fac_org" placeholder="Organization" name="fac_org" required
+                            [disabled]="flag">
+                            <mat-option *ngFor="let item of organiz" [value]="item._id">
+                                {{item.org_name}}
+                            </mat-option>
+                        </mat-select> -->
+
+					</mat-form-field>
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<input matInput placeholder="Building" name="fac_name" [(ngModel)]="facility.fac_name" #search
+							(keypress)="checkAlpha($event)" required>
+					</mat-form-field>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<input matInput type="text" placeholder="Work Phone 1" name="fac_phone1"
+							[(ngModel)]="facility.fac_phone1" maxlength="14" mask="(000) 000-0000" required>
+
+					</mat-form-field>
+
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<input matInput type="text" placeholder="Work Phone 2" [(ngModel)]="facility.fac_phone2"
+							name="fac_phone2" maxlength="14" mask="(000) 000-0000">
+					</mat-form-field>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<input matInput placeholder="Address 1" name="fac_address1" [(ngModel)]="facility.fac_address1"
+							required>
+					</mat-form-field>
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<input matInput placeholder="Address 2" [(ngModel)]="facility.fac_address2" name="fac_address2">
+					</mat-form-field>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<mat-label>
+							State</mat-label>
+						<mat-select #fac_state="ngModel" [(ngModel)]="facility.fac_state" name="fac_state"
+							(selectionChange)="changeState($event.value)" (selectionChange)="select($event,'',0)"
+							required>
+							<ngx-mat-select-search [(ngModel)]="staSearch" placeholderLabel="Select State"
+								noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+							<mat-option *ngFor="let item of statelist |stringFilterBy:staSearch:'name'"
+								[value]="item.id" (focus)="select(item.name,'',1)">
+								{{item.name}}
+							</mat-option>
+						</mat-select>
+						<!--  <mat-select [(ngModel)]="facility.fac_state" placeholder="State" name="fac_state" required
+                            (selectionChange)="changeState(facility.fac_state)">
+                            <mat-option *ngFor="let item of statelist" [value]="item.id" (focus)="select(item.name,'')">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select> -->
+					</mat-form-field>
+
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<mat-label>
+							City</mat-label>
+						<mat-select #fac_city="ngModel" [(ngModel)]="facility.fac_city" name="fac_city"
+							(selectionChange)="changeCity($event.value)" (selectionChange)="select('',$event,0)"
+							required>
+							<ngx-mat-select-search [(ngModel)]="citSearch" placeholderLabel="Select City"
+								noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+							<mat-option *ngFor="let item of Citielist |stringFilterBy:citSearch:'name'"
+								[value]="item.id" (focus)="select('',item.name,1)">
+								{{item.name}}
+							</mat-option>
+						</mat-select>
+						<!-- <mat-select [(ngModel)]="facility.fac_city" placeholder="City" name="fac_city" required
+                            (selectionChange)="changeCity(facility.fac_city)">
+                            <mat-option *ngFor="let item of Citielist" [value]="item.id" (focus)="select('',item.name)">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select> -->
+					</mat-form-field>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<input matInput type="text" placeholder="Zip 1" name="fac_zip1" [(ngModel)]="facility.fac_zip1"
+							mask="00000" maxlength="5" minlength="5" required>
+					</mat-form-field>
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<input matInput type="text" placeholder="Zip 2" [(ngModel)]="facility.fac_zip2" name="fac_zip2"
+							mask="00000" maxlength="5" minlength="5">
+					</mat-form-field>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<mat-label>Type</mat-label>
+						<mat-select #type="ngModel" [(ngModel)]="facility.type" name="type" required>
+							<ngx-mat-select-search [(ngModel)]="facilitySearch" placeholderLabel="Select Type"
+								noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+							<mat-option *ngFor="let item of facilityStatusArr | stringFilterBy:facilitySearch:'value'"
+								[value]="item.value">
+								{{item.label}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<mat-label>Timezone</mat-label>
+						<mat-select #timezone="ngModel" [(ngModel)]="facility.timezone" name="timezone" required>
+							<ngx-mat-select-search [(ngModel)]="timezoneSearch" placeholderLabel="Select Timezone"
+								noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+							<mat-option *ngFor="let item of timezoneList |stringFilterBy:timezoneSearch:'name'"
+								[value]="item.name">
+								{{item.name}}
+							</mat-option> 
+						</mat-select>
+					</mat-form-field>
+				</div>
+
+				<!-- <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                         <input matInput type="text" placeholder="UTC Offset(HH:MM)" [(ngModel)]="facility.utc_offset" name="utc_offset" required>                   
+                    </mat-form-field>
+                </div>                 -->
+			</div>
+			<div class="d-flex justify-content-between form-row">
+				<div class="w-100 pr-15">
+					<mat-form-field class="w-100">
+						<input matInput type="text" placeholder="Fax" name="faxno"
+							[(ngModel)]="facility.faxno" maxlength="14" mask="(000) 000-0000" required>
+					</mat-form-field>
+				</div>
+				<div class="w-100 pl-15">
+					<mat-form-field class="w-100">
+						<mat-label>
+							Preferred Pharmacy</mat-label>
+						<mat-select #fac_org="ngModel" [(ngModel)]="facility.pharmacy" name="fac_pharmacy"
+							required>
+							<ngx-mat-select-search [(ngModel)]="pharmacySearch" placeholderLabel="Select Pharmacy"
+								noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+							<mat-option *ngFor="let item of pharmacyList |stringFilterBy:pharmacySearch:'name'"
+								[value]="item._id">
+								{{item.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
+	</mat-card-content>
+
+	<!-- <agm-map [latitude]="latitude" [longitude]="longitude" [streetViewControl]="false" [disableDefaultUI]="false"
+        [zoomControlOptions]="zoomControlOptions" [zoom]="zoom">
+        <agm-map [latitude]="latitude" [longitude]="longitude" [streetViewControl]="false" [disableDefaultUI]="false"
+            [zoomControlOptions]="zoomControlOptions" [zoom]="zoom">
+            <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="iconUrl">
+                <agm-info-window [disableAutoPan]="false" [isOpen]="mapOpen">
+                    <p><strong>{{facility.fac_name}}</strong></p>
+                    <p>{{facility.fac_address1}}, {{facility.fac_address2}}</p>
+                    <p>{{facility.fac_city}}, {{facility.fac_state}}, {{facility.fac_zip1}}
+                        {{facility.fac_zip2}}
+                    </p>
+                </agm-info-window>
+            </agm-marker>
+        </agm-map>
+    </agm-map> -->
+</mat-card>
+<div class="d-flex justify-content-between btn_detail">
+	<button mat-flat-button color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+	<div>
+		<button mat-flat-button color="primary" class="ml-10" (click)="onSubmit(f,facility,1)" *ngIf="flag"
+			class="btn_main_done w_auto">Add Sectors</button>
+		<button mat-flat-button color="primary" class="ml-10" (click)="onSubmit(f,facility,0)"
+			class="btn_main_done">{{paramId?'Done':'Done'}}</button>
+
+	</div>
+
+</div>

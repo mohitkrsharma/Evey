@@ -1,0 +1,16 @@
+<div mat-dialog-content class="modal_txt">
+    <!-- <p class="text-center mt-0" *ngIf="data.title === 'suspend_user'">Deleting this user will delete all of their past activity and remove them from reports.</p> -->
+    <p class="text-center mt-0" *ngIf="data.title === 'suspend_user'"><span>Are you sure?</span></p>
+    <p class="text-center mt-0" *ngIf="data.title === 'suspend_user'">Turning off access to Evey will move the performer’s profile to the Archive.</p>
+    <!-- <p class="text-center mt-0" *ngIf="data.title === 'suspend_user'">THIS ACTION CANNOT BE UNDONE.</p> -->
+    <!-- <p class="text-center mt-0" *ngIf="data.title === 'suspend_user'"><span>Are you sure</span> Deleting is permanent and cannot be undone</p> --> 
+    <p class="text-center mt-0" *ngIf="data.title != 'suspend_user' && !isUnlinkResident && (data.title != 'emergency Contact' && data.title !='Emergency Contact')"><span>Are you sure?</span> Deleting is permanent and cannot be undone</p>
+    <p class="text-center mt-0" *ngIf="data.title != 'suspend_user' && !isUnlinkResident && (data.title === 'emergency Contact' || data.title ==='Emergency Contact')"><span>You can always change your mind</span>Removing the contact does not delete them. You can always add them again or access their information in the directory. Would you like to proceed?</p>
+    <p class="text-center mt-0" *ngIf="isUnlinkResident"><span>Are you sure?</span>Deleting is permanent and cannot be undone and will be unlinked from resident</p>
+</div>
+<div mat-dialog-actions class="text-center justify-content-between action_btn">
+    <button mat-flat-button (click)="onNoClick()" color="primary" class="mr-10 cancel_btn p-0">Cancel</button>
+    <button mat-flat-button cdkFocusInitial *ngIf="data.title === 'suspend_user'" (click)="suspendData()" class="done_btn p-0">Continue</button>
+    <button mat-flat-button cdkFocusInitial  *ngIf="data.title != 'suspend_user' && (data.title != 'emergency Contact' && data.title !='Emergency Contact')" (click)="deleteData()" class="btn_window_cancle">Delete</button>
+    <button mat-flat-button cdkFocusInitial style="color: #1975B8 !important;" *ngIf="data.title != 'suspend_user'&&  (data.title === 'emergency Contact' || data.title ==='Emergency Contact')" (click)="deleteData()" class="btn_window_cancle confirm">Confirm</button>
+</div> 

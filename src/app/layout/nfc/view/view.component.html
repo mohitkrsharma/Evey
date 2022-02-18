@@ -1,0 +1,91 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View NFC</mat-card-title>
+        <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+<!--         <button mat-flat-button color="primary" (click)="editNFC(nfc._id)">Edit</button>
+ -->    </mat-card-header>
+    <mat-card-content>
+        <mat-list *ngIf="nfc">
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        NFC Id <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="nfc.nfctype !=''">
+                       {{ nfc.ntagid }}
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="nfc.nfctype ==''">
+                       {{ nfc.ntagid }}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        NFC Tag <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="nfc.nfc_name">
+                       {{ nfc.nfc_name }}
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="!nfc.nfc_name">
+                       --
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Floor <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="nfc.floor">
+                        {{ nfc.floor.floor }}
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="!nfc.floor">
+                        --
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Sector <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="nfc.sector">
+                        {{nfc.sector}}
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="!nfc.sector">
+                        --
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zone <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="nfc.room">
+                        {{ nfc.room.room }}
+                    </div>
+                     <div class="w-70 pl-15" *ngIf="!nfc.room">
+                        --
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100" *ngIf="nfc.resident !=''">
+                    <div class="w-30 pr-15">
+                        Assigned Resident <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{ nfc.resident.last_name | titlecase}}, {{nfc.resident.first_name | titlecase}}
+                    </div>
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

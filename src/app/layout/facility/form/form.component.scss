@@ -1,0 +1,24 @@
+
+@import "./../../../../styles/_cstm-variable.scss";
+.btn_main_cancle{
+    @include btn-primary-cancle;
+}
+
+.btn_main_done{
+    margin: 0 0 0 5px !important;
+    @include btn-primary-done;
+
+    &.w_auto{
+    	min-width:auto !important;
+    }
+}
+
+.btn_detail {
+
+    padding: 40px 0;
+
+}
+
+agm-map {
+    height: 300px;
+}

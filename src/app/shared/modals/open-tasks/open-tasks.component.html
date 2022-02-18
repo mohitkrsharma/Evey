@@ -1,0 +1,26 @@
+<form #f="ngForm">
+
+  <div mat-dialog-content>
+    <table class="mat-table highlight w-100">
+      <thead class="">
+        <tr class="mat-row">
+          <th class="mat-header-cell">Care</th>
+          <th class="mat-header-cell">Started By</th>
+          <th class="mat-header-cell">Paused Time</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of open_cares">
+        <tr>
+          <td class="mat-cell"><img width="20" src="{{item.care.image.location}}" class="img-fluid" alt="profile-pic"><span> {{item.care.name}}</span></td>
+          <td class="mat-cell text-left">{{item.user_name}}</td>
+          <td class="mat-cell text-left">{{item.start_time}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-end mt-20" mat-dialog-actions>
+    <button mat-button color="primary" cdkFocusInitial (click)="onNoClick()">Ok</button>
+  </div>
+
+</form>

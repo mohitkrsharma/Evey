@@ -1,0 +1,167 @@
+<mat-card *ngIf="hospital">
+  <mat-card-header class="d-flex justify-content-between align-center w-100">
+    <mat-card-title>Hospital Information</mat-card-title>
+    <div class="example-button-row text-right w-100">
+      <button mat-stroked-button (click)="addDepartment(hospital)" class="btn_Secondary">Add
+        Department</button>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list class="custom_list">
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 ">
+            Name <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.name?hospital.name:'--'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30">
+            Email <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.email?hospital.email:'--'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30">
+            Website Address <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.website_address?hospital.website_address:'--'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30">
+            Address <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.address1?hospital.address1:''}} {{ ', '}} {{ hospital.city?hospital.city: '' }} {{ ', '}} {{ hospital.state?hospital.state: '' }} {{ ', '}} {{ hospital.zip?hospital.zip: '' }}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item *ngIf="hospital.fax">
+        <div class="d-flex view-list w-100">
+          <div class="w-30">
+            Fax <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.fax?hospital.fax:'--'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item *ngIf="hospital.mobile">
+        <div class="d-flex view-list w-100">
+          <div class="w-30">
+            Mobile <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.mobile?hospital.mobile:'--'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <!-- <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 ">
+            State <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{hospital.state?hospital.state:'--'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider> -->
+    </mat-list>
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card class="mt-20" *ngIf="show">
+  <mat-card-content class="view-height-center">
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+      <mat-card-title>Departments</mat-card-title>
+      <div class="example-button-row text-right w-100">
+        <!-- <button *ngIf="show" mat-stroked-button (click)="addSubCare(location._id)" class="btn_Secondary">Add
+                    New</button> -->
+        <!-- <button mat-stroked-button (click)="delete()" class="btn_Secondary">Delete</button> -->
+      </div>
+    </mat-card-header>
+    <div class="table-responsive mt-20 header-fixed-table-wrpper">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)"
+        [matSortActive]="sortActive" [matSortDirection]="sortDirection" class="listing">
+        <!-- <ng-container matColumnDef="checkbox">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let elements">
+            <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+              (click)="selectElement(elements._id,elements.checked)">
+            </mat-checkbox>
+          </td>
+        </ng-container> -->
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fax">
+          <th mat-header-cell *matHeaderCellDef> Fax </th>
+          <td mat-cell *matCellDef="let element"> {{element.fax}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="city">
+          <th mat-header-cell *matHeaderCellDef> City </th>
+          <td mat-cell *matCellDef="let element"> {{element.city}} </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="state">
+          <th mat-header-cell *matHeaderCellDef> State </th>
+          <td mat-cell *matCellDef="let element"> {{element.state}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="country">
+          <th mat-header-cell *matHeaderCellDef> Country </th>
+          <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let elements">
+            <button mat-mini-fab color="primary" (click)="editDepartment(elements)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-mini-fab color="primary" (click)="deleteDepartment(elements)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

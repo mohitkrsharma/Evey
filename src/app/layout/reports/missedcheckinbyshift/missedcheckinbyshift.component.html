@@ -1,0 +1,174 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title class="mb-0">Missed Level 1 Check-in Report by Shift
+        </mat-card-title>
+        <div class="report_export_btn d-flex align-center">
+            <button *ngIf="commonService.checkPrivilegeModule('reports','export')" mat-flat-button
+                class="" color="primary" (click)="openMissedCheckIns()" class="btn_Secondary"
+                style="margin-right: 20px;">
+                Run Another
+            </button>
+            <img *ngIf="!commonService.checkPrivilegeModule('reports','export')" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+            <img *ngIf="commonService.checkPrivilegeModule('reports','export') && commonService.checkPrivilegeModule('reports','view')" (click)="onExportAsPDF()" class="export_image" src="assets/images/select-pdf.svg"/>
+        </div>
+    </mat-card-header>
+    <div id="contentToConvert">
+    <mat-card-content>
+        <mat-card-content class="mt-20" *ngIf="!fullResultData && show">
+
+            <h4>{{shiftType}}</h4>
+
+            <p style="text-align: center; color: #969393">No Data Found</p>
+
+        </mat-card-content>
+
+        <mat-card-content class="mt-20" *ngIf="fullResultData.length && show">
+
+            <div class="shifttimencreated d-flex align-items-center mb-20">
+
+                <div class="shifttime">
+
+                    <ng-container *ngIf="!isPopUpOpen; else popUp">
+                        <h4 class="m-0">{{localshift}}</h4>
+                    </ng-container>
+
+                    <ng-template #popUp>
+                        <h4 class="m-0">{{showShiftType}}</h4>
+                    </ng-template>
+
+                </div>
+
+                <div class="created">
+
+                    <h4>Created by: {{capitalizeFirstLetter(data.last_name)}}, {{capitalizeFirstLetter(data.first_name)}}</h4>
+
+                    <ng-container *ngIf="!isPopUpOpen; else popUpDate">
+                        <span>  {{locmissed | timezoneWiseMomentDate:missedcheckl1.timezone}}</span>
+                        <!-- <span>{{locmissed | date:'MM/dd/yyyy'}}</span> -->
+                    </ng-container>
+
+                    <ng-template #popUpDate>
+                      <span>  {{getTimeZoneDateFromStringDate(missedcheckl1.date)}}</span>
+                        <!-- <span>{{missedcheckl1.date | date:'MM/dd/yyyy'}}</span> -->
+                    </ng-template>
+
+                </div>
+
+            </div>
+
+            <div *ngIf="tableShow">
+                <div class="table-responsive mt-20 header-fixed-table-wrpper">
+                    <table class="table">
+                        <thead>
+                            <th style="width: 100px;">Performer</th>
+                            <th style="width: 60px;" *ngFor="let column of fullResultData">
+                                <!-- {{column.timeSolt.sTime+900000 | date :'shortTime'}} -->
+                                {{convertToS(column.timeSolt.sTime+900000)}}
+                            </th>
+                            <th style="width: 100px;">Total</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of userList">
+                                <td>{{data.username}}</td>
+                                <td *ngFor="let column of fullResultData">
+                                    {{ getuserTime(data ,column.timeSolt.sTime+900000) }}
+                                </td>
+                                <td>{{data.total}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="part">
+                <div class="mt-20 loop cs_font" *ngFor="let eachResult of fullResultData; let i = index;">
+                    <div class="">
+                        <div>
+                            <!-- <h3 class="time">{{eachResult.timeSolt.sTime+900000| date :'shortTime'}}</h3> -->
+                            <h3 class="time">{{convertToS(eachResult.timeSolt.sTime+900000)}}</h3>
+                            <div class="chart-wrapper d-flex align-center">
+                                <div class="count">
+                                    {{eachResult.checkinListresult.data.totalcount}}<span>/{{eachResult.checkinListresult.count}}
+                                    </span>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="doughnutChart{{i}}"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-20">
+                            <mat-table #table [dataSource]="eachResult.missedcheckin" matSort class="w-100 listing">
+                                <ng-container matColumnDef="lastname">
+                                    <mat-header-cell *matHeaderCellDef> Last Name</mat-header-cell>
+                                    <mat-cell *matCellDef="let element">{{capitalizeFirstLetter(element.resident_last_name)}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="firstname">
+                                    <mat-header-cell *matHeaderCellDef> First Name</mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{capitalizeFirstLetter(element.resident_first_name)}} </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="checkin">
+                                    <mat-header-cell *matHeaderCellDef> Check-In</mat-header-cell>
+                                    <mat-cell *matCellDef="let element">
+                                        {{(element.check_in_time==0)?"-":formatDate(element.check_in_time)}}
+                                    </mat-cell>
+                                </ng-container>
+                                <ng-container matColumnDef="performer">
+                                    <mat-header-cell *matHeaderCellDef> Performer</mat-header-cell>
+                                    <mat-cell *matCellDef="let element"> {{element.user_name}} </mat-cell>
+                                </ng-container>
+                                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            </mat-table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-content class="no" *ngIf="!fullResultData.length && show">
+            <p style="text-align: center; color: #969393">No Data Found</p>
+        </mat-card-content>
+    </mat-card-content>
+    </div>
+</mat-card>
+
+<ng-template #missedCheckIns>
+    <div>
+        <form #f="ngForm" (ngSubmit)="submit(f,missedcheckl1)" class="custom_font">
+            <div class="d-flex justify-content-between form-row pop_heading">
+                <h3>Missed Check-Ins</h3>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput name="date" (click)="picker.open()" (ngModelChange)="dateChange($event)"
+                            [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="missedcheckl1.date" required>
+                        <mat-datepicker-toggle matSuffix [for]="picker" #picker ></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>                        
+                    </mat-form-field>
+                </div>
+
+                <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select Shift</mat-label>
+                        <mat-select [(ngModel)]="missedcheckl1.shift" (selectionChange)="changeShift($event.value)"
+                            name="shiftype" required>
+                            <ngx-mat-select-search [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'"
+                                [value]="item.no">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between btn_report_pop">
+                <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancel()">Cancel</button>
+
+                <button mat-flat-button color="primary" class="btn_main_done" type="submit">Run</button>
+                
+            </div>
+        </form>
+
+    </div>
+</ng-template>

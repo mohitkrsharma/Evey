@@ -1,0 +1,341 @@
+<mat-card class="view-height">
+  <mat-card-header>
+    <mat-card-title>NFC</mat-card-title>
+    <mat-card-subtitle class="w-100 mb-0">
+      <div class="d-flex justify-content-between align-center">
+        <div class="w-30 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+              id="searchInput" placeholder="Search by name" />
+          </mat-form-field>
+        </div>
+        <div class="w-70 pl-15">
+          <div class="example-button-row text-right w-100">
+            <button *ngIf="_commonService.checkPrivilegeModule('nfc','add')" mat-stroked-button class="ml-3 btn_Secondary" (click)="addnfc()">Add New</button>
+
+            <button mat-stroked-button class="ml-3 btn_Secondary" (click)="filter()">Filter</button>
+
+            <button *ngIf="_commonService.checkPrivilegeModule('nfc','export')"  mat-stroked-button class="ml-3 btn_Secondary" (click)="exportNFC()">Export</button>
+
+            <!-- <button mat-stroked-button class="ml-3" (click)="addNfcFormFn()">Add New</button>
+ -->
+            <button *ngIf="_commonService.checkPrivilegeModule('nfc','delete')" mat-stroked-button class="ml-3 btn_Secondary" (click)="delete()">Delete</button>
+            <!-- <button *ngIf="_commonService.checkPrivilegeModule('nfc','add')" mat-stroked-button (click)="achieve()" class="ml-3 btn_Secondary">Archive</button>
+            <button *ngIf="isArcheive" #restoreButton mat-stroked-button  (click)="deleteRestore()" class="ml-3 btn_Secondary">Restore</button>
+            <button *ngIf="isArcheive"  mat-stroked-button (click)="defArchieve()" class="ml-3 btn_Secondary">UnArchive</button> -->
+
+            <!-- <button *ngIf="_commonService.checkPrivilegeModule('nfc','add')" mat-stroked-button class="ml-3" (click)="addNfcFormFn()">Add New</button>
+            <button *ngIf="_commonService.checkPrivilegeModule('nfc','delete')" mat-stroked-button class="ml-3" (click)="delete()">Delete</button> -->
+
+          </div>
+        </div>
+      </div>
+
+      <!-- filter floor/sector data -->
+      <ng-container *ngIf="show">
+        <div class="d-flex justify-content-between form-row">
+          <div class="d-flex justify-content-between w-100 form-row">
+
+            <div class="w-100 pr-15">
+              <mat-form-field class="w-100">
+                <mat-label>
+                  Floor </mat-label>
+                  <mat-select  [(ngModel)]="floor" name="floor" (selectionChange)="changeFloor($event.value,'filter')">
+                        <ngx-mat-select-search [(ngModel)]="floSearch" placeholderLabel="Select Floor" noEntriesFoundLabel="Not Found"
+                        name="search"></ngx-mat-select-search>
+                        <mat-option *ngFor="let item of floorlist |stringFilterBy:floSearch:'label'" [value]="item">
+                        {{item.label}}
+                        </mat-option>
+                  </mat-select>
+               <!--  <mat-select [(ngModel)]="floor" (selectionChange)="changeFloor(floor,'filter')">
+                  <mat-option *ngFor="let item of floorlist" [value]="item">
+                    {{item.label}}
+                  </mat-option>
+                </mat-select> -->
+              </mat-form-field>
+            </div>
+
+            <div class="w-100 pl-15">
+              <mat-form-field class="w-100">
+                <mat-label>Sector</mat-label>
+                <mat-select [(ngModel)]="sector" name="sector" (selectionChange)="changeSector($event.value)">
+                      <ngx-mat-select-search [(ngModel)]="secSearch" placeholderLabel="Select Floor" noEntriesFoundLabel="Not Found"
+                      name="search"></ngx-mat-select-search>
+                      <mat-option *ngFor="let item of seclist |stringFilterBy:secSearch:'label'" [value]="item">
+                      {{item.label}}
+                      </mat-option>
+                </mat-select>
+                <!-- <mat-select [(ngModel)]="sector" (selectionChange)="changeSector(sector)">
+                  <mat-option *ngFor="let item of seclist" [value]="item">
+                    {{item.label}}
+                  </mat-option>
+                </mat-select> -->
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+        <div class="d-flex justify-content-end w-100">
+          <button mat-flat-button color="primary" (click)="resetFilter()">Reset</button>
+        </div>
+      </ng-container>
+
+
+    </mat-card-subtitle>
+  </mat-card-header>
+
+
+
+  <mat-card-content class="view-height-center" *ngIf="dataSource">
+    <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)"
+        [matSortActive]="sortActive" [matSortDirection]="sortDirection">
+        <ng-container matColumnDef="checkbox">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let elements">
+            <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+              (click)="selectElement(elements._id,elements.checked)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+          <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+            [disabled]="column.sort?false: true"> {{column.value}} </th>
+          <td mat-cell *matCellDef="let element">
+             <!-- {{element[column.id]}}  -->
+             <span class="iconalign" *ngIf="column.id=='ntagid'" (click)="editNfc(element._id)"> <a>{{element[column.id]}}</a> </span>
+             <span *ngIf="column.id!='ntagid'"> {{element[column.id]}} </span>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let elements">
+            <!-- <button mat-mini-fab color="primary" (click)="editNfc(elements._id)"></button> -->
+
+            <button *ngIf="_commonService.checkPrivilegeModule('nfc','edit')" mat-mini-fab color="primary" (click)="editNfc(elements._id)">
+
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button *ngIf="_commonService.checkPrivilegeModule('nfc','delete')" mat-mini-fab color="primary" (click)="deleteNfcFn(elements._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <!-- <button *ngIf="_commonService.checkPrivilegeModule('nfc','add')" mat-mini-fab color="primary" (click)="restoreNFC(elements._id)">
+              <mat-icon>restore</mat-icon>
+            </button> -->
+            <!-- <button mat-mini-fab color="primary" (click)="viewNfcFn(elements._id)">
+              <mat-icon>remove_red_eye</mat-icon>
+            </button> -->
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <div class="w-100 totalCount">
+		<div class="w-90">
+			<mat-card-actions>
+				<mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+					[pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+			</mat-card-actions>
+		</div>
+		<div class="w-10 tcText">
+			<span class="span-pos" (click)="getTotalCount()">Total Count:</span>
+            <mat-spinner *ngIf="isLoading" class="countPos" [diameter]="20"></mat-spinner>
+            <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+		</div>
+	</div>
+</mat-card>
+
+<!-- <ng-template #addNfc>
+    <form [formGroup]="nfcForm">
+        <div class="pop_heading">
+            <h3>{{(isEdit?"Edit":"Add")}} NFC</h3>
+            <span class="">
+                <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+            </span>
+        </div>
+
+        <div class="newrule">
+            <div class="selection">
+                <ng-container formArrayName="nfcs">
+                    <div class="d-flex justify-content-between align-center form-row"
+                        *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                        <div class="w-20">
+                            <label>Nfc</label>
+                        </div>
+                        <div class="w-80 d-flex justify-content-between align-center">
+                            <span [ngClass]="btnClass"></span>
+                            <mat-form-field class="w-100" *ngIf="!isEdit">
+                                <input matInput type="text" placeholder="NTag ID {{pointIndex + 1}}"
+                                    formControlName="ntagid" [required]="pointIndex" (keypress)="checkAlphanum($event)" maxlength="50">
+                            </mat-form-field>
+                             <mat-form-field class="w-100" *ngIf="isEdit">
+                                <input matInput type="text" placeholder="NTag ID {{pointIndex + 1}}"
+                                    formControlName="ntagid" [required]="pointIndex" (keypress)="checkAlphanum($event)" maxlength="50" [(ngModel)]="nfcEdit.ntagid">
+                            </mat-form-field>
+                            <button *ngIf="pointIndex>=1" class="addopt" (click)="removeOption(pointIndex)">-</button>
+                        </div>
+                    </div>
+                </ng-container>
+
+
+                <div class="d-flex justify-content-between align-center form-row">
+                    <div class="w-20">
+                    </div>
+                    <div class="w-80 d-flex justify-content-between align-center">
+                        <button *ngIf="!isEdit" class="addopt" (click)="addOption()">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="adtime">
+            <button mat-button color="basic" (click)="closeQuestionDialog()">Cancel</button>
+            <button mat-button color="primary" (click)="saveQuestionDialog()">Save</button>
+        </div>
+    </form>
+</ng-template> -->
+<!-- <ng-template #addNfc>
+  <form [formGroup]="nfcForm">
+
+    <div class="popup_design">
+
+    <div class="pop_heading">
+    <h3>{{(isEdit?"Edit":"Add")}} NFC</h3>
+    <span class="">
+       <mat-icon *ngIf="!isEdit" _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="addOption()">add_circle </mat-icon>
+    </span>
+  </div>
+
+  <div class="newrule">
+    <ng-container formArrayName="nfcs">
+      <div class="d-flex justify-content-between align-center nfc_label" *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+         <mat-form-field class="w-100 pr-15" *ngIf="!isEdit">
+          <mat-label>
+            NFC Name
+          </mat-label>
+          <input matInput type="text" placeholder="NFC Name {{pointIndex + 1}}"
+            formControlName="ntagid" [required]="pointIndex" (keypress)="checkAlphanum($event)" maxlength="50">
+        </mat-form-field>
+        <mat-form-field class="w-100" *ngIf="isEdit">
+          <mat-label>
+            NFC Name</mat-label>
+          <input matInput type="text" placeholder="NFC Name {{pointIndex + 1}}"
+            formControlName="ntagid" [required]="pointIndex" (keypress)="checkAlphanum($event)" maxlength="50" disabled [(ngModel)]="nfcEdit.ntagid">
+        </mat-form-field>
+        <mat-form-field class="w-100" *ngIf="!isEdit">
+          <mat-label>
+            Notes</mat-label>
+          <input matInput type="text" placeholder="Notes {{pointIndex + 1}}"
+            formControlName="nfc_name" (keypress)="checkAlphanumSpace($event)"  maxlength="50">
+        </mat-form-field>
+        <mat-form-field class="w-100 pl-15" *ngIf="isEdit">
+          <mat-label>
+            Notes</mat-label>
+          <input matInput type="text" placeholder="Notes {{pointIndex + 1}}"
+            formControlName="nfc_name"  maxlength="50" (keypress)="checkAlphanumSpace($event)" [(ngModel)]="nfcEdit.nfc_name">
+        </mat-form-field>
+
+       <div class="pl-15" *ngIf="!isRemove">
+
+
+          <mat-icon *ngIf="pointIndex>=1" _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="removeOption(pointIndex)">remove_circle </mat-icon>
+      </div>
+        <div class="pl-15" *ngIf="isRemove">
+          <mat-icon *ngIf="pointIndex>=0"  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="removeOption(pointIndex)">remove_circle </mat-icon>
+      </div>
+
+      </div>
+    </ng-container>
+  </div>
+  <div class="d-flex justify-content-between" style="height: 33px;">
+    <button mat-flat-button color="warn" class="mr-0 cancel_btn btn_window_cancle" (click)="closeQuestionDialog()">Cancel</button>
+    <button mat-flat-button color="primary" class="ml-10 done_btn btn_window_done" (click)="saveQuestionDialog()">Done</button>
+ </div>
+</div>
+</form>
+</ng-template> -->
+
+
+<ng-template #addNfc>
+  <form>
+
+    <div class="popup_design">
+
+    <div class="pop_heading">
+    <h3>{{(isEdit?"Edit NFC Tag":"Add NFC Tags")}} </h3>
+    <!-- <span class="">
+       <mat-icon *ngIf="!isEdit" _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="addOption()">add_circle </mat-icon>
+    </span> -->
+  </div>
+
+  <div class="newrule">
+    <ng-container>
+
+      <div class="d-flex justify-content-between align-center nfc_label" *ngIf="showNew">
+        <mat-form-field class="w-100 pr-15" *ngIf="!isEdit">
+         <input matInput type="text" #nfcTagInp id="nfcTagInp" #ntagid="ngModel" placeholder="NFC Tag Name" [(ngModel)]="addNfcInput.ntagid" maxlength="50" name="ntagid">
+       </mat-form-field>
+       <mat-form-field class="w-100" *ngIf="!isEdit">
+         <input matInput type="text" #nfc_name="ngModel" placeholder="Notes" [(ngModel)]="addNfcInput.nfc_name"  maxlength="50" name="nfc_name">
+       </mat-form-field>
+
+       <mat-form-field class="w-100 pr-15" *ngIf="isEdit">
+         <input matInput type="text" #ntagid="ngModel" placeholder="NFC Tag Name" [(ngModel)]="addNfcInput.ntagid" required maxlength="50" name="ntagid">
+       </mat-form-field>
+       <mat-form-field class="w-100" *ngIf="isEdit">
+         <input matInput type="text" #nfc_name="ngModel" placeholder="Notes" [(ngModel)]="addNfcInput.nfc_name"  maxlength="50" name="nfc_name">
+       </mat-form-field>
+
+       <div class="pl-15 ic_plus" *ngIf="!isEdit">
+         <!-- <mat-icon  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" (click)="removeOption(i)" *ngIf="addedNfcList && addedNfcList.length>0">remove_circle </mat-icon> -->
+        <mat-icon aria-hidden="true" class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+       role="img" (click)="addOption(addNfcInput)">add_circle </mat-icon>
+     </div>
+
+     </div>
+
+      <div class="form-scroll">
+        <div class="d-flex justify-content-between align-center nfc_label"
+             *ngFor="let item of addedNfcList; let i=index">
+          <mat-form-field class="w-100 pr-15" *ngIf="!isEdit">
+            <input matInput type="text" #ntagid="ngModel" [(ngModel)]="item.ntagid" placeholder="NFC Tag Name" required
+                   maxlength="50" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+
+          <mat-form-field class="w-100" *ngIf="!isEdit">
+            <input matInput type="text" #nfc_name="ngModel" placeholder="Notes" [(ngModel)]="item.nfc_name"
+                   maxlength="50" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+
+          <div class="pl-15 ic_mins">
+            <!-- <mat-icon *ngIf="i==0" _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="addOption(addNfcInput)">add_circle </mat-icon> -->
+            <mat-icon aria-hidden="true"
+                      class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                      role="img" (click)="removeOption(i)">remove_circle
+            </mat-icon>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="d-flex justify-content-between" style="height: 33px;">
+    <button mat-flat-button color="warn" class="mr-0 cancel_btn btn_window_cancle" (click)="closeQuestionDialog()">Cancel</button>
+    <button *ngIf="_commonService.checkPrivilegeModule('nfc',privilege)" mat-flat-button color="primary" class="ml-10 done_btn btn_window_done" (click)="saveNfcRecords()">Done</button>
+ </div>
+</div>
+</form>
+</ng-template>

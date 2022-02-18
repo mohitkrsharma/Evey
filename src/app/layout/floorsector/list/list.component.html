@@ -1,0 +1,140 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title>Floors/Sectors</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search by floor" />
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+                        <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors','add')" mat-stroked-button class="ml-3" (click)="addForm()" class="btn_Secondary">Add New</button>
+
+                        <button mat-stroked-button class="ml-3" (click)="toggle()" class="btn_Secondary">Filter</button>
+                        
+                        <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors','export')" mat-stroked-button class="ml-3" (click)="exportFloorsector()" class="btn_Secondary">Export</button>
+                        
+                        <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors','delete')" #deleteButton mat-stroked-button class="ml-3" (click)="delete()" class="btn_Secondary">Delete</button>
+                        <!-- <button *ngIf="_commonService.checkPrivilegeModule('floors_sectors','add')" mat-stroked-button class="resident_btn" (click)="achieve()" class="btn_Secondary">Archive</button>
+                        <button *ngIf="isArcheive" #restoreButton mat-stroked-button class="ml-3" (click)="deleteRestore()" class="btn_Secondary">Restore</button>
+                        <button *ngIf="isArcheive"  mat-stroked-button class="ml-3" (click)="defArchieve()" class="btn_Secondary">UnArchive</button> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- filter floor/sector data -->
+            <ng-container *ngIf="show">
+                <div class="d-flex justify-content-between form-row">
+                    <div class="d-flex justify-content-between w-100 form-row">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Floor </mat-label>
+                                <mat-select [(ngModel)]="floor" (selectionChange)="changeFloor($event.value,'filter')">
+                                 <ngx-mat-select-search [(ngModel)]="floSearch" placeholderLabel="Select Floor" noEntriesFoundLabel="Not Found"
+                                 name="search"></ngx-mat-select-search>
+                                 <mat-option *ngFor="let item of floorlist |stringFilterBy:floSearch:'label'" [value]="item">
+                                 {{item.label}}
+                                 </mat-option>
+                                </mat-select>
+                                <!-- <mat-select [(ngModel)]="floor" (selectionChange)="changeFloor(floor,'filter')">
+                                    <mat-option *ngFor="let item of floorlist" [value]="item">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Sector</mat-label>
+                                <mat-select [(ngModel)]="sector" (selectionChange)="changeSector($event.value)">
+                                 <ngx-mat-select-search [(ngModel)]="secSearch" placeholderLabel="Select Floor" noEntriesFoundLabel="Not Found"
+                                 name="search"></ngx-mat-select-search>
+                                 <mat-option *ngFor="let item of seclist |stringFilterBy:secSearch:'label'" [value]="item">
+                                 {{item.label}}
+                                 </mat-option>
+                                </mat-select>
+                               <!--  <mat-select [(ngModel)]="sector" (selectionChange)="changeSector(sector)">
+                                    <mat-option *ngFor="let item of seclist" [value]="item">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end w-100">
+                    <button mat-flat-button color="primary" (click)="resetFilter()">Reset</button>
+                </div>
+
+            </ng-container>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center" *ngIf="dataSource">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" [matSortActive]="sortActive" [matSortDirection]="sortDirection">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element">
+                         <!-- {{element[column.id]}}  -->
+                         <span class="iconalign" *ngIf="_commonService.checkPrivilegeModule('floors/sectors','edit')" (click)="editFloorsector(element._id)"> <a>{{element[column.id]}}</a> </span>
+                         <span *ngIf="!_commonService.checkPrivilegeModule('floors/sectors','edit')"> {{element[column.id]}} </span>
+                        </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors','edit')" mat-mini-fab color="primary" (click)="editFloorsector(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors','delete')" mat-mini-fab color="primary" (click)="deleteFloorsector(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                         <!-- <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors','add')" mat-mini-fab color="primary" (click)="restoreFloSec(elements._id)">
+                         <mat-icon>restore</mat-icon>
+                        </button> -->
+                        <!-- <button mat-mini-fab color="primary" (click)="viewFloorsector(elements._id)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                        </button> -->
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <div class="w-100 totalCount">
+		<div class="w-90">
+			<mat-card-actions>
+				<mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+					[pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+			</mat-card-actions>
+		</div>
+		<div class="w-10 tcText">
+			<span class="span-pos" (click)="getTotalCount()">Total Count:</span>
+            <mat-spinner *ngIf="isLoading" class="countPos" [diameter]="20"></mat-spinner>
+            <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+		</div>
+	</div>
+</mat-card>
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

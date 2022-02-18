@@ -1,0 +1,736 @@
+<div class="announce mb-20" *ngIf="announce && announce.length">
+  <!-- <mat-card-header>
+    <mat-card-title class="ann_heading">Announcement <span>({{ announce.length}})</span></mat-card-title>
+  </mat-card-header> -->
+  <mat-card-content class="mb-10 announcement-container announcement-scroll">
+    <ng-container class="scroller" *ngFor="let _announce of announce; let listIndex = index">
+      <div *ngIf="_announce.theme=='Alert' || _announce.theme=='Blue / Dark Blue Boarder' ||
+                  _announce.theme=='White / Dark Blue Boarder' ||
+                  _announce.theme=='White / Red Boarder' ||
+                  _announce.theme=='Light Blue / Dark Blue Boarder' ||
+                  _announce.theme=='Dark Blue' ||
+                  _announce.theme=='Light Grey / Black Boarder' ||
+                  _announce.theme=='White / Dark Green Boarder' ||
+                  _announce.theme=='Dark Green' ||
+                  _announce.message.includes('changed from')">
+        <mat-card style="word-break:break-word" class="alert-box"
+          [ngStyle]="{'background-color':_announce?.background_color,'border-color':_announce?.border_color,'color':_announce?.font_color,'font-size':_announce?.font_size+'px'}">
+          <mat-card-content class="m-0" [ngStyle]="{'font-size':_announce?.font_size+'px'}">
+            <i  (click)="hideAnnouncemnt(listIndex)" class="material-icons"
+              style="cursor: pointer;float: right;"
+              [ngStyle]="{'color': _announce.theme === 'Alert'  || _announce.theme === 'Red'? _announce.font_color : _announce.font_color }">clear</i>
+            <p [innerHTML]=" _announce?.message | sanitizeText "></p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div>
+        <mat-card style="word-break:break-word" class="alert-box" *ngIf="hide"
+          [ngStyle]="{'background-color':_announce?.background_color,'border-color':_announce?.border_color,'color':_announce?.font_color,'font-size':_announce?.font_size+'px'}">
+          <mat-card-content class="m-0" [ngStyle]="{'font-size':_announce?.font_size+'px'}">
+            <i (click)="hideAnnouncemnt(listIndex)" class="material-icons" style="cursor: pointer;float: right;"
+            [ngStyle]="{'color': _announce.theme === 'Alert'  || _announce.theme === 'Red'? _announce.font_color : _announce.font_color }">clear</i>
+            <p [innerHTML]=" _announce?.message | sanitizeText "></p>
+          </mat-card-content>
+
+        </mat-card>
+      </div>
+    </ng-container>
+  </mat-card-content>
+</div>
+<!--<mat-card class="mb-20">
+  <mat-card-header>
+    <mat-card-title class="dash_heading">Dashboard </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="announce" *ngIf="announce && announce.length">
+      <mat-card-header>
+        <mat-card-title class="ann_heading">Announcement <span>({{ announce.length}})</span></mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="mb-10 announcement-container announcement-scroll">
+        <ng-container class="scroller" *ngFor="let _announce of announce; let listIndex = index">
+          <div>
+            <mat-card style="word-break:break-word" class="alert-box"
+              [ngStyle]="{'background-color':_announce.background_color,'border-color':_announce.border_color,'color':_announce.font_color,'font-size':_announce.font_size+'px'}">
+              <mat-card-content class="m-0" [ngStyle]="{'font-size':_announce.font_size+'px'}">
+                <i (click)="hideAnnouncemnt(listIndex)" class="material-icons"
+                [ngStyle]="{'color':announce.font_color}">clear</i>
+                <p [innerHTML]=" _announce.message | sanitizeText "></p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div>
+            <mat-card style="word-break:break-word" class="alert-box" *ngIf="hide"
+              [ngStyle]="{'background-color':_announce.background_color,'border-color':_announce.border_color,'color':_announce.font_color,'font-size':_announce.font_size+'px'}">
+              <mat-card-content class="m-0" [ngStyle]="{'font-size':_announce.font_size+'px'}">
+                <i (click)="hideAnnouncemnt(listIndex)" class="material-icons"
+                [ngStyle]="{'color':announce.font_color}">clear</i>
+                <p [innerHTML]=" _announce.message | sanitizeText "></p>
+              </mat-card-content>
+
+            </mat-card>
+          </div>
+        </ng-container>
+      </mat-card-content>
+    </div>
+  </mat-card-content>
+</mat-card>-->
+
+<div class="report-grid reg_text">
+  <!-- <img class="dummy-banner abshadow" src="assets/images/new_banner_1.png" alt=""> -->
+  <img class="dummy-banner abshadow" src="https://evey-io.s3.us-east-2.amazonaws.com/banner/dashboard_banner.png"
+    alt="">
+</div>
+
+
+<!--<mat-card class="mb-20">
+   <mat-card-header>
+		<mat-card-title class="dash_heading">Dashboard </mat-card-title>
+	</mat-card-header>
+  <mat-card-content>
+    <div class="report-grid reg_text">
+     <img class="dummy-banner" src="assets/images/dummy-banner.jpg">
+    </div>
+  </mat-card-content>
+</mat-card>-->
+
+<mat-card class="mb-20">
+  <!-- <mat-card-header>
+		  <mat-card-title class="dash_heading">Dashboard </mat-card-title>
+	  </mat-card-header> -->
+  <mat-card-content>
+    <div class="census-grids mb-20">
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{dashCardData?.unlinkOrderCount ? dashCardData.unlinkOrderCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-85 totalresi text-left">
+            Orders to File
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{dashCardData?.residentsDataCount ? dashCardData.residentsDataCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-85 totalresi text-left">
+            Residents
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{dashCardData?.residentsShortTermDataCount ? dashCardData.residentsShortTermDataCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-85 totalresi text-left">
+            Short Term Stays
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{dashCardData?.openCareDataDataCount ? dashCardData.openCareDataDataCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-85 totalresi text-left">
+            Open Cares
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{dashCardData?.residentsPendingDataCount ? dashCardData.residentsPendingDataCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-85 totalresi text-left">
+            Residents Pending
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left" [ngClass]="{'text-red': dashCardData?.fallCareCountDataCount > 0 }">
+            {{dashCardData?.fallCareCountDataCount ? dashCardData.fallCareCountDataCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-85 totalresi text-left" [ngClass]="{'text-red': dashCardData?.fallCareCountDataCount > 0 }">
+            Fall(s) Last 24 hrs
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="order-grids mb-20">
+      <div class="ordersgrid" style="cursor: pointer;" (click)="orderReceived()">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ordersCountData?._orderCount ? ordersCountData._orderCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-100 totalresi text-left">
+            Orders Received
+          </div>
+        </div>
+      </div>
+      <div class="ordersgrid" style="cursor: pointer;" (click)="ordersToEnter()">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ordersCountData?._enterOrderCount ? ordersCountData._enterOrderCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-100 totalresi text-left">
+            Orders to Enter
+          </div>
+        </div>
+      </div>
+      <div class="ordersgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ordersCountData?._enterOrderCount ? ordersCountData._enterOrderCount : 0}}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-100 totalresi text-left">
+            Alerts (last 24 hours)
+          </div>
+        </div>
+      </div>
+      <div class="ordersgrid">
+        <div class="p-20 font_custom  mb-20 missed-care">
+          <div class="head margin-b" style="text-align: center;">
+            Add New Order
+          </div>
+          <div class="card-order font_custom">
+            <div class="orderbtn" (click)="openResidentModal('medications')">
+              <button mat-stroked-button style="width: inherit; border-radius: 0px; color: #1975B8;">Medication/Treatment</button>
+            </div>
+            <div class="orderbtn" (click)="openResidentModal('labs_and_draws')">
+              <button mat-stroked-button style="width: inherit; border-top:1px solid #1975B8; border-bottom:1px solid #1975B8; border-radius: 0px; color: #1975B8;">Lab</button>
+            </div>
+            <div class="orderbtn" (click)="openResidentModal('misc')">
+              <button mat-stroked-button style="width: inherit; border-radius: 0px; color: #1975B8;">Miscellaneous</button>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </div>
+    <div class="report-grid reg_text">
+
+      <!-- temp dash starts -->
+      <!-- feat: implemented temp dashboard for check live and new dashboard parallel. -->
+      <div class="grid blue-border bg-white d-flex felxwrap align-items-center justify-content-between">
+        <div class="title "> Performance Dashboard </div>
+        <div class="link" *ngIf="templinks === true">
+          <input type="text" value="{{templink}}" #userinput>
+          <button [matTooltip]="tempPerformanceButtonText" aria-label="tooltip" mat-mini-fab color="primary"
+            #tooltipTempPerformance="matTooltip" (click)="copyInputMessage(userinput,'temp')"
+            (mouseleave)="leftPerformanceButton('temp')" class="btn_sm" [disabled]="!isLiveDashEnable">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!-- temp dash ends -->
+
+      <div class="grid blue-border bg-white d-flex felxwrap align-items-center justify-content-between" style="margin-left: 10px;">
+        <div class="title"> Facility Status Dashboard </div>
+        <!-- <div class="count">  <button class="create" (click)="dashBoardLink(); live = false; status = true;alert = false"> <span>+</span>
+					  </button>
+				  </div> -->
+        <div class="link" *ngIf="statuslinks === true">
+          <input type="text" value="{{statuslink}}" #userinput>
+          <button [matTooltip]="statusButtonText" aria-label="tooltip" mat-mini-fab color="primary"
+            #tooltipStatus="matTooltip" (click)="copyInputMessage(userinput,'status')"
+            (mouseleave)="leftPerformanceButton('status')" class="btn_sm" [disabled]="!isLiveDashEnable">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="grid blue-border bg-white d-flex felxwrap align-items-center justify-content-between" style="margin-left: 10px;">
+        <div class="title"> Alert Announcement Dashboard </div>
+        <!-- <div class="count">  <button class="create" (click)="dashBoardLink(); live = false;status = false;alert = true"> <span>+</span>
+					  </button> </div> -->
+        <div class="link" *ngIf="alertlinks === true">
+          <input type="text" value="{{alertlink}}" #userinput>
+          <button [matTooltip]="alertButtonText" aria-label="tooltip" mat-mini-fab color="primary"
+            #tooltipAlert="matTooltip" (click)="copyInputMessage(userinput,'alert')"
+            (mouseleave)="leftPerformanceButton('alert')" class="btn_sm" [disabled]="!isLiveDashEnable">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Activity Dashboard -->
+      <div class="grid blue-border bg-white d-flex felxwrap align-items-center justify-content-between" style="margin-left: 10px;">
+        <div class="title"> Activity Dashboard </div>
+        <div class="link" *ngIf="activitylinks === true">
+          <input type="text" value="{{activitylink}}" #userinput>
+          <button [matTooltip]="alertButtonText" aria-label="tooltip" mat-mini-fab color="primary"
+            #tooltipAlert="matTooltip" (click)="copyInputMessage(userinput,'activity')"
+            (mouseleave)="leftPerformanceButton('activity')" class="btn_sm" [disabled]="!isLiveDashEnable || !facility">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!--<div class="grid border-top blue">
+				  <div class="count">  <button class="create" (click)="goSchedule()"> + </button> </div>
+				  <div class="title"> Today Care Scheduled </div>
+			  </div>-->
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- <div class="d-flex d-blocks justify-content-between">
+  
+  <div class="w-74 w-100 dash_missed_data check-in">
+    <div class="card p-20 font_custom  mb-20  missed-care">
+      <div class="head">
+        Check-Ins
+      </div>
+      <div class="d-flex table-responsives dashlisting missed-care-content">
+        <div class="w-32 w-100">
+          <div class="card p-20 font_custom  mb-20 missed-care">
+            <div class="head margin-b">
+              2 hour
+            </div>
+            <div class="card-order font_custom">
+             
+            </div>
+      
+          </div>
+        </div>
+        <div class="w-32 w-100">
+          <div class="card p-20 font_custom  mb-20 missed-care">
+            <div class="head margin-b">
+              2:00 and 14:00
+            </div>
+            <div class="card-order font_custom">
+              
+            </div>
+      
+          </div>
+        </div>
+        <div class="w-32 w-100">
+          <div class="card p-20 font_custom  mb-20 missed-care">
+            <div class="head margin-b" style="text-align: center;">
+              1 Time per day
+            </div>
+            <div class="card-order font_custom">
+              
+            </div>
+      
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="w-25 w-100">
+    <div class="card p-20 font_custom  mb-20 missed-care">
+      <div class="head margin-b" style="text-align: center;">
+        Add New Order
+      </div>
+      <div class="card-order font_custom">
+        <div class="orderbtn" (click)="openResidentModal('medications')">
+          <button mat-stroked-button style="width: inherit; border-radius: 0px; color: #1975B8;">Medication/Treatment</button>
+        </div>
+        <div class="orderbtn" (click)="openResidentModal('labs_and_draws')">
+          <button mat-stroked-button style="width: inherit; border-top:1px solid #1975B8; border-bottom:1px solid #1975B8; border-radius: 0px; color: #1975B8;">Lab</button>
+        </div>
+        <div class="orderbtn" (click)="openResidentModal('misc')">
+          <button mat-stroked-button style="width: inherit; border-radius: 0px; color: #1975B8;">Miscellaneous</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div> -->
+
+<div class="d-flex d-blocks justify-content-between main_dashboard_cstm_cls">
+  <!-- <div class="w-70 pr-15"> -->
+  <!-- <div class="card p-20">
+      <div class="head">Quick Links of Reports</div>
+      <div class="links">
+        <ul>
+          <li> Shift Performance Report <button class="create" (click)="goShiftReport()"> <span>+</span>
+            </button> </li>
+          <li> Missed Level 1 Check-in Report <button class="create" (click)="goMissedChkInReport()">
+              <span>+</span></button> </li>
+          <li> Build Custom Report <button class="create" (click)="goCustomReport()"> <span>+</span> </button>
+		  </li>
+		  <li> House Keeping <button class="create" [routerLink]="['/reports/roomcleaningreport']" > <span>+</span> </button>
+		  </li>
+		  <li> Vitals <button class="create" [routerLink]="['/reports/vitalreport']"> <span>+</span> </button>
+          </li>
+        </ul>
+      </div>
+    </div> -->
+  <!-- <div class="w-100 mb-20">
+			<mat-card>
+				<div class="heading">
+					<div class="headcount">
+						Open Care
+						<span class="ml-3">({{ openCareCount }})</span>
+						<div class="left-cares">
+							Open cares in last 24 hrs
+						</div>
+					</div>
+					<a href="javascript:void(0)" (click)="viewOpenvisits()">View All</a>
+				</div>
+				<div class="table-responsive mt-20 table-full-height listing">
+					<table mat-table [dataSource]="dataSource" class="">
+						<ng-container matColumnDef="resident_name">
+							<th mat-header-cell *matHeaderCellDef>Resident </th>
+							<td mat-cell *matCellDef="let elements">{{ elements.resident_name }}
+								<span *ngIf="checkIsolation(elements.resident_id); let data" class="relative">
+									<img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg"
+										width="22" height="22">
+									<img *ngIf="data.isolation_end_date=='Indefinite'"
+										src="./assets/images/alarminfinity.svg" width="22" height="22">
+									<span *ngIf="data.isolation_end_date!='Indefinite'"
+										class="badgenumber">{{data.isolation_days}}</span>
+								</span>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="room">
+							<th mat-header-cell *matHeaderCellDef>Rm </th>
+							<td mat-cell *matCellDef="let elements">{{ elements.room }}</td>
+						</ng-container>
+						<ng-container matColumnDef="care">
+							<th mat-header-cell *matHeaderCellDef>Care </th>
+							<td mat-cell *matCellDef="let elements">
+								<ng-container *ngIf="elements.careImage">
+									<img [src]="elements.careImage.location" height="20">
+								</ng-container> {{ elements.care }}
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="user">
+							<th mat-header-cell *matHeaderCellDef>Started By </th>
+							<td mat-cell *matCellDef="let elements">{{ elements.user }}</td>
+						</ng-container>
+						<ng-container matColumnDef="pause_time">
+							<th mat-header-cell *matHeaderCellDef>Pause Time </th>
+							<td mat-cell *matCellDef="let elements">{{ elements.pause_time }}</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+				</div>
+			</mat-card>
+		</div>
+		<div class="d-flex justify-content-between">
+			<div class="w-60 pr-15">
+				<div class="card">
+					<div class="head">Beacons</div>
+					<div class="graph">
+						<canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels"
+							[chartType]="doughnutChartType">
+						</canvas>
+					</div>
+
+					<div class="binfo">
+						<div class="blk">
+							<label>&nbsp;</label>
+							<button type="button" class="info">Active <span>120</span></button>
+						</div>
+						<div class="blk blw30">
+							<label>Below 30%</label>
+							<button type="button" class="info">Battery <span>2</span></button>
+						</div>
+						<div class="blk blw10">
+							<label>Below 30%</label>
+							<button type="button" class="info">Battery <span>10</span></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="w-40">
+				<div class="card">
+					<div class="head">NFC</div>
+					<div class="graph">
+						<canvas baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels"
+							[chartType]="doughnutChartType">
+						</canvas>
+					</div>
+					<div class="binfo nfc">
+						<div class="blk">
+							<label>&nbsp;</label>
+							<button type="button" class="info">Assigned <span>120</span></button>
+						</div>
+						<div class="blk Unassigned">
+							<label>&nbsp;</label>
+							<button type="button" class="info">Unassigned <span>10 </span></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div> -->
+  <!-- </div> -->
+  <div class="w-32 w-100 dash_missed_data">
+    <div class="card p-20 font_custom  mb-20  missed-care">
+      <div class="head">
+        Previous Shift's Time on Care <span *ngIf="ord">({{ord}} shift)</span>
+      </div>
+      <div class="table-responsives dashlisting missed-care-content">
+        <table class="table table-striped table-hover table-bordered" style="width: 100%;" *ngIf="userData">
+          <thead>
+            <tr>
+              <th style="text-align: left;padding-left: 0px;">Performer</th>
+              <th style="text-align: right;padding-left: 0px;">Time on Care</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reportItem of userData">
+              <!-- [ngClass]="reportItem.is_success ? 'text-red':''" -->
+              <td style="padding-left: 0px;"> {{ reportItem.user}}
+              </td>
+              <!-- [ngClass]="reportItem.is_success ? 'text-red':''" -->
+              <td class="value">{{ reportItem.time }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <table class="table table-striped table-hover table-bordered" style="width: 100%;">
+        <thead>
+          <tr>
+            <th style="text-align: left;">Performer</th>
+            <th style="text-align: right;">Time on Care</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-red">Drew, Nancy</td>
+            <td class="value text-red">1h 31min</td>
+          </tr>
+          <tr>
+            <td class="text-red">Fey, Tina</td>
+            <td class="value text-red">2h 55min</td>
+          </tr>
+          <tr>
+            <td>Thompson, Micheal</td>
+            <td class="value">4h 12min</td>
+          </tr>
+          <tr>
+            <td>Hendrickson, Trevor</td>
+            <td class="value">5h 18min</td>
+          </tr>
+
+        </tbody>
+      </table> -->
+      </div>
+    </div>
+
+  </div>
+  <div class="w-32 w-100 dash_missed_data">
+    <div class="card p-20 font_custom  mb-20 missed-care">
+      <div class="head margin-b">
+        Missed Care <span>(Last 24 hrs)</span>
+      </div>
+      <div class="dashlisting missed-care-content">
+        <!---ALL Data Will Be Added Here Iside This Div-->
+        <div class="selected" *ngFor="let schedCare of missedCareData">
+          <div class="info">
+            <h4 class="resident_name">{{ schedCare.resident.last_name }}, {{ schedCare.resident.first_name }}, {{
+              schedCare.zone.room }}</h4>
+            <h4 class="caredate_name">
+              <span class="font_clr">{{ schedCare?.careData?.name }}</span>
+            </h4>
+          </div>
+          <div class="assign_time">
+            <span class="sch_time missed_care_time">{{ scheduleTime(schedCare) }}</span>
+          </div>
+        </div>
+        <div class="no-data" *ngIf="!missedCareData || missedCareData?.length == 0">
+          No Missed Care
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="w-32 w-100 dash_missed_data">
+    <div class="card p-20 font_custom mb-20  missed-care">
+      <app-loggedinusers></app-loggedinusers>
+    </div>
+
+  </div>
+</div>
+<ng-template #callRepeatDialog>
+  <div class="pop_heading">
+    <h3 *ngIf="live">Get Live Dashboard Link</h3>
+    <h3 *ngIf="status">Get Status Dashboard Link</h3>
+    <h3 *ngIf="alert">Get Alert Dashboard Link</h3>
+    <span class="">
+      <mat-icon (click)="closeDialog()">close</mat-icon>
+    </span>
+  </div>
+
+  <div class="livedashboard" *ngIf="live">
+    <form #linkForm="ngForm">
+      <div class="d-flex justify-content-between align-center">
+        <mat-form-field class="w-100 pr-15">
+          <mat-label>
+            Organization</mat-label>
+          <mat-select #selectedorg="ngModel" [(ngModel)]="linkForm.organization"
+            (selectionChange)="selectOrganization($event.value,'live')" name="selectedorg" id="selectedorg" required>
+            <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'label'" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-select name="selectedorg" id="selectedorg" [(ngModel)]="linkForm.organization"
+						(selectionChange)="selectOrganization(linkForm.organization,'live')" required>
+						<mat-option *ngFor="let item of organiz" [value]="item.value">
+							{{item.label}}
+						</mat-option>
+					</mat-select> -->
+        </mat-form-field>
+
+        <mat-form-field class="w-100 pl-15 pr-15">
+          <mat-label>
+            Building</mat-label>
+          <mat-select #selectedfac="ngModel" [(ngModel)]="linkForm.facility"
+            (selectionChange)="selectFacility($event.value,'live')" name="selectedfac" id="selectedfac" required>
+            <ngx-mat-select-search [(ngModel)]="searchCtrl" placeholderLabel="Select Building"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of fac |stringFilterBy:searchCtrl:'label'" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-select name="selectedfac" id="selectedfac" [(ngModel)]="linkForm.facility"
+						(selectionChange)="selectFacility(linkForm.facility,'live')" required>
+						<mat-option *ngFor="let item of fac" [value]="item.value">
+							{{item.label}}
+						</mat-option>
+					</mat-select> -->
+        </mat-form-field>
+
+        <div class="pl-15">
+          <button mat-flat-button color="primary" (click)="onSubmit(linkForm)" class="btn_link">Generate
+            Link</button>
+        </div>
+
+      </div>
+    </form>
+    <div class="link" *ngIf="links === true">
+      <p>{{link}}</p>
+      <input type="text" value="{{link}}" #userinput>
+      <button matTooltip="Copy to Clipboard" aria-label="tooltip" mat-mini-fab color="primary"
+        (click)="copyInputMessage(userinput)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="statusdashboard" *ngIf="status">
+    <form #statusForm="ngForm">
+      <div class="d-flex justify-content-between align-center">
+        <mat-form-field class="w-100 pr-15">
+          <mat-label>
+            Organization</mat-label>
+          <mat-select #statusorg="ngModel" [(ngModel)]="statusForm.organization"
+            (selectionChange)="selectOrganization($event.value,'status')" name="statusorg" id="statusorg" required>
+            <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'label'" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-select name="statusorg" id="statusorg" [(ngModel)]="statusForm.organization"
+						(selectionChange)="selectOrganization(statusForm.organization,'status')" required>
+						<mat-option *ngFor="let item of organiz" [value]="item.value">
+							{{item.label}}
+						</mat-option>
+					</mat-select> -->
+        </mat-form-field>
+
+        <mat-form-field class="w-100 pl-15 pr-15">
+          <mat-label>Building</mat-label>
+          <mat-select #statusfac="ngModel" [(ngModel)]="statusForm.facility"
+            (selectionChange)="selectFacility($event.value,'status')" name="statusfac" id="statusfac" required>
+            <ngx-mat-select-search [(ngModel)]="searchCtrl" placeholderLabel="Select Building"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of fac |stringFilterBy:searchCtrl:'label'" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-select name="statusfac" id="statusfac" [(ngModel)]="statusForm.facility"
+						(selectionChange)="selectFacility(statusForm.facility,'status')" required>
+						<mat-option *ngFor="let item of fac" [value]="item.value">
+							{{item.label}}
+						</mat-option>
+					</mat-select> -->
+        </mat-form-field>
+        <div class="pl-15">
+          <button mat-flat-button color="primary" (click)="statusLink(statusForm)" class="btn_link">Generate
+            Link</button>
+        </div>
+      </div>
+    </form>
+    <div class="link" *ngIf="statuslinks === true">
+      <p>{{statuslink}}</p>
+      <input type="text" value="{{statuslink}}" #userinput>
+      <button matTooltip="Copy to Clipboard" aria-label="tooltip" mat-mini-fab color="primary"
+        (click)="copyInputMessage(userinput)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Alert Dashboard Start -->
+  <div class="alertdashboard" *ngIf="alert">
+    <form #alertForm="ngForm">
+      <div class="d-flex justify-content-between align-center">
+        <mat-form-field class="w-100 pr-15">
+          <mat-label>Organization</mat-label>
+          <mat-select #statusorg="ngModel" [(ngModel)]="alertForm.organization"
+            (selectionChange)="selectOrganization($event.value,'alert')" name="statusorg" id="statusorg" required>
+            <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'label'" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="w-100 pl-15 pr-15">
+          <mat-label>Building</mat-label>
+          <mat-select #statusfac="ngModel" [(ngModel)]="alertForm.facility"
+            (selectionChange)="selectFacility($event.value,'alert')" name="statusfac" id="statusfac" required>
+            <ngx-mat-select-search [(ngModel)]="searchCtrl" placeholderLabel="Select Building"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of fac |stringFilterBy:searchCtrl:'label'" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="pl-15">
+          <button mat-flat-button color="primary" (click)="alertLink(alertForm)" class="btn_link">Generate
+            Link</button>
+        </div>
+      </div>
+    </form>
+    <div class="link" *ngIf="alertlinks === true">
+      <p>{{alertlink}}</p>
+      <input type="text" value="{{alertlink}}" #userinput>
+      <button matTooltip="Copy to Clipboard" aria-label="tooltip" mat-mini-fab color="primary"
+        (click)="copyInputMessage(userinput)">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </div>
+  </div>
+  <!-- Alert Dashboard End -->
+</ng-template>

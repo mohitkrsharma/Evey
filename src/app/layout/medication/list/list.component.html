@@ -1,0 +1,147 @@
+<mat-card class="view-height no_drop_shadow">
+  <mat-card-header>
+      <mat-card-title *ngIf="!isFromResident">Medications
+      </mat-card-title>
+      <mat-card-subtitle class="w-100 mb-0">
+          <div class="d-flex justify-content-between align-center">
+
+            <!-- search record -->
+              <div class="w-30 pr-15">
+                  <mat-form-field class="w-100">
+                      <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                          id="searchInput" placeholder="Search by medication name" />
+                  </mat-form-field>
+              </div>
+              
+              <div class="w-70 pl-15">
+                  <div class="example-button-row text-right w-100">
+                    <!-- *ngIf="listType == 'medications'" -->
+                      <ng-container *ngIf="actualDataCount > 0">
+                          
+                        <!-- filter medication -->
+                          <!-- <button mat-stroked-button class="medication_btn" (click)="filter()"
+                              class="main_btn ml-3 ">Filter</button> -->
+
+                          <!-- add medication -->
+                              <!-- *ngIf="_commonService.checkPrivilegeModule('medications','add')" -->
+                          <!-- <button  mat-stroked-button class="medication_btn" (click)="addForm()" class="main_btn ml-3 ">
+                              Add New
+                          </button> -->
+
+                          <!-- stopped and active medication -->
+                            <!-- *ngIf="_commonService.checkPrivilegeModule('medications','delete')" -->
+                            <!-- <div> -->
+                                <button *ngIf="activeMedication" #stoppedButton mat-stroked-button class="medication_btn" (click)="stoppedMedication()" class="main_btn ml-3">
+                                    Stopped Meds
+                                </button>
+                                <button *ngIf="!activeMedication" #activeButton mat-stroked-button class="medication_btn" (click)="stoppedMedication()" class="main_btn ml-3">
+                                    Active Meds
+                                </button>
+                            <!-- </div> -->
+                          
+
+                          <!-- delete medication -->
+                            <!-- *ngIf="_commonService.checkPrivilegeModule('medications','delete')" -->
+                          <button  #deleteButton mat-stroked-button class="medication_btn" (click)="delete()" class="main_btn ml-3">
+                              Delete
+                          </button>
+                         
+                      </ng-container>
+
+                      <ng-container *ngIf="listType == 'removed'">
+                          <button mat-stroked-button class="ml-3" (click)="filter()">Filter</button>
+                          <button *ngIf="_commonService.checkPrivilegeModule('medication management','add')" mat-stroked-button
+                              class="ml-3" (click)="addForm()">Add New</button>
+                          <button *ngIf="_commonService.checkPrivilegeModule('medication management','delete')" #deleteButton
+                              mat-stroked-button class="ml-3" (click)="delete()">Delete</button>
+                      </ng-container>
+                      <ng-container *ngIf="listType == 'deleted'">
+                          <button mat-stroked-button class="ml-3" (click)="filter()">Filter</button>
+                          <button *ngIf="_commonService.checkPrivilegeModule('medication management','delete')" #deleteButton
+                              mat-stroked-button class="ml-3" (click)="deletePermanent()">Delete</button>
+                      </ng-container>
+                  </div>
+              </div>
+          </div>
+
+      </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="no_drop_shadow bdr_crd view-height-center">
+
+      <div class="table-responsive header-fixed-table-wrpper listing" *ngIf="actualDataCount > 0">
+          <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8"
+              (matSortChange)="sortData($event)" matSortActive="{{pagiPayload.sort.active}}"
+              matSortDirection="{{pagiPayload.sort.direction}}">
+
+              <ng-container matColumnDef="checkbox">
+                  <th mat-header-cell *matHeaderCellDef>
+                      <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()"></mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let elements">
+                      <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                          (click)="selectElement(elements._id,elements.checked)">
+                      </mat-checkbox>
+                  </td>
+              </ng-container>
+
+              <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                  <th mat-header-cell *matHeaderCellDef class="{{column.id}}"
+                      [mat-sort-header]=" column.sort?column.id:null" [disabled]="column.sort?false: true">
+                        {{column.value}}
+                    </th>
+
+
+                  <td mat-cell *matCellDef="let element" class="table_row">
+                      <!-- _commonService.checkPrivilegeModule('medications','add') &&  -->
+                      <!-- (click)="editMedication(element._id)" -->
+                      <span class="iconalign"
+                          *ngIf="column.id == 'medication_name'"
+                          ><a>{{element[column.id]}}</a></span>
+                      <!-- <span class="iconalign"
+                          *ngIf="!_commonService.checkPrivilegeModule('medications','add') && column.id=='medication_name'">{{element[column.id]}}</span> -->
+                      <span class="iconalign" *ngIf="column.id != 'medication_name'">{{element[column.id]}} </span>
+                  </td>
+              </ng-container>
+             
+              <!-- Action Section -->
+              <ng-container matColumnDef="actions" *ngIf="activeMedication">
+                  <th mat-header-cell *matHeaderCellDef>Action</th>
+                  <td mat-cell *matCellDef="let element">
+
+                    <!-- edit medication -->
+                      <!--  *ngIf="_commonService.checkPrivilegeModule('medications','add')" -->
+                      <!-- <button mat-mini-fab *ngIf="_commonService.checkPrivilegeModule('medication management','edit')"
+                          color="primary" (click)="editMedication(element._id)">
+                          <mat-icon>edit</mat-icon>
+                      </button> -->
+
+                      <!-- delete medication -->
+                        <!-- *ngIf="_commonService.checkPrivilegeModule('medications','delete')" -->
+                      <button  mat-mini-fab *ngIf="_commonService.checkPrivilegeModule('medication management','delete')"
+                          color="primary" (click)="deleteMedication(element._id)">
+                          <mat-icon>delete</mat-icon>
+                      </button>
+                  </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+      </div>
+      <div class="w-100 text-center no-records mt-20 mb-10 pb-15" *ngIf="actualDataCount == 0" >
+        <!-- <img class="no-content-icon" src="assets/images/no-content-icon.svg"> -->
+        <div style="text-align: center; color: #969393" class="no-content">No Data Found</div>
+      </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+      <mat-paginator [length]=count [pageSize]=pagiPayload.page_size [pageSizeOptions]="[10, 50, 100, 500]"
+          [pageIndex]=pagiPayload.page_index (page)="getServerData($event)"></mat-paginator>
+  </mat-card-actions>
+
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

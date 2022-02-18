@@ -1,0 +1,30 @@
+<div class="head cardbox_head">
+    Logged-in Users <span>({{ _clientArr.length }})</span>
+</div>
+<mat-card class="border-card">
+    
+    <mat-card-content *ngIf="1">
+        <ul class="logged-users p-dash">
+            <li *ngFor="let user of _clientArr">
+                <!-- *ngIf="user_id != user.user_id" -->
+                <ng-container>
+                    <span class="user-name">
+                        <!-- <span class="user-img">
+                            {{ user.first_name.substring(0, 1) + user.last_name.substring(0, 1) }}
+                        </span> -->
+                        <span>
+                            <!-- {{ user.full_name }} -->
+                            {{ user.last_name }}, {{ user.first_name }} <b *ngIf="user.user_id === user_id">(Current User)</b>
+                        </span>
+                    </span>
+
+                    <div class="icons mr-10">
+                        <mat-icon *ngIf="user.platform !== null && user.platform.indexOf('web') !== -1"> laptop </mat-icon>
+                        <mat-icon *ngIf="user.platform !== null && user.platform.indexOf('app') !== -1"> phone_iphone </mat-icon>
+                        <mat-icon *ngIf="user.platform !== null && user.platform.indexOf('ipad') !== -1"> tablet_mac </mat-icon>
+                    </div>
+                </ng-container>
+            </li>
+        </ul>
+    </mat-card-content>
+</mat-card>

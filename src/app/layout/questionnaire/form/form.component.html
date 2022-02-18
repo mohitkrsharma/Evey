@@ -1,0 +1,710 @@
+<div class="question_detail cstm_que_add">
+  <mat-card class="view-height w-50">
+    <form [formGroup]="questionForm" *ngIf="isAdding">
+      <div class="pop_heading">
+        <h3>{{ isEdit ? "Edit" : "Add" }} Question</h3>
+      </div>
+      <div class="newrule">
+        <div class="d-flex justify-content-between align-center form-row">
+          <div class="w-100">
+                        <!-- Add new Row  -->
+                        <!-- <div  *ngIf="showNew">
+                          <ng-container>
+                            <div class="d-flex justify-content-between form-row">
+                              <div class="w-100 pr-15">
+                                <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+                                  <mat-form-field class="w-100">
+                                    <mat-label>Organization</mat-label>
+                                    <mat-select #organization="ngModel" [(ngModel)]="question.organization"
+                                      (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                                      name="organization" [ngModelOptions]="{standalone: true}" [disabled]="orgDisable">
+                                      <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                                        noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                                      </ngx-mat-select-search>
+                                      <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                                        [value]="item._id" (focus)="select(item.org_name,'',1)">
+                                        {{item.org_name}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </span>
+                                <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                                  <mat-form-field class="w-100">
+                                    <mat-label>Organization</mat-label>
+                                    <mat-select #organization="ngModel" [(ngModel)]="question.organization"
+                                      (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                                      name="organization" required [ngModelOptions]="{standalone: true}" [disabled]="orgDisable">
+                                      <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                                        noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                                      </ngx-mat-select-search>
+                                      <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                                        [value]="item._id" (focus)="select(item.org_name,'',1)">
+                                        {{item.org_name}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </span>
+                              </div>
+                              <div class="w-100 pl-15">
+                                <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+                                  <mat-form-field class="w-100">
+                                    <mat-label>Facility</mat-label>
+                                    <mat-select #facility="ngModel" [(ngModel)]="question.fac"
+                                      (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                                      name="facility" [ngModelOptions]="{standalone: true}">
+                                      <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                                        noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                                      </ngx-mat-select-search>
+                                      <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'"
+                                        [value]="item._id" (focus)="select('',item,1)">
+                                        {{item.fac_name}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </span>
+                                <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                                  <mat-form-field class="w-100">
+                                    <mat-label>Facility</mat-label>
+                                    <mat-select #facility="ngModel" [(ngModel)]="question.fac"
+                                      (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                                      name="facility" required [ngModelOptions]="{standalone: true}">
+                                      <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                                        noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                                      </ngx-mat-select-search>
+                                      <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'"
+                                        [value]="item._id" (focus)="select('',item,1)">
+                                        {{item.fac_name}}
+                                      </mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                                </span>
+                              </div>
+                              <div class="ic_plus">
+                                <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                                class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" *ngIf="userFacilityList && userFacilityList.length>0"
+                                mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon>
+                                <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                                  class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                  mat-raised-button="" role="img" (click)="addFacilityList(user)">add_circle
+                                </mat-icon>
+                              </div>
+                            </div>
+                          </ng-container>
+                        </div> -->
+            <div *ngFor="let item of userFacilityList;let i=index;">
+              <ng-container>
+                <div class="d-flex justify-content-between form-row">
+                  <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                      <input class="added_field" matInput placeholder="Organization" name="orgg"
+                        [value]="item.org_name" [disabled]=true>
+                    </mat-form-field>
+
+                  </div>
+
+                  <div class="w-100 pl-15 pr-15">
+                    <mat-form-field class="w-100">
+                      <input class="added_field" matInput placeholder="Facility" name="faccc"
+                        [value]="item.fac_name" [disabled]=true>
+                    </mat-form-field>
+                  </div>
+                  <!-- <div class="w-100 pr-15">
+                    <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+                      <mat-form-field class="w-100">
+                        <mat-label>Organization</mat-label>
+                        <mat-select #organization="ngModel" [(ngModel)]="item.org_id"
+                          (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                          name="organization" [ngModelOptions]="{standalone: true}">
+                          <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                            noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                          </ngx-mat-select-search>
+                          <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                            [value]="item._id" (focus)="select(item.org_name,'',1)" disabled>
+                            {{item.org_name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </span>
+                    <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                      <mat-form-field class="w-100">
+                        <mat-label>Organization</mat-label>
+                        <mat-select #organization="ngModel" [(ngModel)]="item.org_id"
+                          (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                          name="organization" required [ngModelOptions]="{standalone: true}">
+                          <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                            noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                          </ngx-mat-select-search>
+                          <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                            [value]="item._id" (focus)="select(item.org_name,'',1)" disabled>
+                            {{item.org_name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </span>
+                  </div>
+                  <div class="w-100 pl-15">
+                    <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+                      <mat-form-field class="w-100">
+                        <mat-label>Facility</mat-label>
+                        <mat-select #facility="ngModel" [(ngModel)]="item.fac_id"
+                          (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                          name="facility" [ngModelOptions]="{standalone: true}">
+                          <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                            noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                          </ngx-mat-select-search>
+                          <mat-option [value]="item.fac_id" (focus)="select('',item,1)" disabled>
+                            {{item.fac_name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </span>
+
+                    <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                      <mat-form-field class="w-100">
+                        <mat-label>Facility</mat-label>
+                        <mat-select #facility="ngModel" [(ngModel)]="item.fac_id"
+                          (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                          name="facility" required [ngModelOptions]="{standalone: true}">
+                          <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                            noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                          </ngx-mat-select-search>
+                          <mat-option [value]="item.fac_id" (focus)="select('',item,1)" disabled>
+                            {{item.fac_name}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </span>
+                  </div> -->
+                  <div class="ic_mins">
+                    <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+                      class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                      mat-raised-button="" role="img" (click)="addFacilityList(user)">add_circle
+                    </mat-icon> -->
+                    <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                      class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                      mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+          </div>
+        </div>
+        <div class="d-flex justify-content-between align-center form-row">
+          <!-- <div class="w-20">
+          <label class="label_text">Group</label>
+        </div>
+        <div class="w-80">
+          <mat-form-field class="w-40">
+            <mat-label>Group</mat-label>
+            <mat-select formControlName="group" [(ngModel)]="question.group">
+              <ngx-mat-select-search formControlName="searchCtrlForType" [placeholderLabel]="'Select Group'"
+                [noEntriesFoundLabel]="'Not found'">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of filteredQuestionType | async" (click)="getFieldType($event)" [value]="item.type">{{ item.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+        </div>
+        <div class="d-flex align-center form-row">
+          <!--  <div class="w-20">
+          <label class="label_text">Type</label>
+        </div> -->
+
+
+          <div class="w-100">
+            <mat-form-field class="questionw">
+              <!-- <textarea matInput placeholder="Question here" formControlName="question"
+          [(ngModel)]="question.question" required  cols="30" rows="10"></textarea> -->
+              <input matInput type="textarea" (input)="onKeypressCheckEvent($event)" placeholder="Question here"
+                formControlName="question" [(ngModel)]="question.question" required />
+            </mat-form-field>
+          </div>
+
+
+
+        </div>
+        <div class="d-flex align-center form-row">
+
+
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="type" [(ngModel)]="question.type" (selectionChange)="getFieldType($event)">
+                <ngx-mat-select-search formControlName="searchCtrl" [placeholderLabel]="'Select Type'"
+                  [noEntriesFoundLabel]="'Not found'"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of filteredType | async"
+                  [value]="item.type">
+                  {{ item.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- <div class="w-100 pl-15" *ngIf="question.type=='display'">
+            <div class="w-50">
+              <div class="drop-zone">
+                  <div class="addfile">
+                      <span>
+                          Add image
+                      </span>
+                      <input name="document" type="file"
+                          (change)="displayFileChange($event)" multiple>
+                  </div>
+                  <mat-hint *ngIf="iconSelected!=''">{{iconSelected}}</mat-hint>
+                  <mat-error *ngIf="iconError!=''">{{iconError}}</mat-error>
+              </div>
+          </div>
+          <div class="w-50">
+              <img *ngIf="question.image && question.image.location!=undefined" [src]="question.image.location" height="50">
+          </div>
+          </div> -->
+
+        </div>
+
+        <div class="selection optionQ" *ngIf="isOptionField">
+          <ng-container formArrayName="options">
+            <div class="d-flex  align-center form-row"
+              *ngFor="let item of optionsPoints.controls; let pointIndex = index" [formGroupName]="pointIndex">
+              <!-- <div class="w-20">
+              <label>Option</label>
+            </div> -->
+              <div class="w-100 d-flex align-center">
+                <span [ngClass]="btnClass"></span>
+                <div class="w-50">
+                  <mat-form-field class="op pr-15">
+                    <input matInput type="text" placeholder="Option {{ pointIndex + 1 }}" formControlName="label"
+                      [required]="pointIndex > 1" />
+                  </mat-form-field>
+                </div>
+
+                <!-- <mat-form-field> -->
+                <div class="w-50" *ngIf="question.type=='image' || question.type=='display'|| question.type=='vital'">
+                  <div class="drop-zone">
+                      <div class="addfile">
+                          <span>
+                              Add image
+                          </span>
+                          <input name="document" type="file" formControlName="file"
+                              (change)="displayFileChange($event,pointIndex)">
+                      </div>
+                      <!-- <mat-hint *ngIf="isEdit==true">
+                        {{fileNameList[pointIndex]}}
+                      </mat-hint> -->
+                      <mat-hint *ngIf="iconSelected[pointIndex]!=''">{{iconSelected[pointIndex]}}</mat-hint>
+                      <mat-error *ngIf="iconError!=''">{{iconError}}</mat-error>
+                  </div>
+                </div>
+                <!-- </mat-form-field> -->
+                
+                <div class="w-10 ic_mins" *ngIf="temparray && temparray.length > 1">
+                  <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                    class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                    mat-raised-button="" role="img" (click)="removeOption(pointIndex)">remove_circle
+                  </mat-icon>
+                </div>
+                <div class="w-10 ic_plus" *ngIf="oldOptions(pointIndex) == 'add'">
+                  <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                    class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                    mat-raised-button="" role="img" (click)="addOption()">
+                    add_circle
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="adtime">
+        <button mat-button color="basic" (click)="cancelForm()" class="btn_window_cancle">
+          Cancel
+        </button>
+        <button mat-button color="primary" (click)="nextPage()" class="btn_window_done">
+          Next
+        </button>
+      </div>
+    </form>
+    <div *ngIf="!isAdding">
+      <form [formGroup]="questionForm">
+        <div class="pop_heading">
+          <h3>{{(isEdit?"Edit":"Add")}} Question</h3>
+          <!-- <span class="">
+                    <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+                </span> -->
+        </div>
+        <div class="newrule">
+          <div class="d-flex justify-content-between align-center form-row">
+            <div class="w-100">
+              <div *ngFor="let item of userFacilityList;let i=index;">
+                <ng-container>
+                  <div class="d-flex justify-content-between form-row">
+                    <div class="w-50 pr-15">
+                      <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Organization</mat-label>
+                          <mat-select #organization="ngModel" [(ngModel)]="item.org_id"
+                            (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                            name="organization" [ngModelOptions]="{standalone: true}" disabled>
+                            <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                              noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                            </ngx-mat-select-search>
+                            <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                              [value]="item._id" (focus)="select(item.org_name,'',1)" disabled>
+                              {{item.org_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                      <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Organization</mat-label>
+                          <mat-select #organization="ngModel" [(ngModel)]="item.org_id"
+                            (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                            name="organization" required [ngModelOptions]="{standalone: true}" disabled>
+                            <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                              noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                            </ngx-mat-select-search>
+                            <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                              [value]="item._id" (focus)="select(item.org_name,'',1)" disabled>
+                              {{item.org_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                    </div>
+                    <div class="w-50 pl-15">
+                      <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Facility</mat-label>
+                          <mat-select #facility="ngModel" [(ngModel)]="item.fac_id"
+                            (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                            name="facility" [ngModelOptions]="{standalone: true}" disabled>
+                            <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Facility"
+                              noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                            </ngx-mat-select-search>
+                            <mat-option [value]="item.fac_id" (focus)="select('',item,1)" disabled>
+                              {{item.fac_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                      <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Building</mat-label>
+                          <mat-select #facility="ngModel" [(ngModel)]="item.fac_id"
+                            (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                            name="facility" required [ngModelOptions]="{standalone: true}" disabled>
+                            <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Building"
+                              noEntriesFoundLabel="Not Found" name="search" [ngModelOptions]="{standalone: true}">
+                            </ngx-mat-select-search>
+                            <mat-option [value]="item.fac_id" (focus)="select('',item,1)" disabled>
+                              {{item.fac_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-center form-row">
+            <!--------------------- OLD FORM ---------------------------------------------------------------->
+            <!-- <div class="w-20">
+            <label class="label_text">Group</label>
+          </div>
+          <div class="w-80">
+            <mat-form-field class="w-40">
+              <mat-label>Group</mat-label>
+              <mat-select formControlName="group" [(ngModel)]="question.group">
+                <ngx-mat-select-search formControlName="searchCtrlForType" [placeholderLabel]="'Select Group'"
+                  [noEntriesFoundLabel]="'Not found'">
+                </ngx-mat-select-search>
+                <mat-option *ngFor="let item of filteredQuestionType | async" (click)="getFieldType($event)"
+                  [value]="item.type">{{item.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div> -->
+          </div>
+          <div class="d-flex justify-content-between align-center form-row">
+            <!-- <div class="w-20">
+            <label class="label_text">Type</label>
+          </div> -->
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <input matInput type="text" placeholder="Question here" formControlName="question"
+                  [(ngModel)]="question.question" required readonly>
+              </mat-form-field>
+            </div>
+
+
+
+          </div>
+          <div class="d-flex justify-content-between align-center form-row">
+            <!--  <div class="w-20">
+            <label class="label_text">Add Question</label>
+          </div> -->
+
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="type" [(ngModel)]="question.type" (selectionChange)="getFieldType($event)">
+                  <ngx-mat-select-search formControlName="searchCtrl" [placeholderLabel]="'Select Type'"
+                    [noEntriesFoundLabel]="'Not found'"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of filteredType | async" (click)="getFieldType($event)"
+                    [value]="item.type" disabled>{{item.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
+          </div>
+          <div class="selection optionQ" *ngIf="isOptionField">
+            <ng-container formArrayName="options">
+              <div class="d-flex justify-content-between align-center form-row"
+                *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                <div class="w-100 d-flex justify-content-between align-center">
+                  <span [ngClass]="btnClass"></span>
+                  <mat-form-field class="w-100 pr-15">
+                    <input matInput type="text" placeholder="Option {{pointIndex + 1}}" formControlName="label"
+                      [required]="pointIndex>1" readonly>
+                  </mat-form-field>
+                  <mat-form-field class="w-100 pr-15">
+                    <input matInput type="text" placeholder="Suspension Days" formControlName="suspend_days"
+                      (keypress)="checkAllwoNum($event)" onPaste="return false">
+                  </mat-form-field>
+                  <mat-form-field class="w-100">
+                    <mat-label>Next Question</mat-label>
+                    <mat-select formControlName="next_question">
+                      <ngx-mat-select-search [(ngModel)]="questionSearch" [ngModelOptions]="{standalone: true}"
+                        placeholderLabel="Select question" noEntriesFoundLabel="Not Found" name="search">
+                      </ngx-mat-select-search>
+                      <mat-option *ngFor="let item of data   |stringFilterBy:questionSearch:'question'"
+                        [value]="item._id">
+                        {{item.question}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+      <div class="adtime">
+        <button mat-button color="basic" (click)="previousWindow()" class="btn_window_cancle">Previous</button>
+        <button mat-button color="primary" (click)="saveQuestionDialog()" class="btn_window_done">Done</button>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="preview input_type_preview" *ngIf="!questionMultiType">
+    <div class="prev_screen_question ques_btn_type">
+      <div class="detail">
+        <div class="img">
+          <img [src]="orgLogo ? orgLogo : ''" alt="logo">
+          <!-- <img src="../assets/images/logo.png" alt="logo"> -->
+        </div>
+        <div class="preview_type">
+          <div class="que">
+            <p *ngIf="questionOnChange ==''">We have just a few quick questions to
+              ensure the safety of our residents</p>
+            <p *ngIf="questionOnChange !==''">{{questionOnChange}}</p>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionNameType">
+            <ul class="preview_input_section nowrap_field">
+              <li><input type="text" placeholder="First Name" readonly></li>
+              <li><input type="text" placeholder="Last Name" readonly></li>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionEmpType">
+            <ul class="preview_input_section">
+              <li><input type="text" placeholder="Employee Code" readonly></li>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionResType">
+            <ul class="preview_input_section nowrap_field">
+              <li><input type="text" placeholder="Last Name" readonly></li>
+              <li><input type="text" placeholder="Unit Number" readonly></li>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionBillingType">
+            <ul class="preview_input_section nowrap_field">
+              <li><input type="text" placeholder="Last Name" readonly></li>
+              <li><input type="text" placeholder="Unit Number" readonly></li>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionTextType">
+            <ul class="preview_input_section">
+              <li><input type="text" placeholder="Visitor" readonly></li>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionTextareaType">
+            <ul class="preview_input_section">
+              <li><textarea type="textarea" placeholder="question" readonly></textarea></li>
+            </ul>
+          </div>
+          <div class="prev_btn_section btn_list" *ngIf="questionRadioType">
+            <ul class="preview_btn_section">
+              <li *ngFor="let item of MultiCheck"><button class="btn" *ngIf="item.label !== ''">{{item.label}}</button>
+              </li>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionDropType">
+            <ul class="preview_btn_section drop_ques_type">
+              <div class="d-flex justify-content-between form-row mt-10">
+                <div class="w-100">
+                  <mat-form-field class="w-100">
+                    <mat-label>Select option</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let item of MultiCheck">
+                        <div *ngIf="item.label !== ''">{{item.label}}</div>
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ul>
+          </div>
+          <div class="prev_btn_section" *ngIf="questionDateType">
+            <ul class="preview_input_section">
+              <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                  <mat-form-field class="w-100 shift_pop_perfor">
+                    <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="selectedDate"
+                      [ngModelOptions]="{standalone: true}" drops="down" opens="right" placeholder="Select date"
+                      readonly />
+                    <mat-icon class="calender_icon calendrform">
+                      today
+                    </mat-icon>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ul>
+          </div>
+          <!-- Start Display Preview -->
+          <div class="prev_btn_section" *ngIf="questionDisplayType">
+            <ul class="preview_btn_section">
+              <li *ngFor='let url of imagesPreview;let i=index'><img [src]="url" height="100">
+                <span>{{MultiCheck[i].label}}</span>
+              </li>
+            </ul>
+          </div>
+          <!-- End Display Preview -->
+           <!-- Start Vital Preview -->
+          <div class="prev_btn_section" *ngIf="questionVitalType">
+            <ul class="preview_btn_section">
+              <li *ngFor='let url of imagesPreview;let i=index'><img [src]="url" height="100">
+                <span>{{MultiCheck[i].label}}</span>
+              </li>
+            </ul>
+          </div>
+          <!-- End Vital Preview -->
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <img src="../assets/images/footer.png" alt="footer">
+    </div>
+  </mat-card>
+
+  <mat-card class="preview multi_choice_preview" *ngIf="questionMultiType">
+    <div class="prev_screen_question ques_btn_type">
+      <div class="detail">
+        <div class="img">
+          <img src="../assets/images/logo.png" alt="logo">
+        </div>
+        <div class="preview_type">
+          <div class="que">
+            <p *ngIf="questionOnChange ==''">We have just a few quick questions to
+              ensure the safety of our residents</p>
+            <p *ngIf="questionOnChange !==''">{{questionOnChange}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="multi_choice_ques">
+        <div *ngFor="let item of MultiCheck"><span *ngIf="item.label !== ''">{{item.label}}</span></div>
+      </div>
+    </div>
+    <div class="bottom">
+      <img src="../assets/images/footer.png" alt="footer">
+    </div>
+  </mat-card>
+
+  <!--  <mat-card class="preview btn_type_preview">
+    <div class="prev_screen_question ques_btn_type">
+      <div class="detail">
+        <div class="img">
+          <img src="../assets/images/logo.png" alt="logo">
+        </div>
+        <div class="preview_type">
+          <div class="que">
+            <p>We have just a few quick questions to
+              ensure the safety of our residents</p>
+          </div>
+          <div class="prev_btn_section">
+            <ul class="preview_btn_section">
+              <li><button class="btn btn_gray">No, i am checking out</button></li>
+              <li><button class="btn">Yes</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <img src="../assets/images/footer.png" alt="footer">
+    </div>
+  </mat-card> -->
+  <!-- <mat-card class="preview multi_choice_preview">
+    <div class="prev_screen_question ques_btn_type">
+      <div class="detail">
+        <div class="img">
+          <img src="../assets/images/logo.png" alt="logo">
+        </div>
+        <div class="preview_type">
+          <div class="que">
+            <p>We have just a few quick questions to
+              ensure the safety of our residents</p>
+          </div>
+        </div>
+      </div>
+      <div class="multi_choice_ques">
+        <div><span>Muscle pain</span></div>
+        <div><span>Vomiting</span></div>
+        <div><span>Cough</span></div>
+        <div><span class="active">Congestion or runny nose</span></div>
+        <div><span class="active">Diarrhea</span></div>
+        <div><span>Headache</span></div>
+      </div>
+    </div>
+    <div class="bottom">
+      <img src="../assets/images/footer.png" alt="footer">
+    </div>
+  </mat-card> -->
+  <!--  <mat-card class="preview img_type_preview">
+    <div class="prev_screen_question ques_btn_type">
+      <div class="detail">
+        <div class="img">
+          <img src="../assets/images/logo.png" alt="logo">
+        </div>
+        <div class="preview_type">
+          <div class="que">
+            <p>We have just a few quick questions to
+              ensure the safety of our residents</p>
+          </div>
+          <div class="prev_btn_section">
+            <ul class="preview_btn_section">
+              <li><img src="../../../../assets/images/bathing.png" alt="bathing"></li>
+              <li><img src="../../../../assets/images/bathing.png" alt="bathing"></li>
+              <li><img src="../../../../assets/images/bathing.png" alt="bathing"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <img src="../assets/images/footer.png" alt="footer">
+    </div>
+  </mat-card> -->
+</div>

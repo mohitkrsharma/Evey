@@ -1,0 +1,146 @@
+<mat-card class="view-height">
+
+    <div class="spinner-wrapper" *ngIf="loaderexport">
+        <mat-progress-spinner class="spinner__container" mode="determinate" value="{{loadervalue}}">
+        </mat-progress-spinner>
+    </div>
+    <mat-card-header d-flex justify-content-between align-center>
+        <mat-card-title class="mb-0">Activity</mat-card-title>
+        <div class="example-button-row text-right w-100 d-flex align-center">
+            <button mat-stroked-button class="ml-3 btn_Secondary" (click)="toggle()">Filter</button>
+            <!-- <button  *ngIf="common.checkPrivilegeModule('reports','export')"  mat-stroked-button class="ml-3 btn_Secondary" (click)="exportActivity()">Export</button> -->
+            <img *ngIf="common.checkPrivilegeModule('reports','export')" (click)="exportActivity()" class="export_image"
+                src="assets/images/download-xls-icon.svg" />
+            <img *ngIf="!common.checkPrivilegeModule('reports','export')" class="export_imagepdf_unselect"
+                src="assets/images/PDF unselect.svg" />
+            <img *ngIf="common.checkPrivilegeModule('reports','export')" (click)="onExportAsPDF()"
+                class="export_imagepdf" src="assets/images/select-pdf.svg" />
+        </div>
+        <mat-card-subtitle class="w-100 mb-0">
+            <ng-container *ngIf="show">
+                <div class="example-form">
+                    <div class="d-flex justify-content-between form-row mt-20">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>
+                                    Platform </mat-label>
+                                <mat-select [(ngModel)]="platform" (selectionChange)="changePlatform($event.value)">
+                                    <ngx-mat-select-search [(ngModel)]="plaSearch" placeholderLabel="Select platform"
+                                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of data |stringFilterBy:plaSearch:'label'"
+                                        [value]="item.value">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-select [(ngModel)]="platform" (selectionChange)="changePlatform(platform)">
+
+                                    <mat-option *ngFor="let item of data" [value]="item.value">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>
+                                    Users </mat-label>
+                                <mat-select [(ngModel)]="user" (selectionChange)="changeUser($event.value)">
+                                    <ngx-mat-select-search [(ngModel)]="usSearch" placeholderLabel="Select user"
+                                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of userslist |stringFilterBy:usSearch:'label'"
+                                        [value]="item.value">
+                                        {{item.label | titlecase}}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-select [(ngModel)]="user" (selectionChange)="changeUser(user)">
+
+                                    <mat-option *ngFor="let item of userslist" [value]="item.value">
+                                        {{item.label | titlecase}}
+                                    </mat-option>
+                                </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between form-row mt-20">
+                        <div class="w-100 pr-15">
+                            <!-- <mat-form-field class="w-100"> -->
+                            <!-- <input matInput type="text" autocomplete="off" color="primary" ngxDaterangepickerMd
+                                    [(ngModel)]="selected" [showCustomRangeLabel]="true" [alwaysShowCalendars]="true"
+                                    [ranges]="ranges" [showDropdowns]="true" [linkedCalendars]="true"
+                                    [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+                                    [ngModelOptions]="{standalone: true}" (change)="updateRange($event)"
+                                    [customRangeDirection]="true" drops="down" opens="right" [maxDate]="maxD"
+                                    placeholder="Select date range" onPaste="return false" (keypress)="checkAllwoNum($event)"/> -->
+                            <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)"
+                                (keypress)="checkAllwoNum($event)" placeholder="Select date range" [options]="options">
+                            </ngx-mat-drp>
+                            <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+                                height="20.321">
+                            <!-- </mat-form-field> -->
+                        </div>
+                        <div class="w-100 pl-15">
+                            <span class="login-label">Show Login & Logout Only</span>
+                            <mat-slide-toggle class="togl-space" [(ngModel)]="isShowLoginOnly"></mat-slide-toggle>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-end form-row">
+                        <button mat-flat-button class="ml-10" color="warn" (click)="resetFilter()">Reset</button>
+                        <button mat-flat-button class="ml-10" color="primary" (click)="onSubmit()">Submit</button>
+
+                    </div>
+                </div>
+            </ng-container>
+        </mat-card-subtitle>
+
+    </mat-card-header>
+    <mat-card-content class="view-height-center">
+        <!-- IO-1405 -->
+        <!-- <div class="shifttimencreated d-flex align-items-center mb-20">
+            <div class="shifttime">
+              <h4>Activity</h4>
+            </div>
+        </div> -->
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" matSortDisableClear>
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <!-- {{ element[column.id].includes('iOS') ? element[column.id].replace('iOS','iPhone').replace('Successfull','Successful') : 
+                                    element[column.id].replace('Successfull','Successful').replace('login','Login').replace('logout','Logout').replace('Updated','updated').replace('Web APP: unknown','Mobile') }} -->
+                                        {{ element[column.id] }}
+                    </td>
+
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <div class="w-100 totalCount">
+        <div class="w-90">
+            <mat-card-actions>
+                <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+                    [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+            </mat-card-actions>
+        </div>
+        <div class="w-10 tcText">
+            <span (click)="get_total_activity_count()" class="span-pos">Total Count:</span>
+            <mat-spinner *ngIf="isLoading" [diameter]="20" class="countPos"></mat-spinner>
+            <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+        </div>
+    </div>
+
+</mat-card>
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

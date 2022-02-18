@@ -1,0 +1,508 @@
+<div cdkDropListGroup>
+    <div class="vendor">
+        <mat-card-header>
+            <mat-card-title>Questionnaire</mat-card-title>
+            <mat-card-subtitle class="w-100 mb-0">
+                <div class="d-flex justify-content-between align-center">
+                    <div class="w-30 pr-15">
+                        <mat-form-field class="w-100">
+                            <input matInput type="text" name="search" class="form-control" [(ngModel)]="search"
+                                #searchInput id="searchInput" placeholder="Search for questionnaire" />
+                        </mat-form-field>
+                    </div>
+                    <div class="w-70 pl-15">
+                        <div class="example-button-row text-right w-100">
+                            <button *ngIf="_commonService.checkPrivilegeModule('questionnaires','add')"
+                                mat-stroked-button class="ml-3" (click)="addQuestionnaire()" class="btn_Secondary">
+                                Add New
+                            </button>
+                            <button *ngIf="_commonService.checkPrivilegeModule('questionnaires','delete')"
+                                #deleteButton mat-stroked-button class="ml-3" (click)="deleteQuestionnaires()" class="btn_Secondary">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-subtitle>
+        </mat-card-header>
+        <div *ngIf="questionnaireData.length" class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef width="5%">
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked" (click)="selectElement(elements.name,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                    <td mat-cell *matCellDef="let element" (click)="questionnaireClick(element)"><a>{{ element.name }}</a></td>
+                    <!-- <td mat-cell *matCellDef="let element" (click)="questionnaireClick(element)">{{ element.name | titlecase }}</td> -->
+                </ng-container>
+                <ng-container matColumnDef="access">
+                    <th mat-header-cell *matHeaderCellDef>Access</th>
+                    <td mat-cell *matCellDef="let element">{{ element.access | titlecase }}</td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Status </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-slide-toggle color="primary" (change)="changeStatus($event,element.name)"
+                            [checked]="element.status" [disabled]="!_commonService.checkPrivilegeModule('questionnaires','edit')">
+                        </mat-slide-toggle>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="date_modified">
+                    <th mat-header-cell *matHeaderCellDef style="width: 20%;">Date Modified</th>
+                    <td mat-cell *matCellDef="let element">{{ element.date_modified | date : 'medium' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="platform">
+                    <th mat-header-cell *matHeaderCellDef>Platform</th>
+                    <td mat-cell *matCellDef="let element"> 
+                        <!-- {{ element.platformData ? element.platformData : '' }} -->
+                        <ng-container *ngIf="element.platformData && element.platformData.length">
+                            <span *ngFor="let item of element.platformData;let i = index;">
+                                <span *ngIf="i == 0">
+                                    {{ item}} 
+                                </span>
+                            </span>
+                        </ng-container>    
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button *ngIf="_commonService.checkPrivilegeModule('questionnaires','edit')"
+                            mat-mini-fab color="primary" (click)="editQuestionner(element)" 
+                            style="margin: 4px;">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="copyQuestionner(element)" style="margin: 4px;">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                        <button *ngIf="_commonService.checkPrivilegeModule('questionnaires','delete')"
+                            mat-mini-fab color="primary" (click)="deleteQuestionner(element)" 
+                            style="margin: 4px;">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+              
+                <tr mat-header-row *matHeaderRowDef="questionnaireColumn"></tr>
+                <tr mat-row *matRowDef="let row; columns: questionnaireColumn;"></tr>
+            </table>
+        </div>
+    </div>
+    <button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+    </button>
+</div>
+
+
+
+<ng-template #addQuestion>
+    <form [formGroup]="questionForm" *ngIf="isAdding">
+        <div class="pop_heading">
+            <h3>{{(isEdit?"Edit":"Add")}} Question</h3>
+            <!-- <span class="">
+                <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+            </span> -->
+        </div>
+
+        <div class="newrule">
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label class="label_text">Group</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-40">
+                        <mat-label>Group</mat-label>
+                        <mat-select formControlName="group" [(ngModel)]="question.group">
+                            <ngx-mat-select-search formControlName="searchCtrlForType"
+                                [placeholderLabel]="'Select Group'" [noEntriesFoundLabel]="'Not found'">
+                            </ngx-mat-select-search>
+                            <mat-option *ngFor="let item of filteredQuestionType | async" (click)="getFieldType($event)"
+                                [value]="item.type">{{item.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label class="label_text">Type</label>
+                </div>
+
+                <div class="w-80">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Question here" formControlName="question"
+                            [(ngModel)]="question.question" required>
+                    </mat-form-field>
+                </div>
+
+
+            </div>
+
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label class="label_text">Add Question</label>
+                </div>
+
+                <div class="w-80">
+                    <mat-form-field class="w-40">
+                        <mat-label>Type</mat-label>
+                        <mat-select formControlName="type" [(ngModel)]="question.type"
+                            (selectionChange)="getFieldType($event)">
+                            <ngx-mat-select-search formControlName="searchCtrl" [placeholderLabel]="'Select Type'"
+                                [noEntriesFoundLabel]="'Not found'"></ngx-mat-select-search>
+                            <mat-option *ngFor="let item of filteredType | async" (click)="getFieldType($event)"
+                                [value]="item.type">{{item.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+            
+
+
+            </div>
+
+            <div class="selection optionQ" *ngIf="isOptionField">
+                <ng-container formArrayName="options">
+                    <div class="d-flex justify-content-between align-center form-row"
+                        *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                        <div class="w-20">
+                            <label>Option</label>
+                        </div>
+                        <div class="w-80 d-flex justify-content-between align-center">
+                            <span [ngClass]="btnClass"></span>
+                            <mat-form-field class="w-80 pr-15">
+                                <input matInput type="text" placeholder="Option {{pointIndex + 1}}"
+                                    formControlName="label" [required]="pointIndex>1">
+                            </mat-form-field>
+                            <div class="w-20" *ngIf="oldOptions(pointIndex)=='none'">
+
+                            </div>
+                            <div class="w-20 ic_mins" *ngIf="oldOptions(pointIndex)=='minus'">
+                                <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                                    class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                    mat-raised-button="" role="img" (click)="removeOption(pointIndex)">remove_circle
+                                </mat-icon>
+                            </div>
+                            <div class="w-20 ic_plus" *ngIf="oldOptions(pointIndex)=='add'">
+                                <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                                    class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                    mat-raised-button="" role="img" (click)="addOption()">add_circle </mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="adtime">
+            <button mat-button color="basic" (click)="closeQuestionDialog()" class="btn_window_cancle">Cancel</button>
+            <button mat-button color="primary" (click)="nextPage()" class="btn_window_done">Next</button>
+        </div>
+    </form>
+
+    <div *ngIf="!isAdding">
+        <form [formGroup]="questionForm">
+            <div class="pop_heading">
+                <h3>{{(isEdit?"Edit":"Add")}} Question</h3>
+                <!-- <span class="">
+                    <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+                </span> -->
+            </div>
+
+            <div class="newrule">
+                <div class="d-flex justify-content-between align-center form-row">
+                    <div class="w-20">
+                        <label class="label_text">Group</label>
+                    </div>
+                    <div class="w-80">
+                        <mat-form-field class="w-40">
+                            <mat-label>Group</mat-label>
+                            <mat-select formControlName="group" [(ngModel)]="question.group">
+                                <ngx-mat-select-search formControlName="searchCtrlForType"
+                                    placeholder="'Select Group'" [noEntriesFoundLabel]="'Not found'">
+                                </ngx-mat-select-search>
+                                <mat-option *ngFor="let item of filteredQuestionType | async"
+                                    (click)="getFieldType($event)" [value]="item.type">{{item.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-center form-row">
+                    <div class="w-20">
+                        <label class="label_text">Type</label>
+                    </div>
+
+                    <div class="w-80">
+                        <mat-form-field class="w-100">
+                            <input matInput type="text" placeholder="Question here" formControlName="question"
+                                [(ngModel)]="question.question" required disabled>
+                        </mat-form-field>
+                    </div>
+                
+
+
+                </div>
+
+                <div class="d-flex justify-content-between align-center form-row">
+                    <div class="w-20">
+                        <label class="label_text">Add Question</label>
+                    </div>
+
+                    <div class="w-80">
+                        <mat-form-field class="w-40">
+                            <mat-label>Type</mat-label>
+                            <mat-select formControlName="type" [(ngModel)]="question.type"
+                                (selectionChange)="getFieldType($event)">
+                                <ngx-mat-select-search formControlName="searchCtrl" placeholder="'Select Type'"
+                                    [noEntriesFoundLabel]="'Not found'"></ngx-mat-select-search>
+                                <mat-option *ngFor="let item of filteredType | async" (click)="getFieldType($event)"
+                                    [value]="item.type">{{item.name}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                 
+
+
+
+                </div>
+
+                <div class="selection optionQ" *ngIf="isOptionField">
+                    <ng-container formArrayName="options">
+                        <div class="d-flex justify-content-between align-center form-row"
+                            *ngFor="let item of optionsPoints.controls; let pointIndex=index"
+                            [formGroupName]="pointIndex">
+
+                            <div class="w-20">
+                                <label>Option</label>
+                            </div>
+                            <div class="w-80 d-flex justify-content-between align-center">
+                                <span [ngClass]="btnClass"></span>
+                                <mat-form-field class="w-10 pr-15">
+                                    <input matInput type="text" placeholder="Option {{pointIndex + 1}}"
+                                        formControlName="label" [required]="pointIndex>1">
+                                </mat-form-field>
+
+                                <mat-form-field class="w-30 pr-15">
+                                    <input matInput type="text" placeholder="Suspension Days"
+                                        formControlName="suspend_days" (keypress)="checkAllwoNum($event)"
+                                        onPaste="return false">
+                                </mat-form-field>
+
+                                <mat-form-field class="w-60">
+                                    <mat-label>Next Question</mat-label>
+                                    <mat-select formControlName="next_question">
+                                        <ngx-mat-select-search [(ngModel)]="questionSearch"
+                                            [ngModelOptions]="{standalone: true}" placeholderLabel="Select question"
+                                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <mat-option
+                                            *ngFor="let item of data   |stringFilterBy:questionSearch:'question'"
+                                            [value]="item._id">
+                                            {{item.question}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </form>
+        <div class="adtime">
+            <button mat-button color="basic" (click)="previousWindow()" class="btn_window_cancle">Previous</button>
+            <button mat-button color="primary" (click)="saveQuestionDialog()" class="btn_window_done">Done</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #questionPreview>
+    <div class="d-flex justify-content-between align-center form-row">
+        <p>Previewing Questin</p>
+        <span class="preview">
+            <mat-icon (click)="closePreviewDialog()">close</mat-icon>
+        </span>
+    </div>
+</ng-template>
+
+<ng-template #addQuestionner>
+    <!-- [formGroup]="questionnerForm" -->
+    <div  *ngIf="isAdding && organization" class="question-add-container">
+        <div class="pop_heading">
+            <h3 *ngIf="addQues">New Questionnaire</h3>
+            <h3 *ngIf="!addQues">Edit Questionnaire</h3>
+        </div>
+        <div class="privacy-toggle">
+            <span>Private <mat-slide-toggle color="primary" [checked]="questionnaireStatus"></mat-slide-toggle></span>
+        </div>
+
+        <div class="newrule grid-gap-10">
+            <div class="">
+                <div class="">
+                    <mat-form-field class="w-100">
+                        <mat-label>Questionnaire Name</mat-label>
+                        <input matInput [(ngModel)]="user.name" placeholder="Questionnaire Name" required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="platform-container grid-gap-10">
+                <div class="text-container">
+                    <span>On what platform would you like the questionnaire to be viewable?</span>
+                </div>
+                <div class="platform-list customradio">
+                    <div *ngFor="let platform of platforms" class="rd_hol">
+                        <input type="checkbox" [id]="platform" [value]="platform" [checked]="platformCheck(platform)" (change)="platformChange(platform)">
+                        <label [attr.for]="platform"><span>{{ platform }}</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="selection optionQ">
+                <!-- old facility code starts -->
+                <!-- <ng-container formArrayName="facilities">
+                    <div class="">
+                        <mat-label>Which facilities should see the questionnaire?</mat-label>
+                    </div>
+                    <div class=""
+                        *ngFor="let item of facilitiesPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                        <div class="grid-col-2-auto padding-10 align-center">
+                            <div class="grid-col-2">
+                                <mat-form-field class="">
+                                    <input matInput type="text" placeholder="Organization"
+                                        formControlName="organization" [required]="pointIndex>1" [value]="organization.org_name" >
+                                </mat-form-field>
+                                <mat-form-field class="">
+                                    <mat-select placeholder="Facility" formControlName="facility">
+                                        <mat-option *ngFor="let temp of faclist" [value]="temp" >
+                                            {{temp.fac_name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <div class="w-20 ic_mins" *ngIf="oldFacilities(pointIndex)=='minus'">
+                                    <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                                        class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                        mat-raised-button="" role="img" (click)="removefacility(pointIndex)">remove_circle
+                                    </mat-icon>
+                                </div>
+                                <div class="w-20 ic_plus" *ngIf="oldFacilities(pointIndex)=='add'">
+                                    <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                                        class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                        mat-raised-button="" role="img" (click)="addfacility()">add_circle </mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container> -->
+                <!-- old facility code ends -->
+
+                <!-- new facility code starts -->
+                <div class="newrule">
+
+                    <!-- Add new Row  -->
+                    <ng-container *ngIf="showNew">
+                        <div class="d-flex justify-content-between form-row mb-10">
+                          <div class="w-100 pr-15">
+                            <span >
+                              <mat-form-field class="w-100">
+                                <mat-label>Organization</mat-label>
+                                <mat-select #organization="ngModel" [(ngModel)]="user.org_id"
+                                  (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                                  name="organization" [disabled]="false">
+                                  <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                                    noEntriesFoundLabel="Not Found" name="orgSearch"></ngx-mat-select-search>
+                                  <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                                    [value]="item._id">
+                                    {{item.org_name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </span>
+                          </div>
+                          <div class="w-100 pl-15 pr-15 ">
+                            <span >
+                              <mat-form-field class="w-100">
+                                <mat-label>Building</mat-label>
+                                <mat-select #facility="ngModel" [(ngModel)]="user.fac"
+                                  (selectionChange)="changeFac($event.value,care)" (selectionChange)="select('',$event,0)"
+                                  name="facility" [disabled]="facDisable">
+                                  <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Building"
+                                    noEntriesFoundLabel="Not Found" name="facSearch"></ngx-mat-select-search>
+                                  <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'"
+                                    [value]="item._id">
+                                    {{item.fac_name}}
+                                  </mat-option>
+                                </mat-select>
+                              </mat-form-field>
+                            </span>
+                          </div>
+                          <div class="ic_plus pl-15">
+                            <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                              class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                              mat-raised-button="" role="img" (click)="addFacilityList(user)">add_circle
+                            </mat-icon>
+                          </div>
+                        </div>
+                      </ng-container>    
+                      
+                      <div *ngFor="let item of userFacilityList;let i=index;">
+                        <ng-container>
+                          <div class="d-flex justify-content-between form-row">
+                            <div class="w-100 pr-15">
+                              <mat-form-field class="w-100">
+                                <input class="added_field" matInput placeholder="Organization" name="orgg"
+                                  [value]="item.org_name" [disabled]=true>
+                              </mat-form-field>
+        
+                            </div>
+        
+                            <div class="w-100 pl-15 pr-15">
+                              <mat-form-field class="w-100">
+                                <input class="added_field" matInput placeholder="Facility" name="faccc"
+                                  [value]="item.fac_name" [disabled]=true>
+                              </mat-form-field>
+                            </div>
+                            
+                            <div class="act pl-15">
+                              <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                                class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color remove_icon"
+                                mat-raised-button="" role="img" (click)="onRemoveFac(i, item)">remove_circle </mat-icon>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+            
+              </div>
+                <!-- new facility code ends -->
+            </div>
+        </div>
+
+        <div class="adtime">
+            <button mat-button color="basic" (click)="closeQuestionnerDialog()" class="btn_window_cancle">Cancel</button>
+            <button mat-button color="primary" *ngIf="!addQues" (click)="saveQuestionner()" class="btn_window_done">Save</button>
+            <button mat-button color="primary" *ngIf="addQues" (click)="addNewQuestionnareFn()" class="btn_window_done">Add</button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #questionnerCopy>
+    <div class="pop_heading">
+        <h3>Copy Questionnaire</h3>
+    </div>
+
+    <div class="newrule">
+        <mat-form-field class="w-100">
+            <mat-label>Questionnaire Name</mat-label>
+            <input matInput [formControl]="questionnerCopyName" placeholder="Questionnaire Name" [(ngModel)]="question.name" required>
+        </mat-form-field>
+    </div>
+    <div class="adtime">
+        <button mat-button color="basic" (click)="closeQuestionnerCopyDialog()" class="btn_window_cancle">Cancel</button>
+        <button mat-button color="primary" (click)="saveQuestionnerCopy()" class="btn_window_done">Done</button>
+    </div>
+</ng-template>

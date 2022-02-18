@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-Whirlpool">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="Whirlpool" clip-path="url(#clip-Whirlpool)">
+    <g id="Group_83" data-name="Group 83" transform="translate(-56.602)">
+      <g id="Group_81" data-name="Group 81">
+        <path id="Path_88" data-name="Path 88" d="M89.97,13.472H59.379a.838.838,0,0,0-.731.914.838.838,0,0,0,.731.913H89.97a.837.837,0,0,0,.731-.913A.838.838,0,0,0,89.97,13.472Z" fill="#0097d9"/>
+        <path id="Path_89" data-name="Path 89" d="M59.146,21.718a5.14,5.14,0,0,0,4.5,5.133v1.482c0,.41.468.743,1.044.743s1.043-.333,1.043-.743V26.886H83.388v1.447c0,.41.467.743,1.044.743s1.043-.333,1.043-.743V26.872A5.134,5.134,0,0,0,90.2,21.718V16.146H59.146Z" fill="#0097d9"/>
+      </g>
+      <g id="Group_82" data-name="Group 82">
+        <path id="Path_90" data-name="Path 90" d="M63.141,13.028h-.907V9.458a2.495,2.495,0,1,1,4.989,0h-.907a1.588,1.588,0,1,0-3.175,0Z" fill="#0097d9"/>
+      </g>
+      <rect id="Rectangle_24" data-name="Rectangle 24" width="1.179" height="0.553" transform="translate(66.157 9.619)" fill="#0097d9"/>
+    </g>
+  </g>
+</svg>

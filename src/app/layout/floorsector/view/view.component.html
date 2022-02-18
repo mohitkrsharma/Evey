@@ -1,0 +1,67 @@
+<mat-card *ngIf="floorsector">
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View Floor/Sector</mat-card-title>
+        <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="editFloorsector(floorsector._id)">Edit</button>
+
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Floor <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{floorsector.floor?floorsector.floor:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Organization <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{(floorsector.fac_id && floorsector.fac_id.fac_org)?floorsector.fac_id.fac_org.org_name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Facility <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{floorsector.fac_id?floorsector.fac_id.fac_name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Sector <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{floorsector.sector?floorsector.sector:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Total Zones <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{floorsector.totalzones}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

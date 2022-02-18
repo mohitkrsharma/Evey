@@ -1,0 +1,109 @@
+<form #recipientForm=ngForm autocomplete="off">
+	<div>
+		<h3 mat-dialog-title>{{'Add Recipient'}}</h3>
+
+		<div *ngIf="!isContact && !isPharmacy && !isPhysician" class="d-flex justify-content-between form-row mt-20" style="text-align: center;">
+			<div class="w-100 pr-15">
+				<p>Who would you like to receive a copy ?</p>
+			</div>
+		</div>
+
+		<div *ngIf="!isContact && !isPharmacy && !isPhysician" class="d-flex justify-content-between form-row mt-20" style="text-align: center;">
+			<div class="w-100 pr-15">
+				<button mat-stroked-button class="btn_Secondary" (click)="pharmacy()">Pharmacy</button>
+			</div>
+			<div class="w-100 pr-15">
+				<button mat-stroked-button class="btn_Secondary" (click)="physician()">Physician</button>
+			</div>
+			<div class="w-100 pr-15">
+				<button mat-stroked-button class="btn_Secondary" (click)="contact()">Hospitals/Labs</button>
+			</div>
+		</div>
+
+		<div *ngIf="isPharmacy || isPhysician || isContact" class=" justify-content-between form-row mt-20" style="text-align: center;">
+			<div  *ngIf="isPharmacy" class="w-100 pr-15">
+				<p>Select the Pharmacy.</p>
+			</div>
+			<div  *ngIf="isPhysician" class="w-100 pr-15">
+				<p>Select the Physician.</p>
+			</div>
+			<div *ngIf="isContact" class="w-100 pr-15">
+				<p>Select the Hospitals/Labs</p>
+			</div>
+		</div>
+
+		<div *ngIf="isPharmacy" class="justify-content-between form-row" style="text-align: center;">
+			<div class="pr-15" >
+				<div class="w-100 pl-15 pr-15">
+					<mat-form-field class="w-100 dropdowns">
+					  <mat-label>Pharmacy</mat-label>
+					  <mat-select [(ngModel)]="selectedPharmacies" [ngModelOptions]="{ standalone: true}"
+						msInfiniteScroll multiple>
+						<ngx-mat-select-search [(ngModel)]="pharmacySearch"
+						  placeholderLabel="Select Pharmacy" noEntriesFoundLabel="Not Found" name="search"
+						  >
+						</ngx-mat-select-search>
+						<mat-option *ngFor="let filters of pharmacyList"
+						  [value]="filters._id">
+						  {{filters.name}}
+						</mat-option>
+					  </mat-select>
+					</mat-form-field>
+				 </div>
+				<!-- <div class="w-100 dropdowns" style="font-size:11px;margin-top: -20px;"><mat-icon style="color:grey;">info</mat-icon>If you don't see the pharmacy you are looking for navigate to Customization/Pharmacy Directory and add them there.</div> -->
+			</div>
+		</div>
+
+		<div *ngIf="isPhysician" class="d-flex justify-content-between form-row" style="text-align: center;">
+			<div class="w-100 pr-15" >
+				<mat-form-field class="w-100 dropdowns">
+					<mat-label>Physician</mat-label>
+					<mat-select [(ngModel)]="selectedPhysicians" [ngModelOptions]="{ standalone: true}"
+					  (infiniteScroll)="getNextPhysicianBatch()"
+					  msInfiniteScroll multiple>
+					  <ngx-mat-select-search [(ngModel)]="pharmacySearch"
+						placeholderLabel="Select Physician" noEntriesFoundLabel="Not Found" name="search"
+						>
+					  </ngx-mat-select-search>
+					  <mat-option *ngFor="let filters of physicianList"
+						[value]="filters._id">
+						{{filters.name}}
+					  </mat-option>
+					</mat-select>
+				  </mat-form-field>
+				<!-- <div class="w-100 dropdowns" style="font-size:11px;margin-top: -20px;"><mat-icon style="color:grey;">info</mat-icon>If you don't see the pharmacy you are looking for navigate to Customization/Pharmacy Directory and add them there.</div> -->
+			</div>
+		</div>
+
+		<div *ngIf="isContact" class="d-flex justify-content-between form-row" style="text-align: center;">
+			<div class="w-100 pr-15" >
+				<mat-form-field class="w-100 dropdowns">
+					<mat-label>Hospitals/Labs</mat-label>
+					<mat-select [(ngModel)]="selectedHospitals" [ngModelOptions]="{ standalone: true}"
+					  msInfiniteScroll multiple>
+					  <ngx-mat-select-search [(ngModel)]="hospitalSearch"
+						placeholderLabel="Select Hospitals" noEntriesFoundLabel="Not Found" name="search"
+						>
+					  </ngx-mat-select-search>
+					  <mat-option *ngFor="let filters of hospitalList"
+						[value]="filters._id">
+						{{filters.name}}
+					  </mat-option>
+					</mat-select>
+				  </mat-form-field>
+				  <!-- <div class="w-100 dropdowns" style="font-size:11px;margin-top: -20px;"><mat-icon style="color:grey;">info</mat-icon>If you don't see the pharmacy you are looking for navigate to Customization/Pharmacy Directory and add them there.</div> -->
+			</div>
+		</div>
+
+
+		<div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+			<button mat-button color="basic" *ngIf="!isPharmacy && !isPhysician && !isContact" (click)="cancelRecipient(recipientForm)"
+				class="mr-10 cancel_btn p-0">Cancel</button>
+			<button mat-button color="basic" *ngIf="isPharmacy || isPhysician || isContact" (click)="cancelAll()"
+				class="mr-10 cancel_btn p-0">Cancel</button>
+			<button mat-button color="primary" *ngIf="isPharmacy || isPhysician || isContact" class="done_btn p-0" cdkFocusInitial
+				(click)="add()">Done</button>
+		</div>
+
+	</div>
+</form>

@@ -1,0 +1,326 @@
+<mat-card class="view-height no_drop_shadow bdr_crd">
+  <mat-card-header>
+    <mat-card-subtitle class="w-100 mb-0">
+      <div class="d-flex" cdkDropListGroup>
+        <!-- search record -->
+        <div class="w-20 inner-sidebar">
+          <div class="order-sidebar">
+            <div class="order-folder-title" (click)="selectFolder('unlink_orders')">
+              <span>Orders to File</span>
+            </div>
+            <!-- <div class="order-folder-content" *ngFor="let filters of folderNameList">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder(filters.key)">
+                <span class="oder-inner-title">{{filters.value}}</span>
+                <span class="oder-inner-icon">
+                  <mat-icon *ngIf="displayOpenFolder">folder</mat-icon>
+                  <mat-icon *ngIf="!displayOpenFolder">folder</mat-icon>
+                </span>
+              </div>
+            </div> -->
+
+            <!-- <div class="order-folder-content" [ngClass]="{'active_folder': activeFolder === 'all'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('all')">
+                <span class="oder-inner-title">Linked Orders</span>
+                <span class="oder-inner-icon">
+                  <mat-icon *ngIf="activeFolder !== 'all'">folder</mat-icon>
+                  <mat-icon *ngIf="activeFolder === 'all' && displayOpenFolder">folder_open</mat-icon>
+                </span>
+              </div>
+            </div> -->
+
+            <!-- <div class="order-folder-content" [ngClass]="{'active_folder': activeFolder === 'unlink_orders'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('unlink_orders')">
+                <span class="oder-inner-title">Un-linked Orders</span>
+                <span class="oder-inner-icon">
+                  <mat-icon *ngIf="activeFolder !== 'unlink_orders'">folder</mat-icon>
+                  <mat-icon *ngIf="activeFolder === 'unlink_orders' && displayOpenFolder">folder_open</mat-icon>
+                </span>
+              </div>
+            </div> -->
+
+            <div id="medications" cdkDropList (cdkDropListDropped)="drop($event)" class="order-folder-content"
+              [ngClass]="{'active_folder': !prescriptionCreated && activeFolder === 'medications'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('medications')">
+                <span class="oder-inner-title">Medications and Treatments</span>
+                <span class="oder-inner-icon" style="position: relative;">
+                  <span *ngIf="unProcessedMedicationOrderCount > 0" class="badge pending"
+                    >{{unProcessedMedicationOrderCount}}</span>
+                    <span *ngIf="prescriptionCreated || activeFolder !== 'medications'">
+                      <img class="close_folder" src="./assets/images/close_folder.png" alt="">
+                    </span>
+                  <!-- <mat-icon *ngIf="prescriptionCreated || activeFolder !== 'medications'">folder</mat-icon> -->
+                  <div *ngIf="activeFolder === 'medications' && displayOpenFolder && !prescriptionCreated">
+                    <!-- <span class="iconify" data-icon="mdi-folder-open" data-inline="false"></span> -->
+                    <img class="close_folder" src="./assets/images/open_folder.png" alt="">
+                  </div>
+                  <!-- <mat-icon *ngIf="activeFolder === 'medications' && displayOpenFolder && !prescriptionCreated">folder_open</mat-icon> -->
+                </span>
+              </div>
+            </div>
+
+            <!-- entered/filed order -->
+            <ng-container *ngIf="activeFolder === 'medications' && prescriptionCreated">
+              <div class="order-folder-content"
+                [ngClass]="{'active_folder': prescriptionCreated && activeFolder === 'medications'}">
+                <div class="order-individual-common showOpenFolder" (click)="selectFolder('medications')">
+                  <span style="padding-left: 50px;" class="oder-inner-title">Entered</span>
+                  <span class="oder-inner-icon">
+                    <!-- <mat-icon *ngIf="activeFolder !== 'medications'">folder</mat-icon> -->
+                    <!-- <span class="iconify" data-icon="mdi-folder-open" data-inline="false"></span> -->
+                    <img class="close_folder" src="./assets/images/open_folder.png" alt="">
+                  </span>
+                </div>
+              </div>
+            </ng-container>
+
+            <div id="labs_and_draws" cdkDropList (cdkDropListDropped)="drop($event)" class="order-folder-content"
+              [ngClass]="{'active_folder': activeFolder === 'labs_and_draws'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('labs_and_draws')">
+                <span class="oder-inner-title">Labs and Draws</span>
+                <span class="oder-inner-icon">
+                  <span *ngIf="activeFolder !== 'labs_and_draws'">
+                    <img class="close_folder" src="./assets/images/close_folder.png" alt="">
+                  </span>
+                  <!-- <mat-icon *ngIf="activeFolder !== 'labs_and_draws'">folder</mat-icon> -->
+                  <div *ngIf="activeFolder === 'labs_and_draws' && displayOpenFolder">
+                    <!-- <span class="iconify" data-icon="mdi-folder-open" data-inline="false"></span> -->
+                    <img class="close_folder" src="./assets/images/open_folder.png" alt="">
+                  </div>
+                  <!-- <mat-icon *ngIf="activeFolder === 'labs_and_draws' && displayOpenFolder">folder_open</mat-icon> -->
+                </span>
+              </div>
+            </div>
+
+            <div id="physician_notifications" cdkDropList (cdkDropListDropped)="drop($event)"
+              class="order-folder-content" [ngClass]="{'active_folder': activeFolder === 'physician_notifications'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('physician_notifications')">
+                <span class="oder-inner-title">Physician Notifications</span>
+                <span class="oder-inner-icon">
+                  <span *ngIf="activeFolder !== 'physician_notifications'">
+                    <img class="close_folder" src="./assets/images/close_folder.png" alt="">
+                  </span>
+                  <!-- <mat-icon *ngIf="activeFolder !== 'physician_notifications'">folder</mat-icon> -->
+                  <div *ngIf="activeFolder === 'physician_notifications' && displayOpenFolder">
+                    <img class="close_folder" src="./assets/images/open_folder.png" alt="">
+                    <!-- <span class="iconify" data-icon="mdi-folder-open" data-inline="false"></span> -->
+                  </div>
+                  <!-- <mat-icon *ngIf="activeFolder === 'physician_notifications' && displayOpenFolder">folder_open</mat-icon> -->
+                </span>
+              </div>
+            </div>
+
+            <div id="therapy" cdkDropList (cdkDropListDropped)="drop($event)"
+              class="order-folder-content" [ngClass]="{'active_folder': activeFolder === 'therapy'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('therapy')">
+                <span class="oder-inner-title">Therapy</span>
+                <span class="oder-inner-icon">
+                  <span *ngIf="activeFolder !== 'therapy'">
+                    <img class="close_folder" src="./assets/images/close_folder.png" alt="">
+                  </span>
+                  <!-- <mat-icon *ngIf="activeFolder !== 'therapy'">folder</mat-icon> -->
+                  <div *ngIf="activeFolder === 'therapy' && displayOpenFolder">
+                    <!-- <span class="iconify" data-icon="mdi-folder-open" data-inline="false"></span> -->
+                    <img class="close_folder" src="./assets/images/open_folder.png" alt="">
+                  </div>
+                  <!-- <mat-icon *ngIf="activeFolder === 'therapy' && displayOpenFolder">folder_open</mat-icon> -->
+                </span>
+              </div>
+            </div>
+
+            <div id="misc" cdkDropList (cdkDropListDropped)="drop($event)" class="order-folder-content"
+              [ngClass]="{'active_folder': activeFolder === 'misc'}">
+              <div class="order-individual-common showOpenFolder" (click)="selectFolder('misc')">
+                <span class="oder-inner-title">Misc</span>
+                <span class="oder-inner-icon">
+                  <span *ngIf="activeFolder !== 'misc'">
+                    <img class="close_folder" src="./assets/images/close_folder.png" alt="">
+                  </span>
+                  <!-- <mat-icon *ngIf="activeFolder !== 'misc'">folder</mat-icon> -->
+                  <div *ngIf="activeFolder === 'misc' && displayOpenFolder">
+                    <!-- <span class="iconify" data-icon="mdi-folder-open" data-inline="false"></span> -->
+                    <img class="close_folder" src="./assets/images/open_folder.png" alt="">
+                  </div>
+                  <!-- <mat-icon *ngIf="activeFolder === 'misc' && displayOpenFolder">folder_open</mat-icon> -->
+                </span>
+              </div>
+            </div>
+
+            <!-- <mat-selection-list (selectionChange)="selectionChange($event)">
+              <mat-list-option
+                *ngFor="let folder of folders; let i = index"
+                (click)="selectFolder(filters.key)"
+                [value]="folder.name">
+                <span style="font-size:11px">{{ folder.name }} </span>
+              </mat-list-option>
+            </mat-selection-list> -->
+
+            <!-- <mat-selection-list  #folderList>
+              <mat-list-option *ngFor="let filters of folderNameList" class="order-individual-common showOpenFolder" (click)="selectFolder(filters.key)">
+                <span class="oder-inner-title">{{filters.value}}</span>
+                <span class="oder-inner-icon">
+                  <mat-icon>folder</mat-icon>
+                </span>
+              </mat-list-option>
+            </mat-selection-list> -->
+          </div>
+        </div>
+        <div class="w-80">
+          <mat-card-content class="view-height-center">
+            <form class="example-form custom_font" [formGroup]="orderForm" #formDirective="ngForm">
+              <div cdkDropList class="" id="orderSection" (cdkDropListDropped)="drop($event)" >
+                <div class="row only-flex-wrap">
+                  <div class="w-33 order-card-col" cdkDrag *ngFor="let item of orderArray; let i = index;"
+                    [cdkDragData]="{ order_data : item}" (cdkDragStarted)="started($event)">
+                    <mat-card class="mat-card-image">
+                      <mat-card-content>
+                        <div class="row" cdkDragHandle style="margin-top: -15px; margin-bottom: 0px;">
+                          <div class="col-sm-3" style="width: 20%;">
+                            <svg width="24px" class="dragicon" fill="currentColor" viewBox="0 0 24 24">
+                              <path
+                                d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+                              </path>
+                              <path d="M10 0h24v24H0z" fill="none"></path>
+                            </svg>
+                          </div>
+                          <div class="col-sm-6" style="width: 60%;"></div>
+                          <div class="col-sm-3" style="width: 20%; text-align: right;">
+                            <mat-icon class="delete-icon" color="warn" (click)="deleteOrder(item)">delete</mat-icon>
+                          </div>
+                        </div>
+                        <img class="mat-image-card" [src]="item.thumbnailUrl" alt="" (click)="openPDFViewer(item)">
+                      </mat-card-content> 
+                      <div class="w-100 text-center" [ngStyle]="{'margin-bottom':item.folderName !== 'medications' ? '-10px' : '-5px' }">
+                        <label for="order_date_created">
+                          {{item.ts_date_created | date: 'dd LLLL yyyy HH:mm aaa'}}
+                        </label>
+                      </div>
+                      <mat-card-actions class="mt-10 text-right justify-content-between">
+                        <!-- <button mat-stroked-button color="primary" class=" ml-10 mr-10 main_btn"
+                            (click)="moveOrderFn(item._id, orderForm.valid, formDirective)">
+                            Move Order
+                          </button> -->
+                        <ng-container *ngIf="item.folderName == 'medications' || item.folderName == 'labs_and_draws' || item.folderName == 'presc' || item.folderName == 'misc'">
+                          <button mat-stroked-button color="primary" class="mr-10 main_btn"
+                            (click)="addOrder(item)"
+                            *ngIf="_commonService.checkPrivilegeModule('medication management','add') || _commonService.checkPrivilegeModule('labs and order','add')
+                            || _commonService.checkPrivilegeModule('miscellaneous','add')">
+                            Add Order
+                          </button>
+                        </ng-container>
+
+                      </mat-card-actions>
+                    </mat-card>
+                  </div>
+                  <ng-container *ngIf="!prescriptionCreated && activeFolder === 'medications'">
+                    <div class="w-33 pr-70">
+                      <div class="w-70 pl-15">
+                        <div class="example-button-row w-100 medication_folder">
+                          <ng-container>
+                            <div class="folder_icon">
+                              <mat-icon (click)="changeMedFolder('order_prescribed')">folder</mat-icon>
+                              <label class="folder_label" for="Prescribed Order">Entered</label>
+                            </div>
+                            <!-- <div class="folder_icon" *ngIf="!prescriptionCreated">
+                              <mat-icon (click)="changeMedFolder('order_not_prescribed')">folder</mat-icon>
+                              <label class="folder_label" for="Order Not-Prescribed">Not Entered</label>
+                            </div> -->
+                          </ng-container><br><br>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <!-- <div class="example-box" cdkDrag>
+                I can only be dragged using the handle
+              
+                <div class="example-handle" cdkDragHandle>
+                  <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                    <path d="M0 0h24v24H0z" fill="none"></path>
+                  </svg>
+                </div>
+              </div> -->
+            </form>
+
+            <div class="text-center" *ngIf="orderArray.length === 0">
+              <!-- <img class="no-content-icon" src="assets/images/no-content-icon.svg"> -->
+              <div class="no-content">No Orders Found</div>
+            </div>
+          </mat-card-content>
+          <mat-card-actions *ngIf="data.length > 0">
+            <mat-paginator [length]=count [pageSize]=pagiPayload.page_size [pageSizeOptions]="[5, 10, 50, 100, 500]"
+              [pageIndex]=pagiPayload.page_index (page)="getServerData($event)"></mat-paginator>
+          </mat-card-actions>
+        </div>
+      </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <!-- <mat-card-content class="view-height-center">
+    <div>
+      <form class="example-form custom_font" [formGroup]="orderForm" #formDirective="ngForm">
+        <div class="row only-flex-wrap">
+          <ng-container *ngFor="let item of orderArray; let i = index;">
+            <div class="w-33 pr-70">
+              <mat-card class="mat-card-image">
+                  <mat-card-header>
+                  </mat-card-header>
+                  <mat-card-content>
+                      <mat-form-field class="w-100">
+                        <mat-label>Move Order</mat-label>
+                        <mat-select formControlName="folder_id">
+                            <ngx-mat-select-search formControlName="folderName" [(ngModel)]="folderNameSearch" placeholderLabel="Move Order" noEntriesFoundLabel="Not Found"
+                              name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let filters of moveFolderList |stringFilterBy:folderNameSearch:'value'" [value]="filters.key" >
+                              {{filters.value}}
+                            </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                  </mat-card-content>
+                  <img class="mat-image-card" [src]="item.thumbnailUrl" alt="" (click)="openPDFViewer(item.fileUrl)">
+                  <mat-card-actions class="mt-10 text-right justify-content-between">
+                    <button mat-stroked-button color="primary" class=" ml-10 mr-10 main_btn"
+                      (click)="moveOrderFn(item._id, orderForm.valid, formDirective)">
+                        Move Order
+                    </button>
+                    <ng-container *ngIf="item.folderName == 'medications'">
+                      <button mat-stroked-button color="primary" class="mr-10 main_btn"
+                        (click)="addMedication(item)"
+                        *ngIf="_commonService.checkPrivilegeModule('medication management','add')">
+                          Add Medication
+                      </button>
+                    </ng-container>
+                   
+                  </mat-card-actions>
+              </mat-card>
+            </div>
+        </ng-container>
+        <ng-container>
+          <div class="w-33 pr-70">
+            <div class="w-70 pl-15">
+              <div class="example-button-row w-100 medication_folder" *ngIf="medOrderListing">
+                <ng-container>
+                  <div class="folder_icon" *ngIf="prescriptionCreated">
+                    <mat-icon (click)="changeMedFolder('order_prescribed')">folder</mat-icon>
+                    <label class="folder_label" for="Prescribed Order">Entered</label>
+                  </div>
+                  <div class="folder_icon" *ngIf="!prescriptionCreated">
+                    <mat-icon (click)="changeMedFolder('order_not_prescribed')">folder</mat-icon>
+                    <label class="folder_label" for="Order Not-Prescribed">Not Entered</label>
+                  </div>
+                </ng-container><br><br>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        </div>
+      </form>
+    </div>
+  </mat-card-content> -->
+
+
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

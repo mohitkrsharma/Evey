@@ -1,0 +1,64 @@
+@import "./../../../styles/_cstm-variable.scss";
+
+.border-card {
+  border: none;
+  padding: 5px;
+
+  mat-card-title {
+    img {
+      width: 16px;
+      vertical-align: middle;
+      margin-right: 7px;
+    }
+  }
+}
+
+mat-card.border-card mat-card-content ul li:empty {
+  display: none;
+}
+
+/*.head{
+    @include main-heading;
+ }*/
+
+.head span {
+  color: #999;
+  font-size: 14px;
+}
+
+.border-card {
+  border: none;
+  padding: 0 !important;
+  margin-top: 3px;
+}
+
+mat-card.border-card mat-card-content ul li:last-child {
+  border: none;
+}
+
+.user-name {
+  font-size: 14px !important;
+}
+
+::ng-deep {
+  .logged-users.p-dash {
+    // max-height: 540px !important;
+  }
+
+  mat-card.border-card mat-card-content ul {
+    max-height: fit-content !important;
+  }
+//   .performance_dash.missed-care {
+//     max-height: 100% !important;
+//     height: auto !important;
+//     position: relative;
+//     padding-bottom: 20px !important;
+//   }
+  
+//   .performance_dash.missed-care-content {
+//     max-height: 100%!important;
+//     overflow-y: inherit !important;
+//   }
+}
+
+

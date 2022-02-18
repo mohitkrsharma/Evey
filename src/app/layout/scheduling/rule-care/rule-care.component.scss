@@ -1,0 +1,167 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+.pop_heading {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  /* margin-bottom: 20px;*/
+  /*h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 400;
+      color: #1975b8;
+    }*/
+  /*span {
+      color: #908f8f;
+      cursor: pointer;
+    }*/
+}
+
+table td {
+  padding: 10px 12px !important
+}
+
+table td .mat-icon.tooltip {
+  top: 6px;
+  position: relative;
+}
+
+.adtime {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  margin-top: 15px;
+
+  mat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    background: #1975b8;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  button {
+    background: #f6fafc;
+  }
+}
+
+.newrule {
+  max-height: 400px;
+  overflow-y: auto;
+
+  mat-list-item {
+    min-height: 48px;
+    padding: 10px 0;
+    height: auto;
+  }
+}
+
+/*.mat-button-wrapper { 
+font-size : 20px !important;
+}*/
+
+.rule_care_list {
+
+  font-size: 16px !important;
+  font-family: 'SFProText-Regular' !important;
+  color: #2B2B2B !important;
+
+}
+
+.table_heading {
+
+  @include title-text;
+  color: #000 !important;
+
+}
+
+.search_detail {
+
+  @include inner-text;
+
+}
+
+
+.add_main {
+
+  @include btn-main;
+
+}
+
+.mr-10 {
+
+  margin-right: 10px !important;
+
+}
+
+
+
+
+// .popup_design {
+
+// @include main_margin;
+
+// }
+.popup_design {
+  padding: 30px 20px 24px 20px !important;
+}
+
+.pop_heading {
+  h3 {
+    @include popup_heading;
+    margin: 0 !important;
+    padding-bottom: 21px !important;
+
+  }
+
+  .mat-icon {
+
+    @include icon_blue;
+
+  }
+
+}
+
+.mat-form-field-infix {
+
+  padding-top: 0 !important;
+
+}
+
+
+.newrule {
+
+  .mat-icon {
+
+    @include icon_red;
+
+  }
+}
+
+
+.cancel_btn {
+
+  @include window_cancel;
+  background-color: transparent !important;
+
+  padding: 0;
+  margin-top: 9px;
+
+}
+
+.done_btn {
+
+  @include window_done;
+  background-color: transparent !important;
+
+  padding: 0;
+  margin-top: 9px;
+
+}

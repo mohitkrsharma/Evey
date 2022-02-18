@@ -1,0 +1,149 @@
+<header class="main-header" (window:beforeunload)="doBeforeUnload()" (window:unload)="doUnload()">
+  <div><img id="ItemPreview" src="" onerror="this.src='../../assets/logo/logo.svg';" height="40px"  ></div>
+  <!-- <div *ngIf="!logo"><img src="../../assets/logo/logo.svg" height="40px" width="200px" > -->
+  <!-- </div> -->
+  <div class="current-time">
+    <div *ngIf="_time">
+      {{ _time }}
+    </div>
+    <div *ngIf="_date" class="current-date">
+      {{ _date }}
+    </div>
+  </div>
+  
+</header>
+
+<div class="content-wrapper activitydashboard">
+
+  <div class="activitydashboard_main">
+    <div class="left">
+        <div class="container" style="text-align: center; overflow: hidden;">
+          <marquee direction="up"  *ngIf="weekActivities?.length"  scrollamount="3" height="100%" onmouseover="this.stop();" onmouseout="this.start();">
+            <div *ngFor="let act of weekActivities; let i=index;">
+              <div class="row" style="text-align: left;" *ngIf="act.data">
+                <p *ngIf="i===0" style="margin-bottom: -1px; ">Today's Activities</p>
+                <p *ngIf="i===1" style="margin-bottom: -1px;">Tomorrow's Activities {{ '(' + act.date + ')'}}</p>
+                <p *ngIf="i > 1" style="margin-bottom: -1px;">{{act.date}}</p>
+                <div class="row" style="text-align: left;" *ngIf="act.data.length === 0">
+                  <p style="font-size: 12px; color: #555555;">No activities Scheduled</p>
+                </div>
+                <div class="activity-card" style="margin-bottom: -20px;" *ngFor="let a of act.data">
+                  <div class="row" style="text-align: left; margin-bottom: 35px;" *ngIf="a">
+                    <p style="font-size: 12px;color: #4d90cd; margin-bottom: -10px; font-weight: bold;">{{a.start}} - {{a.end}}</p>
+                    <p style="font-size: 12px; margin-bottom: -10px; color: #555555;">{{a.title}}</p>
+                    <p style="font-size: 12px; color: #555555; margin-bottom: 0px;">{{a.location.name}}</p>
+                  </div>
+                </div>
+                <hr class="style-two"/>
+              </div>
+            </div>
+          </marquee>
+          <div *ngIf="!weekActivities?.length" style="text-align: center; margin-top: 180px !important; margin-bottom: 180px !important;">
+            <h3 style="font-size: 16px; color: #555555;font-weight: normal;">No week activites</h3>
+          </div>
+        </div>
+    </div>
+    <div class="middle">
+      <div class="top-side" [ngStyle]="{ 'height': currentWeatherConditions ? '75%' : '100%'}">
+        <div class="report-detail">
+          <div class="section_title" *ngIf="upcomingActivity">
+            <h3 *ngIf="upcomingActivity.category" style="font-size: 14px; font-weight: normal; margin-top: -10px;">Upcoming Activity: {{ capitalizeFirst(upcomingActivity.category.name) }} </h3>
+            <h1 *ngIf="upcomingActivity.title" style="font-size: larger;">{{ capitalizeFirst(upcomingActivity.title) }}</h1>
+            <div *ngIf="description" >
+              <p style="font-size: 12px; color: #555555;">{{description}}</p>
+            </div>
+            <div class="row" *ngIf="upcomingActivityDate" style="border-radius: 100px; border:#4d90cd 1px solid; padding: 0px 5px; width: 50%; line-height: 0.01rem; text-align: center; display: table; margin-top: 20px;">
+              <p style="font-size: 12px;color: #4d90cd; letter-spacing: 1px; font-weight: bold;">{{upcomingActivityDate}}</p>
+            </div>
+            <div class="row" style="width: 100%; margin-top: 10px; display: flex;">
+              <!-- <p style="font-size: 12px;color: rgb(120, 198, 247);">{{upcomingActivityDate}}</p> -->
+              <div class="col-2">
+                <mat-icon color="primary" style="margin-top: 4px;">location_on</mat-icon>
+              </div>
+              <div class="col-10" style="margin-left: 10px;">
+                <span *ngIf="upcomingActivitylocation" style="font-size: 12px;color: #4d90cd;">
+                <span *ngIf="upcomingActivitylocation.name">{{upcomingActivitylocation.name}}</span><br/>
+                {{upcomingActivitylocation.line1}}<br/>{{upcomingActivitylocation.line2}}<br/>
+                {{upcomingActivitylocation.city}}, {{upcomingActivitylocation.state}}<br/>
+                {{upcomingActivitylocation.country}}, {{upcomingActivitylocation.zip}}<br/>
+                <span *ngIf="activityPersons.phone">{{formatPhoneNumber(activityPersons.phone)}}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!upcomingActivity" style="text-align: center; margin-top: 155px !important; margin-bottom: 155px !important;">
+            <h3 style="font-size: 16px; color: #555555; font-weight: normal;"> No upcoming activity </h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-side" *ngIf="currentWeatherConditions">
+        <div class="left_table" style="border-radius: 5px;">
+          <div class="table-grid graph" style="text-align: center;">
+            <div class="row" style="display: flex; width: 100%; text-align: center; justify-content: center; padding: inherit;">
+              <div class="col-6" style="text-align: right;">
+                <span style="font-weight: bold; font-size: 30px;">Current Conditions</span>
+                <br/>
+                <span style="font-size: 20px;" *ngIf="currentWeatherConditions !== null && currentWeatherConditions.fac_id">{{currentWeatherConditions.fac_id.fac_city}}</span>
+              </div>
+              <div class="col-6" style="text-align: left;"></div>
+                <span style="margin-left: 20px; text-align: center; margin-top: 5px !important; margin-bottom: 5px !important;">
+                  <img id="weatherIcon" height="55px" width="55px" style="border-radius: 50%;" src="" />
+                </span>
+                <span style="font-size: 48px; margin-left: 20px;">{{currentWeatherConditions.temperature + '°' }}{{currentWeatherConditions.temperatureUnit}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right_side">
+      <marquee direction="up" style="padding: 2px;" *ngIf="announcements?.length || residentsBirthday?.length" scrollamount="3" height="100%" onmouseover="this.stop();" onmouseout="this.start();">
+      <div class="card" *ngIf="announcements" [ngStyle]="{'word-break': 'break-word','background-color': announcements[0]?.background_color, 'color': announcements[0]?.font_color, 'font-size': announcements[0]?.font_size, 'border': '1px solid' + announcements[0]?.border_color, 'border-radius': '5px', 'padding': '10px 10px' }">
+        {{announcements[0]?.message }}
+      </div>
+      <div *ngIf="!announcements" style="text-align: center;">
+        <h3 style="font-size: 16px; color: #555555; font-weight: normal;">No current announcements</h3>
+      </div>
+      <div class="container" *ngIf="residentsBirthday.length > 0" style="margin-top: 15px;">
+        <img src="../../assets/images/happy_bday.png" height="100px" width="99%" />
+        <div style="text-align: center;">
+          <p style="color: #4d90cd;" *ngFor="let res of residentsBirthday">{{res.first_name}} <span *ngIf="res.last_name">{{res.last_name}}</span></p>
+        </div>
+      </div>
+      <div class="card" [class.hidden]="i===0" *ngFor="let announce of announcements; let i=index;" [ngStyle]="{'word-break': 'break-word','background-color':announce.background_color, 'color': announce?.font_color, 'font-size': announce?.font_size, 'border': '1px solid' + announce?.border_color, 'border-radius': '5px', 'padding': '10px 10px', 'margin-top': '15px' }">
+        {{announce?.message}}
+      </div>
+      </marquee>
+      <div *ngIf="!announcements?.length && !residentsBirthday?.length" class="container" style="text-align: center; overflow: hidden;">
+      <div  style="text-align: center; margin-top: 180px; margin-bottom: 180px;">
+        <h3 style="font-size: 16px; color: #555555; font-weight: normal;">No current announcements</h3>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="activitydashboard_main" *ngIf="activityPersons?.coordinators" style="background: #edf9fd; height: 10vh; text-align: left; display: flex; ">
+  <div *ngIf="activityPersons.coordinators?.length" style="font-weight: normal; padding: 3vh; color: #4d90cd;">
+    <span >If you have any questions, talk with <span *ngFor="let p of activityPersons.coordinators; let i=index;">{{p.first_name}}<span *ngIf="activityPersons.coordinators.length > 1 && i < activityPersons.coordinators.length-2">,&nbsp;</span><span *ngIf="activityPersons.coordinators.length > 0 && i === activityPersons.coordinators.length-2">&nbsp;or&nbsp;</span></span>.&nbsp;</span>
+    <span>{{formatPhoneNumber(activityPersons.phone)}}</span>
+  </div>
+  <div *ngIf="facility" style="font-weight: normal; padding: 3vh; color: #4d90cd ; text-align: right; flex: auto;">
+    <span>{{facility}}</span>
+  </div>
+</div>
+
+<div class="activitydashboard_main" *ngIf="!activityPersons?.coordinators" style="background: #edf9fd; height: 10vh; text-align: left; display: flex; ">
+  <div *ngIf="activityPersons?.coordinators?.length" style="font-weight: normal; color: #4d90cd;">
+    <span >If you have any questions, talk with <span *ngFor="let p of activityPersons.coordinators; let i=index;">{{p.first_name}}<span *ngIf="activityPersons.coordinators.length > 1 && i < activityPersons.coordinators.length-2">,&nbsp;</span><span *ngIf="activityPersons.coordinators.length > 0 && i === activityPersons.coordinators.length-2">&nbsp;or&nbsp;</span></span>.&nbsp;</span>
+    <span>{{formatPhoneNumber(activityPersons.phone)}}</span>
+  </div>
+  <div *ngIf="facility" style="font-weight: normal; padding: 3vh; color: #4d90cd ; text-align: right; flex: auto;">
+    <span>{{facility}}</span>
+  </div>
+</div>
+
+<ng-template #connectionModal>
+  <p>Internet is not there</p>
+</ng-template>

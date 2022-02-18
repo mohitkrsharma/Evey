@@ -1,0 +1,530 @@
+<mat-card class="mb-24" style="height: 10.5rem;padding-right: 0;">
+
+  <div class="d-flex headsection mb-20 mt-20">
+    <div class="profile_pic">
+      <!-- <img *ngIf="paramId && resident.profile_image" 
+        src={{resident.profile_image.location?resident.profile_image.location:resident.profile_image}}
+        class="img-fluid" alt="profile-pic"> <img *ngIf="!paramId" src="./assets/images/149071.png" > -->
+        <img *ngIf="paramId && resident.profile_image" 
+        src={{resident.profile_image.location?resident.profile_image.location:resident.profile_image}}
+        class="img-fluid" alt="profile-pic">
+        <img *ngIf="!paramId" src="./assets/images/149071.png" >
+      <div *ngIf="paramId && resident.profile_image === undefined" class="avatar-circle avadar-small circle-pic">
+        <span class="img-fluid">{{'Add Image'}}</span>
+        <!-- <button color="primary" mat-mini-fab="" class="mat-primary" ng-reflect-color="primary">
+          <span>
+            <mat-icon _ngcontent-c18="" class="mat-icon material-icons" role="img" aria-hidden="true">edit</mat-icon>
+          </span>
+          <div class="mat-button-ripple mat-ripple mat-button-ripple-round" matripple="" ng-reflect-centered="false"
+            ng-reflect-disabled="false" ng-reflect-trigger="[object HTMLButtonElement]"></div>
+          <div class="mat-button-focus-overlay"></div>
+          <input class="picchangeupload" name="document" type="file" ng2FileSelect accept="image/*"
+            [uploader]="uploader" (change)="onFileChanged($event)">
+        </button> -->
+      </div>
+      <!-- <img *ngIf="paramId && resident.profile_image === undefined"
+        src="./assets/images/149071.png" class="img-fluid" alt="profile-pic"> -->
+
+    </div>
+    <mat-card-header class=" w-60">
+      <mat-card-title class="mb-0">
+        <div class="d-flex align-items-center w-100 name">{{residentName}}
+          <div class="d-flex res align-items-center"
+            *ngIf="resident.custom_isolation!=''|| resident['testing_status'] === 'Positive' || checkFall == true"
+            > <span class="mat-button-wrapper ml-10 alerts position-relative">
+              <!-- <mat-icon _ngcontent-c3="" class="mat-icon material-icon text-danger cursor alertIcon" role="img"
+                  aria- hidden="true"> fiber_manual_record
+                </mat-icon> -->
+            </span>
+            <div class="ml-10" *ngIf="paramId && open_cares && open_cares.length">
+              <img src="./assets/images/opentasks.svg" width="18" class="img-fluid cursor" alt="open-tasks">
+            </div>
+          </div>
+          <img *ngIf="oldValueTestingStatus=='Negative'" src="./assets/images/negative.svg" width="28" height="28"
+            class="ml-10">
+
+          <img *ngIf="oldValueTestingStatus=='Positive'" src="./assets/images/positive.svg" width="28" height="28"
+            class="ml-10 mt-5">
+
+          <img *ngIf="resident.testing_status=='In-Progress'" src="./assets/images/inprogress.svg" width="28"
+            height="28" class="ml-10">
+
+          <!-- <div class="btndivs ml-20">
+              <img src="../assets/images/order-icon.svg" class="myorder-ico" (click)="navigateToOrderLink()">
+               -->
+          <!-- <button mat-stroked-button color="primary" class="mr-10 mt-10 btn_main_done" type="button"
+                (click)="navigateToOrderLink()">
+                Order
+              </button> -->
+          <!-- </div> -->
+
+          <timer class="ml-2" *ngIf="isolation_end_date!=''" [displayValue]="true" [id]="resident._id"
+            [startDate]="isolation_start_date" [endDate]="isolation_end_date" [days]="oldValueIsolation"
+            (onComplete)="timerCompleted($event)"></timer>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <!-- <div class="w-70 text-right tabianation">       
+      
+       <span class="pl-15">Out of facility</span>
+      <mat-slide-toggle color="primary" class="pl-15" [checked]="resident.is_out_of_fac"
+        [(ngModel)]="resident.is_out_of_fac" name="is_out_of_fac" (change)="onChangefacility($event)">
+      </mat-slide-toggle> 
+              
+       <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+      <button mat-flat-button color="primary"  class="mr-10" (click)="onSubmit(f,resident)">Done</button> 
+      <button mat-flat-button color="primary" *ngIf="paramId"
+        (click)="changeButton(buttonName)">Done</button> 
+    </div>-->
+  </div>
+  <!-- <div class="rightside w-100 mt-10"> -->
+    <!-- <div class="d-flex">
+       <h1>{{resident.first_name}} {{resident.last_name}}</h1>
+          <div class="d-flex res align-items-center" *ngIf="resident.custom_isolation !=''|| resident['testing_status'] === 'Positive' || checkFall == true" (click)="isolation()"> <span class="mat-button-wrapper ml-10 alerts position-relative">
+                          <mat-icon _ngcontent-c3="" class="mat-icon material-icon text-danger cursor" role="img" aria-hidden="true">
+                              fiber_manual_record
+                          </mat-icon>
+                        <span class="new badge text-danger position-absolute">2</span>--</span>
+                      <div class="ml-10" *ngIf="paramId && open_cares && open_cares.length" (click)="openTasks()"> <img src="./assets/images/opentasks.svg" width="18" class="img-fluid cursor" alt="open-tasks">
+                         <span class="opentasks">Open Tasks</span><span
+              class="new badge"><a>{{open_cares.length}}</a></span>--</div>
+                  </div> 
+      </div>-->
+    
+  <!-- </div> -->
+</mat-card>
+
+<mat-card class="view-height">
+  <mat-card-header>
+    <mat-card-title>
+      Vitals History
+    </mat-card-title>
+    <mat-card-subtitle class="w-100 mb-0">
+      <div class="d-flex justify-content-between align-center">
+        <div class="w-30 pr-15">
+          <mat-form-field class="w-50">
+            <mat-select name="vital" [(value)]="selectedVital" (selectionChange)="onVitalChange()">
+              <mat-option *ngFor="let vital of vitals" [value]="vital">{{ vital }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-70 pl-15">
+          <div class="example-button-row text-right w-100">
+            <!-- <button class="resident_btn" mat-stroked-button type="button" class="main_btn ml-3 "
+              (click)="onViewVitals()">View vitals</button> -->
+            <button class="resident_btn" mat-stroked-button type="button" class="main_btn ml-3 "
+              (click)="onViewData()">View data</button>
+            <button class="resident_btn" mat-stroked-button [matMenuTriggerFor]="menu" type="button"
+              class="main_btn ml-3 ">Export</button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="onExportAsPDF()">as PDF</button>
+              <button mat-menu-item (click)="onExportAsExcel()">as Excel</button>
+            </mat-menu>
+          </div>
+        </div>
+      </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="view-height-center">
+    <div class="mt-20">
+      <div class="vital-header-btn">
+        <div class="vitalName">
+          <h3>{{ selectedVital }}</h3>
+        </div>
+        <div class="ml-3">
+          <mat-button-toggle-group class="toggleBtn" name="daysRange" aria-label="Days Range" [(ngModel)]="selectedRange"
+            (change)="onRangeChange()">
+            <mat-button-toggle [value]=7>7 Days</mat-button-toggle>
+            <mat-button-toggle [value]=60>60 Days</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+      <div class="chart" id="vitalLineChart">
+        <canvas id="linechart" height="100px" #linechart></canvas>
+      </div>
+    </div>
+    <div class="row top">
+      <div class="w-30 mt-20 personalhealthinfo">
+
+        <table class="highlight w-100 customborder mb-10 ">
+          <h3 class="pl-10 mb-20">Last Recorded Vitals</h3>
+          <tbody>
+            <tr>
+              <td>Temperature</td>
+              <td class="text-right"
+                *ngIf="health_data.temperature >check_temp_max || health_data.temperature < check_temp_min">
+                <strong class="text-danger"
+                  *ngIf="health_data.temperature && !check_temp_max == ''">{{health_data.temperature}}°</strong>
+                <strong class="text-right"
+                  *ngIf="health_data.temperature && check_temp_max == '' ">{{health_data.temperature}}°</strong>
+                <strong *ngIf="!health_data.temperature">-</strong>
+              </td>
+              <td class="text-right"
+                *ngIf="health_data.temperature >= check_temp_min && health_data.temperature <= check_temp_max">
+                <strong class="text-right" *ngIf="health_data.temperature">{{health_data.temperature}}°</strong>
+                <strong *ngIf="!health_data.temperature">-</strong>
+              </td>
+              <!--                                  <td class="text-right" *ngIf=" health_data.temperature < check_temp_min">
+                                  <strong class="vitalColors" *ngIf="health_data.temperature">{{health_data.temperature}}°</strong>
+                                  <strong *ngIf="!health_data.temperature">-</strong>
+                              </td> -->
+            </tr>
+            <tr>
+              <td>Blood Pressure</td>
+              <td class="text-right"
+                *ngIf="blood_pressure.first_input < check_bp_min || blood_pressure.second_input > check_bp_max">
+                <strong class="text-danger" *ngIf="health_data.blood_pressure">{{health_data.blood_pressure}} mm
+                  Hg</strong>
+                <strong class="text-danger" *ngIf="!health_data.blood_pressure">-</strong>
+              </td>
+              <td class="text-right"
+                *ngIf="blood_pressure.first_input > check_bp_min && blood_pressure.second_input < check_bp_max">
+                <strong *ngIf="health_data.blood_pressure">{{health_data.blood_pressure}} mm Hg</strong>
+                <strong *ngIf="!health_data.blood_pressure">-</strong>
+              </td>
+            </tr>
+            <tr>
+              <td>Pulse</td>
+              <td class="text-right" *ngIf="health_data.pulse > check_pul_max || health_data.pulse < check_pul_min">
+                <strong class="text-danger" *ngIf="health_data.pulse && !check_pul_max == ''">{{health_data.pulse}}
+                  bpm</strong>
+                <strong class="text-right" *ngIf="health_data.pulse && check_pul_max == '' ">{{health_data.pulse}}
+                  bpm</strong>
+                <strong *ngIf="!health_data.pulse">-</strong>
+              </td>
+              <td class="text-right" *ngIf="health_data.pulse >= check_pul_min&& health_data.pulse <= check_pul_max">
+                <strong class="text-right" *ngIf="health_data.pulse">{{health_data.pulse}} bpm</strong>
+                <strong *ngIf="!health_data.pulse">-</strong>
+              </td>
+              <!--                                  <td class="text-right" *ngIf="health_data.pulse < check_pul_min">
+                                  <strong class="vitalColors" *ngIf="health_data.pulse">{{health_data.pulse}} bpm</strong>
+                                  <strong *ngIf="!health_data.pulse">-</strong>
+                              </td> -->
+              <!--  <td class="text-right"><strong *ngIf="health_data.pulse">{{health_data.pulse}} bpm</strong> <strong *ngIf="!health_data.pulse">-</strong> </td> -->
+            </tr>
+            <tr>
+              <td>Oxygen</td>
+              <td class="text-right" *ngIf="health_data.oxygen >check_oxy_max || health_data.oxygen < check_oxy_min">
+                <strong class="text-danger" *ngIf="health_data.oxygen && !check_oxy_max == ''">{{health_data.oxygen}}
+                  mm Hg</strong>
+                <strong class="text-right" *ngIf="health_data.oxygen && check_oxy_max == '' ">{{health_data.oxygen}}
+                  mm Hg</strong>
+                <strong *ngIf="!health_data.oxygen">-</strong>
+              </td>
+              <td class="text-right" *ngIf="health_data.oxygen >= check_oxy_min&& health_data.oxygen <= check_oxy_max">
+                <strong class="text-right" *ngIf="health_data.oxygen">{{health_data.oxygen}} mm Hg</strong>
+                <strong *ngIf="!health_data.oxygen">-</strong>
+              </td>
+              <!--                                  <td class="text-right" *ngIf=" health_data.oxygen < check_oxy_min">
+                                  <strong class="vitalColors" *ngIf="health_data.oxygen">{{health_data.oxygen}} mm Hg</strong>
+                                  <strong *ngIf="!health_data.oxygen">-</strong>
+                              </td> -->
+              <!--  <td class="text-right"><strong *ngIf="health_data.oxygen">{{health_data.oxygen}} mm Hg</strong><strong *ngIf="!health_data.oxygen">-</strong></td> -->
+            </tr>
+            <tr>
+              <td>Respiration</td>
+              <td class="text-right"
+                *ngIf="health_data.respiration >check_res_max || health_data.respiration < check_res_min">
+                <strong class="text-danger"
+                  *ngIf="health_data.respiration && !check_res_max == ''">{{health_data.respiration}} bpm</strong>
+                <strong class="text-right"
+                  *ngIf="health_data.respiration && check_res_max == '' ">{{health_data.respiration}} bpm</strong>
+                <strong *ngIf="!health_data.respiration">-</strong>
+              </td>
+              <td class="text-right"
+                *ngIf="health_data.respiration >= check_res_min&& health_data.respiration <= check_res_max">
+                <strong class="text-right" *ngIf="health_data.respiration">{{health_data.respiration}} bpm</strong>
+                <strong *ngIf="!health_data.respiration">-</strong>
+              </td>
+              <!--                                  <td class="text-right" *ngIf=" health_data.respiration < check_res_min">
+                                  <strong class="vitalColors" *ngIf="health_data.respiration">{{health_data.respiration}} bpm</strong>
+                                  <strong *ngIf="!health_data.respiration">-</strong>
+                              </td> -->
+              <!--  <td class="text-right"><strong *ngIf="health_data.respiration">{{health_data.respiration}} bpm</strong> <strong *ngIf="!health_data.respiration">-</strong></td> -->
+            </tr>
+            <tr>
+              <td>Blood Sugar</td>
+              <td class="text-right"
+                *ngIf="(check_bs_max!=''&& health_data.blood_sugar > check_bs_max) || (check_bs_min!='' && health_data.respiration < check_bs_min)">
+                <strong class="text-danger" *ngIf="health_data.blood_sugar">{{health_data.blood_sugar}} mg/dL</strong>
+                <strong *ngIf="!health_data.blood_sugar">-</strong>
+              </td>
+              <td class="text-right"
+                *ngIf="(check_bs_min=='' && check_bs_max=='') || (health_data.blood_sugar >= check_bs_min&& health_data.blood_sugar <= check_bs_max)">
+                <strong class="text-right" *ngIf="health_data.blood_sugar">{{health_data.blood_sugar}} mg/dL</strong>
+                <strong *ngIf="!health_data.blood_sugar">-</strong>
+              </td>
+              <!--                                 <td class="text-right" *ngIf="check_bs_min!=''&& health_data.respiration < check_bs_min">
+                                  <strong class="vitalColors" *ngIf="health_data.blood_sugar">{{health_data.blood_sugar}} mg/dL</strong> 
+                                  <strong *ngIf="!health_data.blood_sugar">-</strong>
+                              </td> -->
+            </tr>
+            <tr>
+              <td>Height</td>
+              <td class="text-right"><strong *ngIf="health_data.height">{{height_ft}}' {{inches}} ''</strong> <strong
+                  *ngIf="!health_data.height">-</strong></td>
+            </tr>
+            <tr>
+              <td>Weight</td>
+              <td class="text-right"><strong *ngIf="health_data.weight">{{health_data.weight}} lbs</strong> <strong
+                  *ngIf="!health_data.weight">-</strong></td>
+            </tr>
+
+            <tr>
+              <td>BMI</td>
+              <td class="text-right"><strong *ngIf="health_data.bmi">{{health_data.bmi}}</strong> <strong
+                  *ngIf="!health_data.bmi">-</strong> </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="w-30 mt-20 quickLinks">
+        <table class="highlight w-100 customborder mb-20">
+          <h3 class="pl-10 mb-20">Quick Links</h3>
+          <tbody>
+            <tr>
+              <td (click)="openVirusCheck()" style="cursor: pointer;">
+                <img alt="virus check" src="./assets/images/report/reports-virus-check-icon.svg" class="icon">
+                <span class="viruscheck" >Virus Check Report</span>
+              </td>
+            </tr>
+            <tr>
+              <td (click)="openVitalsReport()" style="cursor: pointer;">
+                <img alt="vitals" src="./assets/images/report/reports-vitals-icon.svg" class="icon">
+                <span class="viruscheck">Vitals Report</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </mat-card-content> 
+</mat-card>
+
+<ng-template #virusCheck>
+  <div>
+    <form #f="ngForm" (ngSubmit)="virusReportSubmit(virusreport,virusReportForm.valid)" [formGroup]="virusReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Virus Check</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include archived residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="virusreport.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'virus');virusreport.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include suspended performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="virusreport.isachive" [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'virus');virusreport.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select user</mat-label>
+            <mat-select [(ngModel)]="virusreport.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{virusreport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('virus_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'virus')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select shift</mat-label>
+            <mat-select [(ngModel)]="virusreport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Resident</mat-label>
+            <mat-select [(ngModel)]="virusreport.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="virusreport.resident && virusreport.resident.length">
+                {{allresident ? virusreport.resident.length : virusreport.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Resident"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('virus')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'virus')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="virusreport.daterange"
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp [name]="DateSelected" (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" [(ngModel)]="selected"
+            [ngModelOptions]="{standalone: true}" [options]="options"></ngx-mat-drp>
+          <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+            height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelVirus()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary" (click)="virusReportSubmit(virusreport,virusReportForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>
+
+<ng-template #vitalsReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)" [formGroup]="vitalsReportForm"
+      class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Vitals</h3>
+        <div class="suspendUsers">
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include archived residents</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="vitalreport.isresident"
+                [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveResi($event.checked,'vital');vitalreport.isresident=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+          <div class="switch_ann_header font_style">
+            <p class="m-0">Include suspended performers</p>
+            <span class="activ">
+              <mat-slide-toggle color="primary" [(ngModel)]="vitalreport.isachive" [ngModelOptions]="{standalone: true}"
+                (change)="isArchiveData($event.checked,'vital');vitalreport.isachive=$event.checked">
+              </mat-slide-toggle>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select user</mat-label>
+            <mat-select [(ngModel)]="vitalreport.user" formControlName="user" [multiple]="true" #multiSelect required>
+              <mat-select-trigger>
+                {{vitalreport.user.length}} items selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch" placeholderLabel="Select user"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="userlist" #allSelected (click)="selectAll('vital_all')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'" [value]="item._id"
+                (click)="selectUser(allSelected.viewValue,item._id,'vital')">
+                {{item.value}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>Select shift</mat-label>
+            <mat-select [(ngModel)]="vitalreport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+              formControlName="shiftype" required>
+              <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-50 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>Residents</mat-label>
+            <mat-select [(ngModel)]="vitalreport.resident" formControlName="resident" [multiple]="true" #multiSelect
+              required>
+              <mat-select-trigger *ngIf="vitalreport.resident && vitalreport.resident.length">
+                {{allresident ? vitalreport.resident.length : vitalreport.resident.length - 1}} items
+                selected
+              </mat-select-trigger>
+              <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents"
+                noEntriesFoundLabel="Not Found" name="search">
+              </ngx-mat-select-search>
+              <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                (click)="selectAllresidents('vital')" [value]="0">All
+              </mat-option>
+              <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key"
+                (click)="selectResident(selectedResident.viewValue,filters.key,'vital')">
+                {{filters.value | titlecase}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+          <!-- <mat-form-field class="w-100"> -->
+          <!-- <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="selected"
+              [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges" [showDropdowns]="true"
+              [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true" [showCancel]="true" [lockStartDate]="false"
+              [ngModelOptions]="{standalone: true}" (change)="updateRange($event)" [customRangeDirection]="true"
+              drops="down" opens="right" placeholder="Select date range" onPaste="return false"
+              (keypress)="checkAllwoNum($event)" /> -->
+          <ngx-mat-drp [name]="DateSelected" (selectedDateRangeChanged)="updateRange($event)"
+            (keypress)="checkAllwoNum($event)" placeholder="Select date range" [(ngModel)]="selected"
+            [ngModelOptions]="{standalone: true}" [options]="options"></ngx-mat-drp>
+            <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+          <!-- </mat-form-field> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelVirus()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+        <!-- <button mat-flat-button color="primary" (click)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+      </div>
+    </form>
+
+  </div>
+</ng-template>

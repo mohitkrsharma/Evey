@@ -1,0 +1,70 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title>Live Dashboard Links</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search by user" />
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+                        <button mat-stroked-button class="ml-3" (click)="deleteLinks()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" matSortDisableClear>
+
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element[column.id] }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Terminate Link</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button mat-mini-fab color="primary" (click)="terminateLink(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+            [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+    </mat-card-actions>
+
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

@@ -1,0 +1,408 @@
+<mat-card id="doc">
+
+    <mat-card-header>
+        <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+            <mat-card-title class="mb-0">Unit Clean Report</mat-card-title>
+            <div class="report_export_btn d-flex align-center">
+              <button mat-stroked-button color="primary" (click)="openHouseKeeping()" class="btn_Secondary"style="margin-right: 10px;">
+                  Run Another
+              </button>
+              <img *ngIf="!resultcount && commonService.checkPrivilegeModule('reports','export')" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+              <img *ngIf="commonService.checkPrivilegeModule('reports','export') && resultcount" (click)="onExportReport()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content *ngIf="selectShift" class="head-page">
+
+        <div class="shifttimencreated d-flex align-items-center mb-20">
+
+            <div class="shifttime">
+                <h4>{{selectShift}}</h4>
+            </div>
+
+            <div class="created">
+
+                <h4>Created by: {{userName}}</h4>
+                <span>{{start_date | timezoneWiseMomentDate:timezone}}-{{end_date | timezoneWiseMomentDate:timezone}}</span>
+                <!-- <span>{{start_date | date:'MM/dd/yyyy'}} - {{end_date | date:'MM/dd/yyyy'}}</span> -->
+            </div>
+
+        </div>
+
+        <mat-card-content *ngIf="!resultcount">
+
+            <p style="text-align: center; color: #969393" class="message_text">No Data Found</p>
+
+        </mat-card-content>
+
+        <div class="number_details w-100" *ngIf="boxResultvalue && resultcount">
+            <div class="resident w-100 mr-20">
+                <div class="text">
+                    <h3>{{ boxResultvalue.totalCarePerformed }}</h3>
+                    <span>Units Cleaned</span>
+                </div>
+            </div>
+            <div class="resident w-100 mr-20">
+                <div class="text">
+                    <h3>{{ boxResultvalue.totalCareRefused }}</h3>
+                    <span>Refused Cleaning</span>
+                </div>
+            </div>
+            <div class="resident w-100">
+                <div class="text">
+                    <!-- <h3>{{(boxResultvalue.totalTime>60)?timeConvert(boxResultvalue.totalTime):boxResultvalue?.totalTime+' min'}}
+                    </h3> -->
+                    <div class="d-flex ">
+                        <div class="text_div" *ngIf="formattedTime(boxResultvalue.totalTime).hours>0"> 
+                            {{ formattedTime(boxResultvalue.totalTime).hours }}
+                            <span> h </span>
+                        </div>
+                        <div  class="text_div" *ngIf="formattedTime(boxResultvalue.totalTime).minutes>0" > 
+                            {{ formattedTime(boxResultvalue.totalTime).minutes }}
+                            <span> min </span>
+                        </div>
+                        <div  class="text_div" *ngIf="!formattedTime(boxResultvalue.totalTime).minutes">
+                            0
+                            <span> min </span>
+                        </div>
+                    </div>
+                    <span>Total Time</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="report-grid" *ngIf="boxResultvalue">
+            <div class="grid  color-blue">
+                <div class="count">
+                    {{ boxResultvalue.totalCarePerformed }}
+                </div>
+                <div class="title">
+                    Rooms Cleans Performed
+                </div>
+            </div>
+            <div class="grid  color-blue">
+                <div class="count">
+                    {{ boxResultvalue.totalCareRefused }}
+                </div>
+                <div class="title">
+                    Refused Cleaning
+                </div>
+            </div>
+            <div class="grid  color-blue">
+                <div class="count">
+                    {{(boxResultvalue.totalTime>60)?timeConvert(boxResultvalue.totalTime):boxResultvalue?.totalTime+'min'}}
+                </div>
+                <div class="title">
+                    Total Time
+                </div>
+            </div>
+        </div> -->
+        
+        <div *ngIf="resultcount">
+            <div class="table-wrapper table-responsive listing">
+                <table class="table table-striped" *ngIf="countReportvalue">
+                    <thead>
+                        <tr>
+                            <th>Performer</th>
+                            <th class="text-center">Total Cares Performed</th>
+                            <th class="text-center">Total Cares Refused</th>
+                            <th class="text-center">Total Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let reportItem of countReportvalue">
+                            <td>
+                                {{ reportItem.userData.last_name}}, {{ reportItem.userData.first_name}}
+                            </td>
+    
+                            <td class="text-center">
+                                {{ reportItem?.total_performed }}
+                            </td>
+                            <td class="text-center">
+                                {{ reportItem?.total_refused }}
+                            </td>
+                            <td class="text-center">
+                                {{(reportItem.total_min>60)?timeConvert(reportItem?.total_min):reportItem?.total_min+'min'}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <mat-accordion *ngFor="let panel of countReportvalue">
+                <mat-expansion-panel class="mb-10" (opened)="panelOpenState = true" (closed)="panelOpenState = false"
+                    #mapanel="matExpansionPanel">
+                    <mat-expansion-panel-header (click)="newExpandPanel(panel.userData._id)">
+                        <mat-panel-title class="align-items-center custom_font">
+                            {{ panel.userData.last_name}}, {{ panel.userData.first_name}}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <!--Kaushik changes-->
+                        <ng-template 
+                            *ngIf="this.userWiseRoomClean[panel.userData._id]"
+                            ngFor let-resident
+                            [ngForOf]="this.userWiseRoomClean[panel.userData._id].expandPanelContent.records" 
+                            let-i="index">
+                            <hr>
+                            <div class="datareport">
+                                <h3 class="rescustom m-0 pb-5">
+                                    {{ resident.updatedResidentData.last_name }}, {{ resident.updatedResidentData.first_name }}
+                                </h3>
+                                <div class="chart-wrapper">
+                                    <div class="count">
+                                        {{ roomCleanDate(resident) }}
+                                    </div>
+                                    <div class="content_detail">
+                                        <div class="unit_que">
+                                            <p>Unit :</p>
+                                            <p>Status :</p>
+                                            <p>Total Time :</p>
+                                        </div>
+                                        <div class="unit_ans">
+                                            <p>{{ (resident && resident.roomData && resident.roomData.room) ? resident.roomData.room : 'Null' }}</p>
+                                            <p>{{ (resident && resident.resident_status) ? resident.resident_status : 'Null' }}</p>
+                                            <p>{{ resident?.totalMin }} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive mt-10 mb-20 header-fixed-table-wrpper padding20 listing">
+                                <table class="table ">
+                                    <thead>
+                                        <th>Care</th>
+                                        <th>Outcome</th>
+                                        <th>Notes</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let care of this.userWiseRoomClean[panel.userData._id].tableData[i].tabledata; let j = index">
+                                            <td [ngClass]="care.secondCol ? '' : 'parent_care_font' ">{{ care.firstCol }}</td>
+                                            <td>{{ care.secondCol }}</td>
+                                            <td *ngIf="j==0" [attr.rowspan]="this.userWiseRoomClean[panel.userData._id].tableData[i].tabledata.length">{{ resident.items[0].care_notes }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+    
+                        </ng-template>
+                    
+                    <!---->
+
+
+
+                    <!-- <ng-template *ngIf="this.userResults[panel.userData._id]" ngFor let-item
+                        [ngForOf]="this.userResults[panel.userData._id]" let-i="index">
+                        <hr>
+                        <div class="datareport">
+                            <h3 class="rescustom m-0 pb-5">{{item?.updatedResidentData?.last_name}},
+                                {{item?.updatedResidentData?.first_name}}</h3>
+                            <div class="chart-wrapper">
+                                <div class="count">
+                                    {{roomCleanDate(item)}}
+                                    {{item?.startTime |date}},
+                                    {{item?.startTime |date:"shortTime"}}-{{item?.endTime |date :"shortTime"}}
+                                </div>
+    
+                                <div class="content_detail">
+    
+                                    <div class="unit_que">
+                                        <p>Unit :</p>
+                                        <p>Status :</p>
+                                        <p>Total Time :</p>
+                                        <p> Current Status :</p>
+                                      <p>Care Level : </p>
+                                      <p> Performer of Virus Check : </p>
+                                    </div>
+    
+                                    <div class="unit_ans">
+    
+                                        <p>{{(item && item.roomData && item.roomData.room)?item.roomData.room:'Null'}}</p>
+                                        <p>{{(item && item.resident_status)?item.resident_status:'Null'}}</p>
+                                        <p>{{item?.totalMin}} </p>
+                                        <p>{{item.trackcareList[0].residentData[0].resident_status}}</p>
+                                       <p>{{item.trackcareList[0].level}}</p>
+                                       <p>{{ reportItem._id.userData.last_name}}, {{ reportItem._id.userData.first_name}}</p>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+                        </div>
+    
+    
+    
+    
+                        <div class="table-responsive mt-10 mb-20 header-fixed-table-wrpper padding20 listing">
+                            <table class="table ">
+                                <thead>
+    
+                                    <th>Care</th>
+                                    <th>Outcome</th>
+                                    <th>Notes</th>
+    
+                                </thead>
+                                <tbody>
+                                    <ng-template ngFor let-reportItem [ngForOf]="item?.items" let-i="index">
+                                        <tr>
+                                            <td class="blood" style="width: 50%;">
+                                                <span *ngIf="reportItem.careData.type=='room_cleaning'">
+                                                    {{reportItem.careData.name}} </span>
+                                                <span
+                                                    *ngIf="reportItem.careData.type=='room_cleaning' && reportItem.care_value!='Refused' && reportItem.track_details && reportItem.track_details.arr_room_clean">
+                                                    <ng-template ngFor let-_itm
+                                                        [ngForOf]="trackcareDetail(reportItem.track_details.arr_room_clean)"
+                                                        let-i="index">
+                                                        <div *ngFor="let _itm1 of _itm | keyvalue">
+                                                            ><b>{{careIdName[_itm1.key]}}</b>
+                                                            <span *ngFor="let __itm of _itm1.value">
+                                                                <span *ngFor="let __itm1 of __itm | keyvalue">
+                                                                    <br>
+                                                                    <span> 
+                                                                        >>{{careIdName[__itm1.key]}} - <b>{{__itm1.value}}</b></span>
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </ng-template>
+                                                </span>
+                                            </td>
+                                            <td class="content">
+                                                {{reportItem.care_value}}
+                                            </td>
+                                            <td>
+                                                {{reportItem.care_notes}}
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-template> -->
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+<ng-template #houseReport>
+    <div>
+        <form (ngSubmit)="HouseReportSubmit(roomcleanreport,houseReportForm.valid)" [formGroup]="houseReportForm" class="example-form custom_font">
+            <div class="d-flex justify-content-between form-row pop_heading">
+                <h3>Unit Clean</h3>
+                <div class="suspendUsers">
+                    <div class="switch_ann_header font_style">
+                        <p class="m-0">Include Archived Residents</p>
+                        <span class="activ">
+                            <mat-slide-toggle color="primary" [(ngModel)]="roomcleanreport.isresident"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="isArchiveResi($event.checked,'house');roomcleanreport.isresident=$event.checked">
+                            </mat-slide-toggle>
+                        </span>
+                    </div>
+                    <div class="switch_ann_header font_style">
+                        <p class="m-0">Include Suspended Performers</p>
+                        <span class="activ">
+                            <mat-slide-toggle color="primary" [(ngModel)]="roomcleanreport.isachive"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="isArchiveData($event.checked,'house');roomcleanreport.isachive=$event.checked">
+                            </mat-slide-toggle>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select User</mat-label>
+                        <mat-select [(ngModel)]="roomcleanreport.user" formControlName="user" [multiple]="true"
+                            #multiSelect required>
+                            <mat-select-trigger>
+                                {{roomcleanreport.user.length}} items selected
+                            </mat-select-trigger>
+                            <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch"
+                                placeholderLabel="Select user" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngIf="userlist" #allSelected (click)="selectAll('house_all')" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'"
+                                [value]="item._id" (click)="selectUser(allSelected.viewValue,item._id)">
+                                {{item.value}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select Shift</mat-label>
+                        <mat-select [(ngModel)]="roomcleanreport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+                            formControlName="shiftype" required>
+                            <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch"
+                                placeholderLabel="Select shift" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'"
+                                [value]="item.no">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Residents</mat-label>
+                        <mat-select [(ngModel)]="roomcleanreport.resident" formControlName="resident" [multiple]="true"
+                            #multiSelect required>
+                            <mat-select-trigger *ngIf="roomcleanreport.resident && roomcleanreport.resident.length">
+                                {{allresident ? roomcleanreport.resident.length : roomcleanreport.resident.length - 1}}
+                                items selected
+                            </mat-select-trigger>
+                            <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch"
+                                placeholderLabel="Residents" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                                (click)="selectAllresidents('house')" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'"
+                                [value]="filters.key"
+                                (click)="selectResident(selectedResident.viewValue,filters.key,'house')">
+                                {{filters.value | titlecase}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15">
+                    <!-- <mat-form-field class="w-100">
+                        <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="selected"
+                            [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges"
+                            [showDropdowns]="true" [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true"
+                            [showCancel]="true" [lockStartDate]="false" [ngModelOptions]="{standalone: true}"
+                            (change)="updateRange($event)" [customRangeDirection]="true" drops="down" opens="right"
+                            placeholder="Select date range" onPaste="return false" (keypress)="checkAllwoNum($event)" />
+                        <mat-icon class="calender_icon calendrform">
+                            today
+                        </mat-icon>
+                    </mat-form-field> -->
+                    <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)" placeholder="Select date range" [options]="options"></ngx-mat-drp>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between btn_report_pop">
+                <button mat-flat-button class="mr-10" color="warn" (click)="cancel()" type="button"
+                    class="btn_main_cancle">Cancel</button>
+
+                <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+                    
+                <!-- <button mat-flat-button color="primary"
+                    (click)="HouseReportSubmit(roomcleanreport,houseReportForm.valid)" class="btn_main_done">Run
+                </button> -->
+            </div>
+        </form>
+    </div>
+</ng-template>

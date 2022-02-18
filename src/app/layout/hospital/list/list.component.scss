@@ -1,0 +1,181 @@
+@import "./../../../../styles/cstm-variable";
+
+
+.choose-field {
+  opacity: 0;
+  visibility: hidden;
+  overflow: visible;
+  position: absolute;
+  z-index: -9999;
+  display: none;
+}
+
+.choose-btn {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+  background-color: #1975B8;
+  color: white;
+  box-sizing: border-box;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  outline: 0;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 0;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+  border-radius: 5px;
+  overflow: visible;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #28A5DE;
+  }
+}
+
+.mat-column-name,
+.mat-column-facility {
+  text-transform: capitalize;
+}
+
+span {
+  padding: 15px 0 !important;
+}
+
+.btn_Secondary {
+  margin: 0 0 0 5px !important;
+  @include btn-main;
+}
+
+.pharmacy_popup {
+
+  padding: 30px 20px 24px 20px !important;
+  max-height: 80vh !important;
+  overflow-y: auto;
+
+  .mt-10 {
+    margin-top: 14px !important;
+  }
+}
+
+.cancel_btn {
+  @include window_cancel;
+  background-color: transparent !important;
+}
+
+.done_btn {
+
+  @include window_done;
+  background-color: #fff !important;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+
+.basecolor {
+  color: #1975b8;
+}
+
+.cancel_icon {
+
+  color: #EE4035;
+  cursor: pointer;
+}
+
+.physician_dialog {
+  .mat-dialog-container {
+    overflow-y: auto !important;
+    height: 705px !important;
+  }
+}
+
+::ng-deep .physician_dialog {
+  max-height: calc(100vh - 50px);
+}
+
+h3 {
+  @include popup_heading;
+}
+
+span.iconalign {
+  cursor: pointer;
+}
+
+
+.more-btn {
+  padding: 0px !important;
+  margin-left: 5px !important;
+}
+
+.credential-checkbox {
+  display: inline-block;
+  margin-top: 10px;
+  padding-top: 24px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+
+::ng-deep {
+  .note_textarea {
+    .ui-widget {
+      .ui-editor-toolbar {
+        border: 0;
+        background: transparent;
+        padding: 0;
+
+        .ql-formats {
+          padding: 0 !important;
+
+          button {
+            &:first-child {
+              padding-left: 0;
+            }
+          }
+        }
+      }
+
+      .ui-editor-content {
+        border: 0;
+        padding-top: 15px;
+
+        .ql-editor {
+          -webkit-appearance: none;
+          padding: 0;
+          resize: none;
+          border-bottom: 1px solid #949494;
+          min-height: 24px !important;
+
+          &.ql-blank {
+            &::before {
+              left: 0;
+              font-style: normal;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.span-pos {
+  color: #1975B8;
+  cursor: pointer;
+  padding-top: 2px !important;
+  margin: 0;
+}
+
+.pad_r10 {
+  padding-right: 10px;
+}

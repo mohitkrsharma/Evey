@@ -1,0 +1,101 @@
+@import "./../../../../styles/cstm-variable";
+@import "./../../../../styles/_cstm-variable.scss";
+
+// pdf-viewer {
+//     display: block;
+//     height: 100vh;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     // filter: drop-shadow(5px 5px 5px #222222);
+//   }
+
+pdf-viewer {
+  display: block;
+  height: calc(100vh - 140px);
+}
+
+ng2-pdfjs-viewer {
+  display: block;
+  height: calc(100vh - 160px);
+}
+
+.pdf-container {
+  position: relative;
+}
+
+.pdf-zoom-btn {
+  // display: block;
+  // position: absolute;
+  bottom: 25px;
+  right: 25px;
+}
+
+.pdf-zoom-btn button {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  line-height: 40px;
+  text-align: center;
+  background-color: #1975B8;
+  color: #fff;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.pdf-zoom-btn button:first-child {
+  margin-right: 15px;
+}
+
+.pdf-container:hover {
+  cursor: hand;
+}
+
+.main_btn {
+  @include btn-main;
+}
+
+.mat-card {
+  padding: 15px !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  display: inline-block;
+}
+
+.action_buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.pdf_header {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px !important;
+  font-size: 24px !important;
+  font-weight: 600;
+  color: #757575;
+}
+
+// ::ng-deep { 
+// .toolbar #toolbarContainer,
+// .toolbar .findbar, 
+// .toolbar .secondaryToolbar {
+//   // background-color: #757575 !important;
+//   background-color: red !important;
+//   background-image: none !important;
+// }
+// }
+
+
+// ::ng-deep .pdf-container #toolbarContainer {
+//   background-color: red !important;
+//   background-image: none !important;
+// }
+
+::ng-deep #outerContainer .toolbar #toolbarContainer{
+  background-color: red !important;
+  background-image: none !important;
+}

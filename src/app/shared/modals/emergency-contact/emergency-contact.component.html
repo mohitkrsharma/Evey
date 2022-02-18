@@ -1,0 +1,554 @@
+<form #f="ngForm" autocomplete="off">
+
+	<div class="emergency_popup">
+		<div class="pop_heading">
+			<h3 class="mt-0 ">Contact</h3>
+		</div>
+		<div class="d-flex justify-content-between form-row nfc_label">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<input matInput placeholder="First Name" name="first_name" [(ngModel)]="emergency.first_name"
+						(keypress)="checkAlpha($event)" required onPaste="return false">
+				</mat-form-field>
+			</div>
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+					<input matInput placeholder="Last Name" name="last_name" [(ngModel)]="emergency.last_name"
+						(keypress)="checkAlpha($event)" required onPaste="return false">
+				</mat-form-field>
+			</div>
+		</div>
+
+		<!-- Mobile phone with plsu icon -->
+		<!-- <div class="d-flex-column justify-content-between form-row mt-10">
+		<div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100 pr-15 mt-10">
+				<mat-label>Home</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100" >
+					<input matInput placeholder="Home" name='homephone' [(ngModel)]="emergency.homephone" maxlength="14" mask="(000) 000-0000" required>
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between form-row mt-10" >
+			<div class="w-100 pr-15 mt-10" [ngStyle]="show_mobile==true?{'display':'block'}:{'display':'none'}">
+				<mat-label>Mobile</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15" >
+				<mat-form-field class="w-100" [ngStyle]="show_mobile==true?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Mobile" name='mobilephone' [(ngModel)]="emergency.mobilephone" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" [ngStyle]="show_mobile==true?{'display':'block'}:{'display':'none'}"
+					class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyPhone('Mobile')">remove_circle 
+				</mat-icon>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between form-row mt-10" >
+			<div class="w-100 pr-15 mt-10" [ngStyle]="show_office==true?{'display':'block'}:{'display':'none'}">
+				<mat-label>Office</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100" [ngStyle]="show_office==true?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Office" name='office_phone' [(ngModel)]="emergency.office_phone" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" [ngStyle]="show_office==true?{'display':'block'}:{'display':'none'}"
+					class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyPhone('Office')">remove_circle 
+				</mat-icon>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between form-row mt-10" >
+			<div class="w-100 pr-15 mt-10" [ngStyle]="show_fax==true?{'display':'block'}:{'display':'none'}">
+				<mat-label>Fax</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100" [ngStyle]="show_fax==true?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Fax" name='fax_no' [(ngModel)]="emergency.fax_no" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" [ngStyle]="show_fax==true?{'display':'block'}:{'display':'none'}"
+					class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyPhone('Fax')">remove_circle 
+				</mat-icon>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between form-row mt-10" >
+			<div class="w-100 pr-15 mt-10" [ngStyle]="show_other==true?{'display':'block'}:{'display':'none'}">
+				<mat-label>Other</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100" [ngStyle]="show_other==true?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Other" name='other_no' [(ngModel)]="emergency.otherphone" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" [ngStyle]="show_other==true?{'display':'block'}:{'display':'none'}"
+					class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyPhone('Other')">remove_circle 
+				</mat-icon>
+			</div>
+		</div>
+	</div> -->
+
+		<!-- <div class=" d-flex form-row mt-10 ">
+		<div class="pr-15">
+			<mat-label>Add Phone</mat-label>
+		</div>
+		<div>
+			<mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor" role="img" aria-hidden="true"
+				[matMenuTriggerFor]="menuEmergencyPhone">add_circle </mat-icon>
+		</div>
+	</div>
+	<mat-menu #menuEmergencyPhone="matMenu">
+		<button (click)="changeEmergencyPhoneType(item.name)" *ngFor="let item of contact_type" mat-menu-item>
+			{{item.name}}
+		</button>
+	</mat-menu> -->
+
+
+		<!-- new multiple phone numbers -->
+		<div class="d-flex justify-content-between form-row mt-24"
+			*ngFor="let item of emergency.phone_numbers;let i = index">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<mat-label *ngIf="item.name === ''">Select Contact Type</mat-label>
+					<mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+						<ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Contact Type"
+							noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+						<mat-option *ngFor="let i of contact_type_list |stringFilterBy:PhoneNumberTypeSearch:'name'"
+							[value]="i.name">
+							{{i.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>
+						{{item.name}}
+						{{item.name=='Other'?'Email':(item.name=='Home'||item.name=='Mobile'||item.name=='Work')?'contact':undefined}}
+					</mat-label>
+					<!-- input for mobile/work/home -->
+					<input *ngIf="item.name=='Home'|| item.name=='Mobile' || item.name=='Work'" matInput 
+						placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+						[(ngModel)]="item.value" maxlength="14" mask="(000) 000-0000" 
+						[checkDuplicatefield]="[emergency.phone_numbers,i]" required>
+					<!-- input for email/work-email-->
+					<input *ngIf="item.name!='Home' && item.name!='Mobile' && item.name!='Work'" matInput 
+						placeholder="  example@domain.com" name="item.name + '_' + i + 1 + 'email' + {{item.id}}" [(ngModel)]="item.value"
+						pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+						(keyup)="item.value = $event.target.value.toLowerCase()" [required]=true [checkDuplicatefield]="[emergency.phone_numbers,i]">
+				</mat-form-field>
+
+				<mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+					class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+					mat-raised-button="" role="img" (click)="addEmergencyPhone(f)">
+					add_circle
+				</mat-icon>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+					class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyField(i)">remove_circle
+				</mat-icon>
+			</div>
+		</div>
+
+		<!-- new multiple email address -->
+		<!-- <div class="d-flex justify-content-between form-row mt-24" *ngFor="let item of emergency.emails;let i = index">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<mat-select #typeOfEmail="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i + 'email'" required>
+						<ngx-mat-select-search [(ngModel)]="emailAddressSearch" placeholderLabel="Select Email"
+							noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+						<mat-option *ngFor="let i of email_type_list |stringFilterBy:emailAddressSearch:'name'"
+							[value]="i.name">
+							{{i.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>{{item.name}} email</mat-label>
+					<input matInput placeholder="  example@domain.com" name="item.name + '_' + i + 1 + 'email' + {{item.id}}" [(ngModel)]="item.value"
+						pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+						(keyup)="item.value = $event.target.value.toLowerCase()" [required]=true [checkDuplicatefield]="[emergency.emails,i]">
+				</mat-form-field>
+				<mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+					class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+					mat-raised-button="" role="img" (click)="addEmergencyEmail(f)">
+					add_circle
+				</mat-icon>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+					class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyEmailField(i)">remove_circle
+				</mat-icon>
+			</div>
+		</div> -->
+
+		<!-- <div class="d-flex-column justify-content-between form-row mt-10">
+		<div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100 pr-15 mt-10">
+				<mat-label [ngStyle]="show_email==true?{'display':'block'}:{'display':'none'}">Personal</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100" [ngStyle]="show_email==true?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Personal" name="email" [(ngModel)]="emergency.email"
+					  pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+					  (keyup)="emergency.email = $event.target.value.toLowerCase()">
+				</mat-form-field>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" [ngStyle]="show_email==true?{'display':'block'}:{'display':'none'}"
+					class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyEmail('Personal')">remove_circle 
+				</mat-icon>
+			</div>
+		</div>
+		<div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100 pr-15 mt-10">
+				<mat-label [ngStyle]="show_work==true?{'display':'block'}:{'display':'none'}">Work</mat-label>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100" [ngStyle]="show_work==true?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Work" name="work_email" [(ngModel)]="emergency.work_email"
+					  pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+					  (keyup)="emergency.work_email = $event.target.value.toLowerCase()">
+				</mat-form-field>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" [ngStyle]="show_work==true?{'display':'block'}:{'display':'none'}"
+					class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeEmergencyEmail('Work')">remove_circle 
+				</mat-icon>
+			</div>
+		</div>
+	</div>
+
+	<div class=" d-flex form-row mt-10 ">
+		<div class="pr-15">
+			<mat-label>Add Email</mat-label>
+		</div>
+		<div>
+			<mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor" role="img" aria-hidden="true"
+				[matMenuTriggerFor]="menuEmergencyEmail">add_circle </mat-icon>
+		</div>
+	</div>
+	<mat-menu #menuEmergencyEmail="matMenu">
+		<button (click)="changeEmergencyEmailType(item.name)" *ngFor="let item of email_type" mat-menu-item>
+			{{item.name}}
+		</button>
+	</mat-menu> -->
+
+		<!-- new dropdown phone number -->
+		<!-- <div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<mat-label>Select Type</mat-label>
+					<mat-select #type="ngModel" [(ngModel)]="show" name="type" required (selectionChange)="changePhoneType($event)">
+						<ngx-mat-select-search [(ngModel)]="phoneSearch" placeholderLabel="Select Type" noEntriesFoundLabel="Not Found" name="search">
+						</ngx-mat-select-search>
+						<mat-option *ngFor="let item of contact_type | stringFilterBy:phoneSearch:'name'" [value]="item.name">
+							{{item.name}}
+						</mat-option>
+					</mat-select> 
+				</mat-form-field>
+			</div>
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100" [ngStyle]="show=='Mobile'?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Mobile Phone" name='mobilephone' [(ngModel)]="emergency.mobilephone" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+				<mat-form-field class="w-100" [ngStyle]="show=='Home'?{'display':'block'}:{'display':'none'}" >
+					<input matInput placeholder="Home Phone" name='homephone' [(ngModel)]="emergency.homephone" maxlength="14" mask="(000) 000-0000" required>
+				</mat-form-field>
+				<mat-form-field class="w-100" [ngStyle]="show=='Office'?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Office Phone" name='office_phone' [(ngModel)]="emergency.office_phone" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+				<mat-form-field class="w-100" [ngStyle]="show=='Fax'?{'display':'block'}:{'display':'none'}">
+					<input matInput placeholder="Fax" name='fax_no' [(ngModel)]="emergency.fax_no" maxlength="14" mask="(000) 000-0000">
+				</mat-form-field>
+			</div>
+	</div> -->
+
+		<!-- Email dropdown  -->
+		<!-- <div class="d-flex justify-content-between form-row mt-10">
+		<div class="w-100 pr-15">
+			<mat-form-field class="w-100">
+				<mat-label>Select Email Type</mat-label>
+				<mat-select #typeemail="ngModel" [(ngModel)]="show_email" name="typeemail" required (selectionChange)="changeEmailType($event)">
+					<ngx-mat-select-search [(ngModel)]="emailSearch" placeholderLabel="Select Email Type" noEntriesFoundLabel="Not Found" name="search">
+					</ngx-mat-select-search>
+					<mat-option *ngFor="let item of email_type | stringFilterBy:emailSearch:'name'" [value]="item.name">
+						{{item.name}}
+					</mat-option>
+				</mat-select> 
+			</mat-form-field>
+		</div>
+		<div class="w-100 pl-15">
+			<mat-form-field class="w-100" [ngStyle]="show_email=='Personal'?{'display':'block'}:{'display':'none'}" *ngIf="show_email=='Personal'">
+				<input matInput placeholder="Personal Email" name="email" [(ngModel)]="emergency.email"
+				  pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+				  (keyup)="emergency.email = $event.target.value.toLowerCase()">
+			</mat-form-field>
+			<mat-form-field class="w-100" [ngStyle]="show_email=='Work'?{'display':'block'}:{'display':'none'}" *ngIf="show_email=='Work'">
+				<input matInput placeholder="Work Email" name="work_email" [(ngModel)]="emergency.work_email"
+				  pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+				  (keyup)="emergency.work_email = $event.target.value.toLowerCase()">
+			</mat-form-field>
+		</div>
+	</div> -->
+
+		<!-- email old-->
+		<!-- <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Email" name="email" [(ngModel)]="emergency.email"
+            pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+            (keyup)="emergency.email = $event.target.value.toLowerCase()">
+        </mat-form-field>
+	  </div>
+	</div>	   -->
+
+		<!-- <div class="w-100 pl-15">
+            <mat-form-field class="w-100">
+              <input matInput placeholder="Confirm Email" name="emergency_confirmemail"
+                [(ngModel)]="emergency.emergency_confirmemail"
+                pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+                [required]="emergency.emergency_email !=''"
+                (keyup)="emergency.emergency_confirmemail = $event.target.value.toLowerCase()">
+              <mat-error *ngIf="emailNotMatch" class="invalid-email">Your personal email doesn't match.</mat-error>
+            </mat-form-field>
+          </div> -->
+
+		<!-- phone number mobile phone old-->
+		<!-- <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Mobile Phone" name="mobilephone" [(ngModel)]="emergency.mobilephone" maxlength="14"
+            mask="(000) 000-0000">
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+         <input matInput placeholder="Home Phone" name="homephone" [(ngModel)]="emergency.homephone" maxlength="14"
+            mask="(000) 000-0000" >
+        </mat-form-field>
+      </div>
+    </div> -->
+
+		<!-- address1 -->
+		<div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100">
+				<mat-form-field class="w-100">
+					<input matInput placeholder="Address 1" name="address1" [(ngModel)]="emergency.address1" required>
+				</mat-form-field>
+			</div>
+		</div>
+
+		<!-- address2 -->
+		<!-- <div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100">
+				<mat-form-field class="w-100">
+					<input matInput placeholder="Address 2" name="address2" [(ngModel)]="emergency.address2">
+				</mat-form-field>
+			</div>
+		</div> -->
+
+		<!-- city state -->
+		<div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<mat-label>
+						State</mat-label>
+					<mat-select #fac_state="ngModel" [(ngModel)]="emergency.state" name="state"
+						(selectionChange)="changeState($event.value)" (selectionChange)="select($event,'',0)" required>
+						<ngx-mat-select-search [(ngModel)]="staSearch" placeholderLabel="Select State"
+							noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+						<mat-option *ngFor="let item of statelist |stringFilterBy:staSearch:'name'" [value]="item.name"
+							(focus)="select(item.name,'',1)">
+							{{item.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>
+						City</mat-label>
+					<mat-select #city="ngModel" [(ngModel)]="emergency.city" name="city"
+						(selectionChange)="select('',$event,0)" required>
+						<ngx-mat-select-search [(ngModel)]="citSearch" placeholderLabel="Select City"
+							noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+						<mat-option *ngFor="let item of Citielist |stringFilterBy:citSearch:'name'" [value]="item.name"
+							(focus)="select('',item.name,1)">
+							{{item.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</div>
+
+		<!-- zip Relationship-->
+		<div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<input matInput type="text" placeholder="Zip" name="zip" [(ngModel)]="emergency.zip" mask="00000"
+						maxlength="5" minlength="5" required onPaste="return false">
+				</mat-form-field>
+			</div>
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>Relationship to Resident</mat-label>
+					<mat-select #relation="ngModel" [(ngModel)]="emergency.relation" name="relation" required>
+						<ngx-mat-select-search [(ngModel)]="relationSearch" placeholderLabel="Select Relationship"
+							noEntriesFoundLabel="Not Found" name="search">
+						</ngx-mat-select-search>
+
+						<mat-optgroup *ngFor="let group of resident_relationship" [label]="group.name"
+							[disabled]="group.disabled">
+							<mat-option *ngFor="let item of group.relations| stringFilterBy:relationSearch:'label'"
+								[value]="item.value">
+								{{item.label}}
+							</mat-option>
+						</mat-optgroup>
+
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</div>
+
+		<!-- contact order -->
+		<!-- <div class="d-flex justify-content-between form-row mt-10">
+			<div class="w-100">
+				<mat-form-field class="w-100">
+					<input matInput type="text" name="emergency_contact" placeholder="Emergency Contact Order"
+						[(ngModel)]="emergency.emergency_contact" maxlength="2" (keypress)="allowOnlyNumber($event)"
+						onPaste="return false">
+				</mat-form-field>
+			</div>
+		</div> -->
+		<div class="d-flex w-100">
+			<div class="mt-14 w-50">
+				<div class="w-100">
+					<mat-card-content>
+						<div class="justify-content-between w-100">
+							<div class="mb-10"
+								*ngFor="let item of type_of_contact; let i = index">
+								<div class="mt-10">
+									<div class="w-100 d-flex justify-content-between form-row">
+										<div class="unit_detail"> <span class="pr-8">{{item.label}}</span>
+											<mat-slide-toggle color="primary" class="pl-15 pr-15" [checked]="checkedValue.indexOf(item.label)>-1"
+												 name="type_of_contact" (change)="toggleTypeOfContact($event.checked,item)">
+											</mat-slide-toggle>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="mb-10">
+								<div class="mt-10">
+									<div class="w-100">
+										<div class="unit_detail"> <span class="pr-8">Can receive care notifications and information</span>
+											<mat-slide-toggle color="primary" class="pl-15 pr-15"
+												[checked]="emergency.can_recieve_care_info"
+												[(ngModel)]="emergency.can_recieve_care_info"
+												name="can_recieve_care_info">
+											</mat-slide-toggle>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</mat-card-content>
+				</div>
+			</div>
+			<div class="mt-14 pl-15 w-50">
+				<div class="w-100">
+					<mat-card-content>
+						<div class="justify-content-between w-100">
+
+							<div class="mb-10">
+								<div class="mt-10">
+									<div class="w-100 d-flex justify-content-between form-row">
+										<div class="unit_detail"> <span class="pr-8">Billing Contact</span>
+											<mat-slide-toggle color="primary" class="pl-15"
+												[checked]="emergency.billing_contact"
+												[(ngModel)]="emergency.billing_contact" name="billing_contact">
+											</mat-slide-toggle>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="mb-10" 
+							*ngFor="let item of type_of_contact_secondary; let i = index">
+							<div class="mt-10">
+								<div class="w-100 d-flex justify-content-between form-row">
+									<div class="unit_detail"> <span class="pr-8">{{item.label}}</span>
+										<mat-slide-toggle color="primary" class="pl-15" [checked]="checkedValue.indexOf(item.label)>-1"
+											 name="type_of_contact" (change)="toggleTypeOfContact($event.checked,item)">
+										</mat-slide-toggle>
+									</div>
+								</div>
+							</div>
+						</div>
+							
+
+							
+						</div>
+					</mat-card-content>
+				</div>
+			</div>
+
+		</div>
+		<!-- <div class="w-100">
+		<div class="unit_detail"> <span class="pr-8">Billing Contact</span>
+			<mat-slide-toggle color="primary" class="pl-15 pr-15" [checked]="emergency.billing_contact"
+				[(ngModel)]="emergency.billing_contact" name="billing_contact">
+			</mat-slide-toggle>
+		</div>
+	</div> -->
+
+		<div class="d-flex justify-content-between form-row mt-10 note_textarea">
+			<div class="w-100">
+				<p-editor [(ngModel)]="emergency.notes" placeholder="Enter notes" name="emergency_notes"	[style]="{'height':'120px'}">
+					<p-header>
+						<span class="ql-formats">
+							<button class="ql-bold" aria-label="Bold"></button>
+							<button class="ql-italic" aria-label="Italic"></button>
+							<button class="ql-underline" aria-label="Underline"></button>
+						</span>
+					</p-header>
+				</p-editor>
+				
+			</div>
+		</div>
+
+		<!-- <div class="w-100">
+		<div class="w-100">
+			<mat-form-field class="w-100">
+				<input matInput type="text" name="emergency_contact" placeholder="emergency contact order"
+					[(ngModel)]="emergency.emergency_contact" maxlength="2" required>
+			</mat-form-field>
+		</div>
+	</div> -->
+
+
+
+
+
+		<div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+			<button type="button" mat-button color="basic" (click)="onNoClick(f)" type="button" class="mr-10 cancel_btn p-0">Cancel</button>
+			<button mat-button color="primary" class="done_btn p-0" cdkFocusInitial type="submit"
+				(click)="onSubmit(f,emergency)">Done</button>
+		</div>
+	</div>
+
+</form>
+
+<ng-template #contactStatus let-data>
+	<div mat-dialog-content>
+		<p class="text-center mt-0">By assigning Power of Attorney to this contact it will unassign it from other
+			contact</p>
+	</div>
+	<div mat-dialog-actions class="text-center">
+		<button mat-flat-button (click)="onCancel()" color="primary" class="mr-10 "></button>
+		<button mat-flat-button cdkFocusInitial (click)="ChangeConfirm(data.emergency)" color="warn"
+			class="done_btn">Continue</button>
+	</div>
+
+</ng-template>

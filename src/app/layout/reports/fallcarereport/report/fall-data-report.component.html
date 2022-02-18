@@ -1,0 +1,272 @@
+
+<mat-card id="doc">
+  <mat-card-header>
+    <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+        <mat-card-title class="mb-0">Fall Care Report</mat-card-title>
+        <div class="report_export_btn d-flex align-center">
+          <button mat-stroked-button color="primary" (click)="openfallcare()" class="btn_Secondary" style="margin-right: 10px">
+            Run Another
+          </button>
+          <img *ngIf="resultcount && commonService.checkPrivilegeModule('reports','add')" (click)="exportXlsx()" class="export_image" src="assets/images/download-xls-icon.svg"/>
+          <img *ngIf="!resultcount && commonService.checkPrivilegeModule('reports','add')" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+          <img *ngIf="resultcount && commonService.checkPrivilegeModule('reports','add')" (click)="downloadAll()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+        </div>
+    </mat-card-subtitle>
+</mat-card-header>
+
+  <mat-card-content *ngIf="selectShift" class="head-page">
+    <div class="shifttimencreated d-flex align-items-center mb-20">
+      <div class="shifttime">
+        <h4 class="m-0">{{ selectShift }}</h4>
+      </div>
+
+      <div class="created">
+        <h4>Created by: {{ userName }}</h4>
+        <span>{{start_date | timezoneWiseMomentDate:timezone}}-{{end_date | timezoneWiseMomentDate:timezone}}</span>
+      </div>
+    </div>
+
+    <mat-card-content *ngIf="!resultcount">
+      <p style="text-align: center; color: #969393" class="message_text">No Data Found</p>
+    </mat-card-content>
+
+    <div *ngIf="resultcount">
+      <mat-accordion *ngFor="let reportItem of residentList">
+        <mat-expansion-panel
+          class="mb-10"
+          (opened)="panelOpenState = true"
+          (closed)="panelOpenState = false"
+          #mapanel="matExpansionPanel"
+        >
+          <mat-expansion-panel-header
+            class=""
+            (click)="expandPanel(reportItem._id.userData._id)"
+          >
+            <mat-panel-title class="align-items-center custom_font">
+              {{ reportItem._id.userData.last_name }},
+              {{ reportItem._id.userData.first_name }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <ng-container
+            *ngIf="this.fallResult[reportItem._id.userData._id] as items"
+          >
+            <ng-container *ngFor="let item of items">
+              <hr />
+              <div class="datareport">
+                <h3 class="rescustom m-0 pb-5">
+                  {{ item.trackcareList[0].residentData[0].last_name }},
+                  {{ item.trackcareList[0].residentData[0].first_name }}
+                </h3>
+                <div class="chart-wrapper">
+                  <div class="count">
+                    {{ caredate(item.trackcareList) }}
+                  </div>
+                  <div class="content_detail">
+                    <div class="unit_que">
+                      <p>Unit</p>
+                      <p>Date of Birth (DOB) :</p>
+                      <p>Age :</p>
+                      <p>Current Status :</p>
+                      <p>Care Level :</p>
+                      <p>Performer of Fall Care :</p>
+                    </div>
+                    <div class="unit_ans">
+                      <p>{{ item.trackcareList[0].roomData.room }}</p>
+                      <p>
+                        {{
+                          dob_date(item.trackcareList[0].residentData[0].dob)
+                        }}
+                      </p>
+                      <p>
+                        {{ cal_age(item.trackcareList[0].residentData[0].dob) }}
+                      </p>
+                      <p>
+                        {{
+                          item.trackcareList[0].residentData[0].resident_status
+                        }}
+                      </p>
+                      <p>{{ item.trackcareList[0].level }}</p>
+                      <p>
+                        {{ reportItem._id.userData.last_name }},
+                        {{ reportItem._id.userData.first_name }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-20 padding20 sc_que">
+                
+                <div class="que">
+                  <p>Head Injury</p>
+                </div>
+                <div class="ans">
+
+                  <p>
+                    {{getHeadInjury(item.trackcareList[0])}}
+                  </p>
+
+                 
+                </div>
+                </div>
+
+                <div class="mb-20 padding20 sc_que">
+                
+                  <div class="que">
+                    <p>Pain Level</p>
+                  </div>
+
+                  <div class="ans">
+                    <p>
+                      {{getPainLevel(item.trackcareList[0])}}
+                    </p>
+
+                  </div>
+                </div>
+
+
+              <div class="mb-20 padding20 symp">
+                <h4 class="m-0 pl-20">Notes</h4>
+                <p class="Symtomsdata">
+                  <span>
+                    <span *ngIf="item.trackcareList[0].notes">
+                      {{item.trackcareList[0].notes}}
+                    </span>
+                    <span *ngIf="!(item.trackcareList[0].notes)">
+                      null
+                    </span>
+                  </span>
+                </p>
+              </div>
+
+              
+            </ng-container>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #fallcare>
+  <div>
+      <form #f="ngForm" (ngSubmit)="fallCareSubmit(fallCareData,fallCareForm.valid)" [formGroup]="fallCareForm" class="example-form custom_font">
+          <div class="d-flex justify-content-between form-row pop_heading">
+              <h3>Falls</h3>
+              <div class="suspendUsers">
+                  <div class="switch_ann_header font_style">
+                      <p class="m-0">Include Archived Residents</p>
+                      <span class="activ">
+                          <mat-slide-toggle color="primary" [(ngModel)]="fallCareData.isresident"
+                              [ngModelOptions]="{standalone: true}"
+                              (change)="isArchiveResi($event.checked,'fall');fallCareData.isresident=$event.checked">
+                          </mat-slide-toggle>
+                      </span>
+                  </div>
+                  <div class="switch_ann_header font_style">
+                      <p class="m-0">Include Suspended Performers</p>
+                      <span class="activ">
+                          <mat-slide-toggle color="primary" [(ngModel)]="fallCareData.isachive"
+                              [ngModelOptions]="{standalone: true}"
+                              (change)="isArchiveData($event.checked,'fall');fallCareData.isachive=$event.checked">
+                          </mat-slide-toggle>
+                      </span>
+                  </div>
+              </div>
+          </div>
+          <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                  <mat-form-field class="w-100">
+                      <mat-label>Performer(s)</mat-label>
+                      <mat-select [(ngModel)]="fallCareData.user" formControlName="user" [multiple]="true" #multiSelect
+                          required>
+                          <mat-select-trigger>
+                              {{fallCareData.user.length}} items selected
+                          </mat-select-trigger>
+                          <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch"
+                              placeholderLabel="Select user" noEntriesFoundLabel="Not Found" name="search">
+                          </ngx-mat-select-search>
+                          <mat-option *ngIf="userlist" #allSelected (click)="selectAll('fall_all')" [value]="0">All
+                          </mat-option>
+                          <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'"
+                              [value]="item._id" (click)="selectUser(allSelected.viewValue,item._id,'fall')">
+                              {{item.value}}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                  <mat-form-field class="w-100">
+                      <mat-label>Shift(s)</mat-label>
+                      <mat-select [(ngModel)]="fallCareData.shift" (selectionChange)="changeShiftForVitals($event.value)"
+                          formControlName="shiftype" required>
+                          <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch"
+                              placeholderLabel="Select shift" noEntriesFoundLabel="Not Found" name="search">
+                          </ngx-mat-select-search>
+                          <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'"
+                              [value]="item.no">
+                              {{item.name}}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+          </div>
+          <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                  <mat-form-field class="w-100">
+                      <mat-label>Resident(s)</mat-label>
+                      <mat-select [(ngModel)]="fallCareData.resident" formControlName="resident" [multiple]="true"
+                          #multiSelect required>
+                          <mat-select-trigger *ngIf="fallCareData.resident && fallCareData.resident.length">
+                              {{allresident ? fallCareData.resident.length : fallCareData.resident.length - 1}} items
+                              selected
+                          </mat-select-trigger>
+                          <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch"
+                              placeholderLabel="Residents" noEntriesFoundLabel="Not Found" name="search">
+                          </ngx-mat-select-search>
+                          <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                              (click)="selectAllresidents('fall')" [value]="0">All
+                          </mat-option>
+                          <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'"
+                              [value]="filters.key"
+                              (click)="selectResident(selectedResident.viewValue,filters.key,'fall')">
+                              {{filters.value | titlecase}}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+
+              <div class="w-100 pl-15">
+                  <mat-form-field class="w-100">
+                      <mat-label>Fall Type</mat-label>
+                      <mat-select [(ngModel)]="fallCareData.fallType"
+                          formControlName="fallTypeSearch" required>
+                          <ngx-mat-select-search formControlName="fallTypeSearch" [(ngModel)]="fallTypeSearch"
+                              placeholderLabel="Fall Type" noEntriesFoundLabel="Not Found" name="search">
+                          </ngx-mat-select-search>
+                          <mat-option *ngFor="let item of Falltypes |stringFilterBy:fallTypeSearch:'name'"
+                              [value]="item.no">
+                              {{item.name}}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+          </div>
+          <div class="d-flex justify-content-between form-row">
+              <div class="w-50 pr-15">
+                
+                  <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)" placeholder="Select date range" [options]="options"></ngx-mat-drp>
+              </div>
+          </div>
+
+          <div class="d-flex justify-content-between btn_report_pop">
+              <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelFall()" type="button">Cancel</button>
+              <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+              
+            
+          </div>
+      </form>
+
+  </div>
+</ng-template>

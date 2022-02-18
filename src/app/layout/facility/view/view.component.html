@@ -1,0 +1,111 @@
+<mat-card *ngIf="facility">
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View Building</mat-card-title>
+        <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="editFacility(facility._id)">Edit</button>
+
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Organization<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_org?facility.fac_org.org_name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Building <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_name?facility.fac_name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Phone 1 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_phone1?facility.fac_phone1:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Phone 2 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_phone2?facility.fac_phone2:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        City <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_city?facility.fac_city:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        State <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_state?facility.fac_state:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zip 1 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_zip1?facility.fac_zip1:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zip 2 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_zip2?facility.fac_zip2:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Address <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{facility.fac_address1}} {{facility.fac_address2}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

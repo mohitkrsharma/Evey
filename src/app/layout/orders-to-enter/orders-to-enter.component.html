@@ -1,0 +1,51 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title>Orders to Enter</mat-card-title>
+        <div class="example-button-row text-right w-100">
+            <img class="export_image" src="assets/images/download-xls-icon.svg" (click)="exportOrdersToEnterXls()"/>
+            <!-- <img *ngIf="commonService.checkPrivilegeModule('reports','export') && !exportData" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" /> -->
+            <img class="export_imagepdf" (click)="onExportAsPDF()" src="assets/images/select-pdf.svg" />
+        </div>
+        <mat-card-subtitle class="w-100 mb-0">
+            
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="view-height-center">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" matSortDisableClear>
+
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames; let i=index;">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+
+                    <td mat-cell *matCellDef="let element"> 
+                        <span *ngIf="i !== 3">{{element[column.id]}}</span>
+                        <span *ngIf="i === 3" style="text-align: center;">
+                            <button mat-mini-fab style="height: 30px; width: 30px;" color="primary" (click)="enterToOrder(element)">
+                                <mat-icon >open_in_new</mat-icon>
+                            </button>
+                            <button style="margin-left: 5px;height: 30px; width: 30px;" (click)="removeOrder(element)" mat-mini-fab color="primary">
+                                <mat-icon>remove_circle</mat-icon>
+                            </button>
+                            <button style="margin-left: 5px;height: 30px; width: 30px;" (click)="deleteOrder(element)" mat-mini-fab color="primary">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </span>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <!-- <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+            [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator> -->
+    </mat-card-actions>
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

@@ -1,0 +1,231 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+
+.choose-field {
+  opacity: 0;
+  visibility: hidden;
+  overflow: visible;
+  position: absolute;
+  z-index: -9999;
+  display: none;
+}
+
+.choose-btn {
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+  background-color: #1975B8;
+  color: white;
+  box-sizing: border-box;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  outline: 0;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 0;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+  border-radius: 5px;
+  overflow: visible;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #28A5DE;
+  }
+}
+
+.mat-column-name,
+.mat-column-facility {
+  text-transform: capitalize;
+}
+
+span {
+  padding: 15px 0 !important;
+}
+
+.btn_Secondary {
+  margin: 0 0 0 5px !important;
+  @include btn-main;
+}
+
+.pharmacy_popup {
+
+  padding: 30px 20px 24px 20px !important;
+  max-height: 80vh !important;
+  overflow-y: auto;
+
+  .mt-10 {
+    margin-top: 14px !important;
+  }
+}
+
+.cancel_btn {
+  @include window_cancel;
+  background-color: transparent !important;
+}
+
+.done_btn {
+
+  @include window_done;
+  background-color: #fff !important;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+
+.basecolor {
+  color: #1975b8;
+}
+
+.cancel_icon {
+
+  color: #EE4035;
+  cursor: pointer;
+}
+
+h3 {
+  @include popup_heading;
+}
+
+.ann_heading {
+
+  margin-top: 30px;
+
+}
+
+
+.mat-card-content {
+  @include regular-text;
+}
+
+.mat-card {
+  @include regular-text;
+}
+
+.mr-15 {
+  margin-right: 15px !important;
+}
+
+.ml-15 {
+  margin-left: 15px !important;
+}
+
+.showHide {
+  visibility: hidden;
+}
+
+::ng-deep {
+
+  //    .diseaseicon {
+  //     left: 471.344px !important;
+  //     position: relative !important;
+  //     top: -42.3125px !important;
+  //    }
+  .mat-select-search-panel {
+    left: -21.672px;
+    position: relative;
+    top: 45.9875px;
+  }
+}
+
+// .no-content-icon {
+//   margin-top: 20px;
+//   height: 30px;
+// }
+
+.no-content {
+  margin-top: 20px;
+  color: grey;
+  font-family: 'SFProText-Regular' !important;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.mat-card-header .mat-card-title {
+    margin-bottom: 0px;
+}
+// .mat-column-actions {
+//     width: 32px !important;
+// }
+// .mat-column-code {
+//     width: 32px !important;
+// }
+
+.mat-header-cell {
+    font-size: 16px;
+    font-weight: 600;
+    color: #000 !important;
+}
+
+
+mat-table {
+  width: 100%;
+}
+
+.mat-column-name {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 1 !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+
+.mat-column-actions{
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 7% !important;
+    width: 7% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    justify-content: flex-end;
+}
+
+.mat-column-code{
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 1 !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    justify-content: flex-end;
+}
+.mat-column-active{
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 7% !important;
+    width: 7% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    justify-content: flex-end;
+}

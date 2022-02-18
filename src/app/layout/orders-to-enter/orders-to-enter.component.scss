@@ -1,0 +1,32 @@
+@import "./../../../styles/_cstm-variable.scss";
+
+.mat-column-resident_name {
+    text-transform: capitalize;
+}
+
+.btn_Secondary{
+    @include btn-main;
+} 
+
+.material-icons {
+    font-size: 14px !important;
+}
+  
+
+.export_image {
+    height: 40px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.export_imagepdf {
+    height: 46px;
+    cursor: pointer;
+    margin-left: 2px;
+}
+
+
+.export_imagepdf_unselect {
+    height: 41px;
+    margin-left: 2px;
+}

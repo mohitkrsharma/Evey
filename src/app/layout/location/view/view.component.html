@@ -1,0 +1,259 @@
+<mat-card *ngIf="location">
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>Location Information</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list class="custom_list">
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Name <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.name?location.name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider ></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Phone <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.phone?location.phone:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider ></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Address 1 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.line1?location.line1:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Address 2 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.line2?location.line2:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        City <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.city?location.city:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zip <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.zip?location.zip:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        State <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{location.state?location.state:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+
+
+        </mat-list>
+    </mat-card-content>
+    <!-- listing part -->
+</mat-card>
+
+<mat-card class="mt-20" *ngIf="room && room.length">
+    <mat-card-content class="view-height-center">
+        <mat-card-header class="d-flex justify-content-between align-center w-100">
+            <mat-card-title>Rooms</mat-card-title>
+        </mat-card-header>
+        <div class="table-responsive mt-20 header-fixed-table-wrpper">
+            <mat-list-item *ngFor="let r of room">
+                <div class="d-flex view-list w-100">
+                    <div class="w-100 pl-15">
+                        {{r}}
+                    </div>
+                    <!-- <div class="w-10 pl-15">
+                        <mat-icon color="primary">edit</mat-icon>
+                    </div>
+                    <div class="w-10">
+                        <mat-icon color="warn">delete</mat-icon>
+                    </div> -->
+                </div>
+                <mat-divider *ngIf="room && room.length > 1"></mat-divider>
+            </mat-list-item>
+            
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="mt-20" *ngIf="showQuestion">
+    <mat-card-content class="view-height-center">
+        <mat-card-header class="d-flex justify-content-between align-center w-100">
+            <mat-card-title>Questionnaire</mat-card-title>
+            <button #deleteButton mat-stroked-button (click)="deleteQues()">Delete</button>
+        </mat-card-header>
+        <div class="table-responsive mt-20 header-fixed-table-wrpper questionnaire">
+            <table mat-table [dataSource]="dataSource1" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" [matSortActive]="sortActive" [matSortDirection]="sortDirection"
+                #table cdkDropList [cdkDropListData]="dataSource" (cdkDropListDropped)="dropTable($event)">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef width="3%">
+                        <mat-checkbox color="primary" [(ngModel)]="checked1" (click)="selectAllQues()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElementQues(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef width="3%"> </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon style="pointer-events: all;" cdkDragHandle>zoom_out_map</mat-icon>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames1">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element"> {{element[column.id]}}</td>
+                </ng-container>
+                <ng-container matColumnDef="change_status">
+                    <th mat-header-cell *matHeaderCellDef> Status</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-slide-toggle (change)="changeStatus($event,elements._id)" color="primary"
+                            [checked]="elements.status">
+                        </mat-slide-toggle>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button mat-mini-fab color="primary" (click)="editQuestion(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="deleteQuestion(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns1; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns1;" cdkDrag [cdkDragData]="row"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #addQuestion>
+    <form [formGroup]="questionForm">
+        <div class="pop_heading">
+            <h3>{{(isEdit?"Edit":"Add")}} Question</h3>
+            <span class="">
+                <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+            </span>
+        </div>
+
+        <div class="newrule">
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label>Question Type</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-40">
+                        <mat-label>Question Type</mat-label>
+                        <mat-select formControlName="type" [(ngModel)]="question.type"
+                            (selectionChange)="getFieldType($event)">
+                            <ngx-mat-select-search formControlName="searchCtrl" [placeholderLabel]="'Search...'"
+                                [noEntriesFoundLabel]="'Not found'"></ngx-mat-select-search>
+                            <mat-option *ngFor="let item of filteredCountries | async" (click)="getFieldType($event)"
+                                [value]="item.type">{{item.name}}</mat-option>
+                        </mat-select>
+                        <!-- <mat-select formControlName="type" [(ngModel)]="question.type">
+                            <mat-option *ngFor="let item of Question_Types" (click)="getFieldType($event)"
+                                [value]="item.type">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select> -->
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label>Add Question</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Question here.." formControlName="question"
+                            [(ngModel)]="question.question" required>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+            <div class="selection" *ngIf="isOptionField">
+                <ng-container formArrayName="options">
+                    <div class="d-flex justify-content-between align-center form-row"
+                        *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                        <div class="w-20">
+                            <label>Option</label>
+                        </div>
+                        <div class="w-80 d-flex justify-content-between align-center">
+                            <span [ngClass]="btnClass"></span>
+                            <mat-form-field class="w-100">
+                                <input matInput type="text" placeholder="Option {{pointIndex + 1}}"
+                                    formControlName="label" [required]="pointIndex>1">
+                            </mat-form-field>
+                            <button *ngIf="pointIndex>1" class="addopt" (click)="removeOption(pointIndex)">-</button>
+                        </div>
+                    </div>
+                </ng-container>
+
+
+                <div class="d-flex justify-content-between align-center form-row"
+                    *ngIf="optionsPoints.controls.length<4">
+                    <div class="w-20">
+
+                    </div>
+                    <div class="w-80 d-flex justify-content-between align-center">
+                        <button class="addopt" (click)="addOption()">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="adtime">
+            <button mat-button color="basic" (click)="closeQuestionDialog()">Cancel</button>
+            <button mat-button color="primary" (click)="saveQuestionDialog()">Save</button>
+        </div>
+    </form>
+</ng-template>

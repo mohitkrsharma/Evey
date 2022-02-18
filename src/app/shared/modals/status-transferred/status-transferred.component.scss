@@ -1,0 +1,10 @@
+@import "./../../../../styles/_cstm-variable.scss";
+.cancel_btn { 
+    @include window_cancel;
+        background-color: transparent !important;
+    }
+     .done_btn { 
+    
+        @include window_done;
+         background-color: #fff !important;
+}

@@ -1,0 +1,437 @@
+<mat-card id="doc">
+
+    <mat-card-header *ngIf="selectShift">
+        <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+            <mat-card-title class="mb-0">Vitals Report</mat-card-title>
+            <div class="report_export_btn d-flex align-center">
+                <button mat-stroked-button color="primary" (click)="runNewReport()" class="btn_Secondary" style="margin-right: 10px;"> Run Another </button>
+                <img *ngIf="resultcount && commonService.checkPrivilegeModule('reports','export')" (click)="downloadAll()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content *ngIf="selectShift" class="head-page">
+
+        <div class="shifttimencreated d-flex align-items-center mb-20">
+
+            <div class="shifttime">
+                <h4 class="m-0">{{selectShift}}</h4>
+            </div>
+
+            <div class="created">
+                <h4>Created by: {{userName}}</h4>
+                <span>{{selected_start_date | timezoneWiseMomentDate:timezone}}-{{selected_end_date |
+                    timezoneWiseMomentDate:timezone}}</span>
+                <!-- <span>{{start_date | date:'MM/dd/yyyy'}} - {{end_date | date:'MM/dd/yyyy'}}</span> -->
+            </div>
+
+        </div>
+
+        <mat-card-content *ngIf="!resultcount">
+
+            <p style="text-align: center; color: #969393" class="message_text">No Data Found</p>
+
+        </mat-card-content>
+        <!-- <div class="number_details w-100">
+            <div class="resident w-100 mr-20">
+              <div class="text">
+                <h3>{{res_all}}</h3>
+                <span>Residents</span>
+            </div>
+            </div>
+          
+           <div class="resident w-100 mr-20">
+              <div class="text">
+                <h3>{{res_iso}}</h3>
+                <span>Residents in Isolation</span>
+            </div>
+            </div>
+          
+             <div class="resident w-100 ">
+              <div class="text">
+                <h3>{{res_po}}</h3>
+                <span>Tested Positive</span>
+            </div>
+            </div>
+          
+          </div> -->
+
+        <!-- <div class="table-wrapper table-responsive">
+            <table class="table table-striped listing" *ngIf="residentList">
+                <thead>
+                    <tr>
+                        <th>Performer</th>
+                        <th class="text-center">Total Cares Performed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let reportItem of residentList">
+                        <td>
+                            {{ reportItem._id.userData.last_name}}, {{ reportItem._id.userData.first_name}}
+                        </td>
+
+                        <td class="text-center">
+                            {{ reportItem?.total_rec }}
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <br> -->
+
+        <div *ngIf="resultcount && isGroupByUsers">
+            <mat-accordion *ngFor="let reportItem of residentList">
+
+                <mat-expansion-panel class="mb-10" [expanded]="residentList.length === 1"
+                    (opened)="panelOpenState = true" (closed)="panelOpenState = false" #mapanel="matExpansionPanel">
+                    <mat-expansion-panel-header class="" (click)="expandPanel(reportItem._id.userData._id)">
+                        <mat-panel-title class="align-items-center custom_font">
+                            {{ reportItem?._id?.userData?.last_name}}, {{ reportItem?._id?.userData?.first_name}}
+
+                        </mat-panel-title>
+
+                    </mat-expansion-panel-header>
+
+                    <ng-container *ngIf="this.vitalResults[reportItem._id.userData._id] as items">
+
+                        <ng-container *ngFor="let item of items">
+                            <hr>
+                            <!-- <span>{{item | json}}</span> -->
+                            <div class="datareport">
+                                <h3 class="rescustom m-0 pb-5">{{item.trackcareList[0].residentData[0].last_name}},
+                                    {{item.trackcareList[0].residentData[0].first_name}}</h3>
+                                <div class="chart-wrapper">
+                                    <div class="count">
+                                        {{ item.trackcareList ? caredate(item.trackcareList) : ''}}
+                                    </div>
+
+                                    <div class="content_detail">
+
+                                        <div class="unit_que">
+                                            <p>Unit </p>
+                                            <p>Date of Birth (DOB)</p>
+                                            <p>Age</p>
+                                            <p> Current Status</p>
+                                            <p>Care Level</p>
+                                            <p> Performer of Vitals</p>
+                                        </div>
+
+                                        <div class="unit_ans">
+
+                                            <p>{{item.trackcareList[0].roomData.room?item.trackcareList[0].roomData.room:'--'}}
+                                            </p>
+                                            <p>{{
+                                                dob_date(item.trackcareList[0].residentData[0].dob)?dob_date(item.trackcareList[0].residentData[0].dob)
+                                                :'--'}}</p>
+                                            <p>{{
+                                                cal_age(item.trackcareList[0].residentData[0].dob)?cal_age(item.trackcareList[0].residentData[0].dob)
+                                                :'--'}} </p>
+                                            <p>{{item.trackcareList[0].residentData[0].resident_status?item.trackcareList[0].residentData[0].resident_status
+                                                :'--'}}</p>
+                                            <p>{{item.trackcareList[0].level?item.trackcareList[0].level : '--'}}</p>
+                                            <p>{{ reportItem._id.userData.last_name}}, {{
+                                                reportItem._id.userData.first_name}}</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-10 mb-20 header-fixed-table-wrpper padding20 listing">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th class="table-border-color">Vitalss</th>
+                                        <th class="table-border-color">Outcome</th>
+                                        <th>Notes</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of item.trackcareList">
+                                            <td class="blood table-border-color">{{data.careData.name}}</td>
+                                            <td class="content table-border-color">{{ care_outcome(data) }}</td>
+                                            <td>{{ care_note(data) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <ng-container *ngIf="care_additional_notes(item) as careNote">
+                                <div class="addional_notes mb-20">
+                                    <h3 class="m-0 pb-5">Addional Notes</h3>
+                                    <div>{{ careNote }}</div>
+                                </div>
+                            </ng-container>
+
+                        </ng-container>
+                    </ng-container>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+        <div *ngIf="resultcount && isGroupByResident">
+            <mat-accordion *ngFor="let reportItem of residentList">
+
+                <mat-expansion-panel class="mb-10" [expanded]="residentList.length === 1"
+                    (opened)="panelOpenState = true" (closed)="panelOpenState = false" #mapanel="matExpansionPanel">
+                    <mat-expansion-panel-header class="" (click)="expandPanel(reportItem?._id?.residentData?._id[0])">
+                        <mat-panel-title class="align-items-center custom_font" style="text-transform:capitalize;">
+                            {{ reportItem?._id?.residentData?.last_name[0]}}, {{
+                            reportItem?._id?.residentData?.first_name[0]}}
+
+                        </mat-panel-title>
+
+                    </mat-expansion-panel-header>
+
+                    <ng-container *ngIf="this.vitalResults[reportItem?._id?.residentData?._id[0]] as items">
+
+                        <ng-container *ngFor="let item of items">
+                            <hr>
+                            <!-- <span>{{item | json}}</span> -->
+                            <div class="datareport">
+                                <!-- <h3 class="rescustom m-0 pb-5" >{{item.trackcareList[0].residentData[0].last_name}}, {{item.trackcareList[0].residentData[0].first_name}}</h3> -->
+                                <div class="chart-wrapper">
+                                    <div class="count">
+                                        {{ caredate(item.trackcareList) }}
+                                    </div>
+
+                                    <div class="content_detail">
+
+                                        <div class="unit_que">
+                                            <p>Unit</p>
+                                            <p>Date of Birth (DOB)</p>
+                                            <p>Age</p>
+                                            <p> Current Status</p>
+                                            <p>Care Level</p>
+                                            <p> Performer of Vitals</p>
+                                        </div>
+
+                                        <div class="unit_ans">
+
+                                            <p>{{item.trackcareList[0].roomData.room?item.trackcareList[0].roomData.room:'--'}}
+                                            </p>
+                                            <p>{{
+                                                dob_date(item.trackcareList[0].residentData[0].dob)?dob_date(item.trackcareList[0].residentData[0].dob)
+                                                :'--'}}</p>
+                                            <p>{{
+                                                cal_age(item.trackcareList[0].residentData[0].dob)?cal_age(item.trackcareList[0].residentData[0].dob)
+                                                :'--'}} </p>
+                                            <p>{{item.trackcareList[0].residentData[0].resident_status?item.trackcareList[0].residentData[0].resident_status
+                                                :'--'}}</p>
+                                            <p>{{item.trackcareList[0].level?item.trackcareList[0].level : '--'}}</p>
+                                            <p>{{ item.trackcareList[0].userData.last_name }}, {{
+                                                item.trackcareList[0].userData.first_name }}</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-10 mb-20 header-fixed-table-wrpper padding20 listing">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th class="table-border-color">Vital</th>
+                                        <th class="table-border-color">Outcome</th>
+                                        <th>Notes</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of item.trackcareList">
+                                            <td class="blood table-border-color">{{data.careData.name}}</td>
+                                            <td class="content table-border-color">{{ care_outcome(data) }}</td>
+                                            <td>{{ care_note(data) }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <ng-container *ngIf="care_additional_notes(item) as careNote">
+                                <div class="addional_notes mb-20">
+                                    <h3 class="m-0 pb-5">Addional Notes</h3>
+                                    <div>{{ careNote }}</div>
+                                </div>
+                            </ng-container>
+
+                        </ng-container>
+                    </ng-container>
+
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+        <div *ngIf="resultcount && isListAll">
+            <ng-container *ngFor="let item of vitalsReportData">
+                <hr>
+                <div class="datareport">
+                    <h3 class="rescustom m-0 pb-5">{{item.trackcareList[0].residentData[0].last_name}},
+                        {{item.trackcareList[0].residentData[0].first_name}}</h3>
+                    <div class="chart-wrapper">
+                        <div class="count">
+                            {{ caredate(item.trackcareList) }}
+                        </div>
+                        <div class="content_detail">
+                            <div class="unit_que">
+                                <p>Unit </p>
+                                <p>Date of Birth (DOB)</p>
+                                <p>Age</p>
+                                <p> Current Status</p>
+                                <p>Care Level</p>
+                                <p> Performer of Vitals</p>
+                            </div>
+                            <div class="unit_ans">
+                                <p>{{item.trackcareList[0].roomData.room?item.trackcareList[0].roomData.room :'--'}}</p>
+                                <p>{{
+                                    dob_date(item.trackcareList[0].residentData[0].dob)?dob_date(item.trackcareList[0].residentData[0].dob)
+                                    :'--' }}</p>
+                                <p>{{
+                                    cal_age(item.trackcareList[0].residentData[0].dob)?cal_age(item.trackcareList[0].residentData[0].dob)
+                                    :'--' }} </p>
+                                <p>{{item.trackcareList[0].residentData[0].resident_status?item.trackcareList[0].residentData[0].resident_status
+                                    :'--'}}</p>
+                                <p>{{item.trackcareList[0].level?item.trackcareList[0].level :'--'}}</p>
+                                <p>{{ item.trackcareList[0].userData.last_name}}, {{
+                                    item.trackcareList[0].userData.first_name}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive mb-20 header-fixed-table-wrpper padding20">
+                    <table class="table table-bordered">
+                        <thead>
+                            <th class="table-border-color">Vital</th>
+                            <th class="table-border-color">Outcome</th>
+                            <th>Notes</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of item.trackcareList">
+                                <td class="blood table-border-color">{{data.careData.name}}</td>
+                                <td class="content table-border-color">{{ care_outcome(data) }}</td>
+                                <td>{{ care_note(data) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <ng-container *ngIf="care_additional_notes(item) as careNote">
+                    <div class="addional_notes mb-20">
+                        <h3 class="m-0 pb-5">Addional Notes</h3>
+                        <div>{{ careNote }}</div>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #vitalsReport>
+    <div>
+        <form #f="ngForm" (ngSubmit)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)"
+            [formGroup]="vitalsReportForm" class="example-form custom_font">
+            <div class="d-flex justify-content-between form-row pop_heading">
+                <h3>Vitals</h3>
+                <div class="suspendUsers">
+                    <div class="switch_ann_header font_style">
+                        <p class="m-0">Include Archived Residents</p>
+                        <span class="activ">
+                            <mat-slide-toggle color="primary" [(ngModel)]="vitalreport.isresident"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="isArchiveResi($event.checked,'vital');vitalreport.isresident=$event.checked">
+                            </mat-slide-toggle>
+                        </span>
+                    </div>
+                    <div class="switch_ann_header font_style">
+                        <p class="m-0">Include Suspended Performers</p>
+                        <span class="activ">
+                            <mat-slide-toggle color="primary" [(ngModel)]="vitalreport.isachive"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="isArchiveData($event.checked,'vital');vitalreport.isachive=$event.checked">
+                            </mat-slide-toggle>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select User</mat-label>
+                        <mat-select [(ngModel)]="vitalreport.user" formControlName="user" [multiple]="true" #multiSelect
+                            required>
+                            <mat-select-trigger>
+                                {{vitalreport.user.includes(0) ? vitalreport.user.length - 1 : vitalreport.user.length}} items selected
+
+                            </mat-select-trigger>
+                            <ngx-mat-select-search formControlName="usSearch" [(ngModel)]="usSearch"
+                                placeholderLabel="Select user" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngIf="userlist" #allSelected (click)="selectAll('vital_all')" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let item of userlist |stringFilterBy:usSearch:'value'"
+                                [value]="item._id" (click)="selectUser(allSelected.viewValue,item._id,'vital')">
+                                {{item.value}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Select Shift</mat-label>
+                        <mat-select [(ngModel)]="vitalreport.shift"
+                            (selectionChange)="changeShiftForVitals($event.value)" formControlName="shiftype" required>
+                            <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch"
+                                placeholderLabel="Select shift" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'"
+                                [value]="item.no">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>Residents</mat-label>
+                        <mat-select [(ngModel)]="vitalreport.resident" formControlName="resident" [multiple]="true"
+                            #multiSelect required>
+                            <mat-select-trigger *ngIf="vitalreport.resident && vitalreport.resident.length">
+                                {{allresident ? vitalreport.resident.length : vitalreport.resident.length - 1}} items
+                                selected
+                            </mat-select-trigger>
+                            <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch"
+                                placeholderLabel="Residents" noEntriesFoundLabel="Not Found" name="search">
+                            </ngx-mat-select-search>
+                            <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                                (click)="selectAllresidents('vital')" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'"
+                                [value]="filters.key"
+                                (click)="selectResident(selectedResident.viewValue,filters.key,'vital')">
+                                {{filters.value | titlecase}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="w-100 pl-15">
+                    <!--  <mat-form-field class="w-100">
+                        <input matInput type="text" color="primary" ngxDaterangepickerMd [(ngModel)]="selected"
+                            [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges"
+                            [showDropdowns]="true" [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true"
+                            [showCancel]="true" [lockStartDate]="false" [ngModelOptions]="{standalone: true}"
+                            (change)="updateRange($event)" [customRangeDirection]="true" drops="down" opens="right"
+                            placeholder="Select date range" onPaste="return false" (keypress)="checkAllwoNum($event)"  />
+                        <mat-icon class="calender_icon calendrform">
+                            today
+                        </mat-icon>
+                    </mat-form-field> -->
+                    <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)"
+                        placeholder="Select date range" [options]="options"></ngx-mat-drp>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between btn_report_pop">
+                <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelVital()"
+                    type="button">Cancel</button>
+                <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>
+                <!-- <button mat-flat-button color="primary" (click)="vitalsReportSubmit(vitalreport,vitalsReportForm.valid)"
+                    class="btn_main_done">Run
+                </button> -->
+            </div>
+        </form>
+
+    </div>
+</ng-template>

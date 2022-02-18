@@ -1,0 +1,966 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title class="dash_heading" *ngIf="!editForm">Schedule an Activity</mat-card-title>
+        <mat-card-title class="dash_heading" *ngIf="editForm">Edit Activity Schedule - All Future Activities</mat-card-title>
+    </mat-card-header>
+    <div class="example-button-row text-right w-100">
+        <button mat-stroked-button color="primary" class="btn_main_don" (click)="openPreviewDialog()">Preview</button>
+    </div>
+
+    <!-- {{newCreatedEvent | json}} -->
+    <!-- [ngClass]=" firstactive ? 'active' : 'notactive' " -->
+<form #eventForm="ngForm" (ngSubmit)="onSubmitEvent()">
+
+    <!-- {{newCreatedEvent | json}} -->
+    <div class="care_scheduler blockactivity">
+        <div class="first carestep">
+            <div class="step_detail width-100">
+            <mat-expansion-panel class="no_drop_shadow" [expanded]="step1" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header>
+                <mat-panel-title>  
+                    <!-- <h5 class="text-description stepper-head">Step One</h5> <br/> -->
+
+                <div class="header m-2">
+                     <h4><span class="activity_step">Step One</span>Select a Category</h4>
+                </div>
+                </mat-panel-title>
+                </mat-expansion-panel-header>
+                
+                <div class="hidefopt" *ngIf="firstEdit">
+                    <div class="added">
+                        <div class="selectr">
+                            <mat-form-field class="w-100">
+                                <mat-label>Select Category</mat-label>
+                                <mat-select [(ngModel)]="newCreatedEvent.category" [ngModelOptions]="{standalone: true}" required (selectionChange)="addCategory()">
+                                    <!-- <ngx-mat-select-search [(ngModel)]="resSearch" placeholderLabel="Select Resident" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search> -->
+                                    <mat-option *ngFor="let category of categoriesList"[value]="category._id"> {{category.name | titlecase}} </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+            </div>
+        </div>
+        <div class="second carestep" >
+            <div class="step_detail width-100">
+                <mat-expansion-panel class="no_drop_shadow" [expanded]="step2" (opened)="setStep(1)" [disabled]="isDisabledCare">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                    <!-- <h5 class="text-description stepper-head">Step Two</h5> <br/> -->
+
+                <div class="header m-2">
+                    <h4><span class="activity_step">Step Two</span>Give the activity a title and description</h4>
+                </div>
+                </mat-panel-title>
+                 </mat-expansion-panel-header>
+                 <h5 class="text-description">Make sure the title clearly describes the activity and the description sumarizes what<br>
+                    they should expect by attending. There is no need to mention date and time in the<br>
+                    description. Just talk about the activity.</h5>
+                 <mat-form-field class="w-50">
+                    <mat-label>Title*</mat-label>
+                    <input type="text" matInput name="title"  [(ngModel)] = "newCreatedEvent.title">
+                </mat-form-field>
+                    <div class="justify-content-between align-center form-row nfc_label note_textarea pb-20" >
+                        <p-editor [(ngModel)]="newCreatedEvent.description" (ngModelChange)="valuechange($event)" placeholder="Enter Description*" name="description"
+                          [style]="{'height':'120px'}" required>
+                          <p-header>
+                            <span class="ql-formats">
+                              <button class="ql-bold" aria-label="Bold"></button>
+                              <button class="ql-italic" aria-label="Italic"></button>
+                              <button class="ql-underline" aria-label="Underline"></button>
+                              <button class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                                <!-- <select class="ql-align">
+                                    <option selected></option>
+                                    <option value="center"></option>
+                                    <option value="right"></option>
+                                    <option value="justify"></option>
+                                </select> -->
+                            </span>
+                          </p-header>
+                        </p-editor>
+                        <p class="tipactive">Tip: Keep the use of formatting to a minimum. Things like Bold and Itallics should be used sparingly only to accentuate small points.</p>
+                      </div>
+                <!-- <div class="float-r mt-10 mb-10">
+                    <button [disabled]="!newCreatedEvent.description ||  !newCreatedEvent.title" mat-raised-button class="ml-3 mb-3 btn_done" color="primary" (click)="setDescription(event)">
+                        Next
+                      </button>
+                </div> -->
+                
+                 </mat-expansion-panel>
+
+                
+                
+            </div>
+        </div>
+        <div class="third carestep" >
+            <div class="step_detail width-100">
+                <mat-expansion-panel class="no_drop_shadow overflow_show" [expanded]="step3" (opened)="setStep(2)" [disabled]="isDisabledDuration">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                    <!-- <h5 class="text-description stepper-head">Step Three</h5> <br/> -->
+
+                <div class="header m-2">
+                    <h4><span class="activity_step">Step Three</span>Select a location</h4> <!-- <span *ngIf="thirdEditOption" (click)="goForward('duration')" class="new_icon">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> edit</span> -->
+                </div>
+                </mat-panel-title>
+                 </mat-expansion-panel-header>
+                 <div class="float-content pb-20">
+                    <mat-slide-toggle (change)="changeOnGround(newCreatedEvent.onGround, $event )" [(ngModel)]="newCreatedEvent.onGround" [ngModelOptions]="{standalone: true}">On Grounds</mat-slide-toggle>
+                    <mat-form-field class="w-50">
+                       <mat-label>Location</mat-label>
+                       <mat-select *ngIf="newCreatedEvent.onGround" [(ngModel)]="newCreatedEvent.location"  [ngModelOptions]="{standalone: true}" (selectionChange)="setLocation(event)" required>
+                        <ngx-mat-select-search [(ngModel)]="locationSearch" placeholderLabel="Search Location" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+
+                        <mat-option [value]="0" (click)="addLocationPopup()">
+                            Add Location
+                            <!-- <mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor pl-60" role="img"
+                              aria-hidden="true">add_circle
+                            </mat-icon> -->
+                          </mat-option>
+                          <span *ngFor="let group of locationListOnGround | stringFilterBy:locationSearch:'name'; let i = index ;">
+                            
+                            <mat-optgroup [label]="group.name" *ngIf="group?.room && group?.room?.length" (click)="activeToggler(i,$event)">
+                                <mat-icon  class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon" mat-raised-button="" role="img"
+                                            *ngIf="group?.room && group?.room?.length && i != activeClassIndex">expand_more</mat-icon>
+                                            <mat-icon aria-hidden="true" class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon" mat-raised-button="" role="img"
+                                            *ngIf="group?.room && group?.room?.length && i === activeClassIndex">expand_less</mat-icon>
+                                <mat-option [class.active]="i === activeClassIndex" *ngFor="let r of group?.room" (click)="selectedRoom(group, r)" [value]="r">
+                                <span class="pl-5">{{r}}</span>
+                              </mat-option>
+                            </mat-optgroup>
+                            
+                            <mat-option *ngIf="!group?.room?.length && group.name" [class.active]="i === activeClassIndex" [value]="group._id">
+
+                                <span class="pl-5">
+                                    {{group.name}}
+                                </span>
+                            </mat-option>
+
+                        </span>
+                       </mat-select>
+                       <mat-select *ngIf="!newCreatedEvent.onGround" [(ngModel)]="newCreatedEvent.location"  [ngModelOptions]="{standalone: true}" (selectionChange)="setLocation(event)" required>
+                        <ngx-mat-select-search [(ngModel)]="locationSearch" placeholderLabel="Search Location" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                        <mat-option [value]="0" (click)="addLocationPopup()">
+                            Add Location
+                          </mat-option>
+                        <span *ngFor="let group of locationList | stringFilterBy:locationSearch:'name'; let i = index ;">
+                            
+                            <mat-optgroup [label]="group.name" *ngIf="group?.room && group?.room?.length" (click)="activeToggler(i,$event)">
+                                <mat-icon  class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon" mat-raised-button="" role="img"
+                                            *ngIf="group?.room && group?.room?.length && i != activeClassIndex">expand_more</mat-icon>
+                                            <mat-icon aria-hidden="true" class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon" mat-raised-button="" role="img"
+                                            *ngIf="group?.room && group?.room?.length && i === activeClassIndex">expand_less</mat-icon>
+                                <mat-option [class.active]="i === activeClassIndex" *ngFor="let r of group?.room" (click)="selectedRoom(group, r)" [value]="r">
+                                <span class="pl-5">{{r}}</span>
+                              </mat-option>
+                            </mat-optgroup>
+                            
+                            <mat-option *ngIf="!group?.room?.length && group.name" [class.active]="i === activeClassIndex" [value]="group._id">
+                                <span class="pl-5">
+                                    {{group.name}}
+                                </span>
+                            </mat-option>
+
+                        </span>
+                       </mat-select>
+                    </mat-form-field>
+                 </div>
+                 <!-- <div class="float-r mb-10">
+                    <button [disabled]="!newCreatedEvent.location" mat-raised-button class="ml-3 mb-3 btn_done" color="primary" (click)="setLocation(event)" >
+                        Next
+                      </button>
+                 </div> -->
+                 
+                
+                 </mat-expansion-panel >
+
+
+            </div>
+
+
+        </div>
+
+        <div class="forth carestep">
+             <div class="step_detail width-100">
+                <mat-expansion-panel class="no_drop_shadow overflow_show" [expanded]="step4" (opened)="setStep(3)" [disabled]="isDisabledBuilding">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                    <!-- <h5 class="text-description stepper-head">Step Four</h5> <br/> -->
+
+                <div class="header m-2">
+                    <h4><span class="activity_step">Step Four</span>Would you like to announce the event in other buildings?</h4> <!-- <span *ngIf="thirdEditOption" (click)="goForward('duration')" class="new_icon">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> edit</span> -->
+                </div>
+                </mat-panel-title>
+                 </mat-expansion-panel-header>
+                 <h5 class="text-description">Selecting multiple buildings will include the event on their activity announcement<br>
+                    monitors in public areas.</h5>
+                 <mat-form-field class="w-50 pb-20">
+                    <mat-label>Buildings</mat-label>
+                    <mat-select [(ngModel)]="newCreatedEvent.building" [ngModelOptions]="{standalone: true}" (selectionChange)="setBuilding(event)" multiple required>
+                        <mat-option *ngFor="let item of buildingList"
+                          [value]="item._id">
+                          {{item.fac_name}} </mat-option>
+                    </mat-select>
+                 </mat-form-field>
+                 <!-- <div class="float-r mb-10" *ngIf="showSkip">
+                    <button *ngIf="newCreatedEvent.building.length == 0" mat-raised-button color="primary" class="ml-3 mb-3 btn_done" (click)="setBuilding(event)" >
+                        Skip
+                      </button>
+                 </div> -->
+                 
+                 </mat-expansion-panel >
+
+
+            </div>
+
+
+        </div>
+
+        <div class="fifth carestep" >
+            <div class="step_detail width-100">
+                <mat-expansion-panel class="no_drop_shadow overflow_show" [expanded]="step5" (opened)="setStep(4)" [disabled]="isDisabledScheduleTime">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                    <!-- <h5 class="text-description stepper-head">Step Five</h5> <br/> -->
+
+                <div class="header m-2">
+                    <h4><span class="activity_step">Step Five</span>Schedule a time</h4> <!-- <span *ngIf="thirdEditOption" (click)="goForward('duration')" class="new_icon">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> edit</span> -->
+                </div>
+                </mat-panel-title>
+                 </mat-expansion-panel-header>
+
+                 <div class="hidetopt">
+                    <div class="selected_data w-100 nopad">
+                            <div class="selected_duration w-100 no_drop_shadow bdr_crd">
+                               
+                                
+                                <div class="d-flex">
+                                    <div class="w-100 pr-15 d-flex">
+                                        <div class="start mr-10">
+                                            <ng-container>
+                                                <mat-form-field class="w-100">
+                                                    <input matInput [disabled]="editForm" [matDatepicker]="picker_ci" [min]="minDate"  placeholder="Start Date" (click)="picker_ci.open()" (dateChange)="startDateChangeEvent('change', $event)" [(ngModel)]="newCreatedEvent.start_date" [ngModelOptions]="{standalone: true}" required>
+                                                    <mat-datepicker-toggle matSuffix [for]="picker_ci">
+                                                        <mat-icon matDatepickerToggleIcon>
+                                                            <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                                          </mat-icon>
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker_ci></mat-datepicker>
+                                                </mat-form-field>
+                                            </ng-container>
+                                        </div>
+                                        <div class="end mr-10">
+                                            <ng-container>
+                                                <mat-form-field class="w-100">
+                                                    <input matInput [matDatepicker]="picker2_ci" placeholder="End Date" [min]="minEndDate"  (click)="picker2_ci.open()" [ngModelOptions]="{standalone: true}" [(ngModel)]="newCreatedEvent.end_date">
+                                                    <mat-datepicker-toggle matSuffix [for]="picker2_ci">
+                                                        <mat-icon matDatepickerToggleIcon>
+                                                            <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                                          </mat-icon>
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #picker2_ci></mat-datepicker>
+                                                </mat-form-field>
+                                            </ng-container>
+                                         </div>
+
+
+
+                                       
+                                       
+                                    </div>
+                                    <div class="w-100 pl-15 ">
+                                        
+                                        <div class="reptime">
+                                            <ng-container>
+                                                <mat-form-field class="w-100">
+                                                    <mat-label>Repeats*</mat-label>
+                                                    <mat-select [(ngModel)]="newCreatedEvent.repeat" [ngModelOptions]="{standalone: true}" (selectionChange)="repeatChanged()">
+                                                        <ngx-mat-select-search [(ngModel)]="rSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                                        <mat-option *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'" [value]="option.key"> {{option.value}} </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <div class="timeset timeset_desc" *ngIf="this.newCreatedEvent['repeat_on'] && this.newCreatedEvent['repeat'] == 'every_week'">
+                                                <p>Occurs every {{ weekDayTextInForm(this.newCreatedEvent['repeat_on']) }}</p>
+                                            </div>
+                                            <div class="timeset timeset_desc" *ngIf="this.newCreatedEvent['repeat'] == 'every_month' || this.newCreatedEvent['repeat'] == 'every_year'">
+                                                <p *ngIf="this.newCreatedEvent['repeat_option'] == 'on_day'">Occurs <span *ngIf="this.newCreatedEvent['repeat'] == 'every_year'">every {{ newCreatedEvent.start_date | date: 'MMMM' }}</span><span *ngIf="this.newCreatedEvent['repeat'] == 'every_month'">on day</span> {{ newCreatedEvent.start_date | date: 'dd'}} </p>
+                                                <p *ngIf="this.newCreatedEvent['repeat_option'] == 'on_week_number'">Occurs <span *ngIf="this.newCreatedEvent['repeat'] == 'every_year'"> every year on the {{ newCreatedEvent.start_date | weekNumber | alphaNumber }} {{ newCreatedEvent.start_date | date: 'EEEE' }} of {{ newCreatedEvent.start_date | date: 'MMMM' }}</span> <span *ngIf="this.newCreatedEvent['repeat'] == 'every_month'"> on the {{ newCreatedEvent.start_date | weekNumber | alphaNumber }} {{ newCreatedEvent.start_date | date: 'EEEE' }}</span> </p>
+                                                <p *ngIf="this.newCreatedEvent['repeat_option'] == 'on_last_week'">Occurs <span *ngIf="this.newCreatedEvent['repeat'] == 'every_year'"> every year on the last {{ newCreatedEvent.start_date | date: 'EEEE' }} of {{ newCreatedEvent.start_date | date: 'MMMM' }}</span> <span *ngIf="this.newCreatedEvent['repeat'] == 'every_month'"> on the last {{ newCreatedEvent.start_date | date: 'EEEE' }}</span> </p>
+                                            </div>
+                                            <div class="timeset timeset_desc" *ngIf="newCreatedEvent['repeat'] == 'custom_weekly' || newCreatedEvent['repeat'] == 'custom_monthly' || newCreatedEvent['repeat'] == 'custom_yearly'">
+                                                <p *ngIf="newCreatedEvent['repeat_option']">
+                                                    {{getSchedulePerformingTimeString(newCreatedEvent)}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div class="w-110 pr-15 d-flex" >
+                                            <div class="start mr-10">
+                                                <label class="w-100 time-label">Start Time*</label>
+                                                
+                                                <ejs-timepicker [(ngModel)]="newCreatedEvent.start_time" [ngModelOptions]="{standalone: true}" (change)="updateLocationTimeChanged(newCreatedEvent, $event)" [class]="'pickerBorder' " [format]='formatString' [value]="newCreatedEvent.start_time" [required]="true" [min]="addPopupStartMin" [step]='15' [showClearButton]=false></ejs-timepicker>
+
+                                                <!-- <p-calendar class="w-100" timeOnly="true" hourFormat="24" [(ngModel)]="timeData.startTime" (onSelect)="updateCareTimeChanged(careData.Activity.key,ci,timeData)" [ngModelOptions]="{standalone: true}" [required]="true"> </p-calendar> '-->
+                                            </div>
+                                            <div class="end mr-10">
+                                                <label class="w-100 time-label ">End Time*</label>
+                                                
+                                                <ejs-timepicker [(ngModel)]="newCreatedEvent.end_time" [value]="newCreatedEvent.end_time"  [ngModelOptions]="{standalone: true}" [class]="'pickerBorder' " [format]='formatString' [required]="true" [step]='15' [showClearButton]=false  [min]="newCreatedEvent.start_time"></ejs-timepicker><!-- -->
+                                             </div>
+                                         <div class="add-mate-icon ic_plus"  *ngIf="!editForm">
+                                             <mat-icon _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                            mat-raised-button="" role="img" (click)="onSaveAddTime(newCreatedEvent)">add_circle </mat-icon>
+                                          </div>
+
+                                          
+
+                                    </div>
+
+                                    
+
+                                    <div class="w-100 pl-15">
+                                      
+                                    </div>
+
+                                </div>
+
+                                <div class="d-flex" *ngIf="!editForm" >
+                                        <span *ngIf="newCreatedEvent.time.length" class="w-100 added_time_list">
+                                            <ng-container *ngFor="let timeData of newCreatedEvent.time let i = index">
+                                                <div class="reponlytime remove_border_time w-100 new-date">
+                                                    <div class="start  mr-10 w-50">
+                                                        <label class="w-50 d-block time-label">Start Time</label>
+                                                        <ejs-timepicker [class]="'pickerBorder' " [format]='formatString' [value]="timeData.start" readonly="true"  [enabled]=false required [showClearButton]=false></ejs-timepicker>
+                                                    </div>
+                                                    <div class="end  mr-10 w-50">
+                                                        <label class="w-50 d-block time-label">End Time</label>
+                                                        <ejs-timepicker [value]="timeData.end"  [class]="'pickerBorder' " [format]='formatString' readonly="true"  [enabled]=false required [showClearButton]=false></ejs-timepicker>
+                                                    </div>
+                                                    <div class="cl">
+                                                        <div class="ic_mins">
+                                                            <mat-icon  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" *ngIf="this.newCreatedEvent.time.length"
+                                                            (click)="onRemoveTime(i)">remove_circle </mat-icon>
+                                                        </div>
+                                                        <!-- <mat-icon *ngIf="this.newCreatedEvent[ci].time.length"
+                                                            (click)="onRemoveTime(careData.care.key,i,ci)">close</mat-icon> -->
+                                                    </div>
+                                                </div>
+                                            </ng-container>               
+
+                                        </span>  
+                                </div>
+
+
+                            </div>
+                    </div>
+                   
+                </div>
+
+                 </mat-expansion-panel >
+
+
+            </div>
+
+
+        </div>
+
+                    <div class="nextcancel" *ngIf="!fifthdisable">
+                        <button mat-stroked-button color="" class="cancel-btn nolmar" (click)="cancelSchedule()">Cancel</button>
+                        <button mat-flat-button color="primary" [disabled]="!newCreatedEvent.start_date || !newCreatedEvent.start_time || !newCreatedEvent.end_time || !newCreatedEvent.repeat" (click)="done()" class="preview_btn">Done</button>
+                    </div>
+    </div>
+</form>
+</mat-card>
+
+<ng-template #addModal>
+    <div class="">
+      <div class="pop_heading">
+        <h3>{{(isEdit?"Edit Location":"Add Location")}} </h3>
+      </div>
+      <div class="newrule">
+        <ng-container>
+          <form #f="ngForm">
+  
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Location Name" name="name" [(ngModel)]="location.name" required>
+                </mat-form-field>
+              </div>
+              <!-- <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Type</mat-label>
+                  <mat-select [disabled]="isEdit" #type="ngModel" [(ngModel)]="location.type"
+                    (ngModelChange)="onTypeChange($event.value)" name="onTypeChange" required>
+                    <ngx-mat-select-search [(ngModel)]="typeSearch" placeholderLabel="Select Type"
+                      noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let item of careType |stringFilterBy:typeSearch:'value'" [value]="item.key">
+                      {{item.value}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+            </div>
+  
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Line1" name="line1" [(ngModel)]="location.line1" required>
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Line2" name="line2" [(ngModel)]="location.line2" required>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="City" name="city" [(ngModel)]="location.city" required>
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="State" name="line2" [(ngModel)]="location.state" required>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Zip" name="zip" [(ngModel)]="location.zip" required>
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Country" name="country" [(ngModel)]="location.country" required>
+                </mat-form-field>
+              </div>
+            </div>
+  
+  
+            <!-- record pain toggle -->
+            <div class="d-flex justify-content-between form-row">
+              <div class="mt-10 mb-10">
+                  <div class="d-flex align-items-center">
+                    On Grounds
+                      <mat-slide-toggle name="onGround" color="primary" [(ngModel)]="location.onGround"  class="pl-15"></mat-slide-toggle>
+                  </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between btm-margin">
+              <button mat-flat-button color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+              <button mat-flat-button  class="ml-10" color="primary" (click)="onSubmit(f)"
+                class="btn_main_done">Done</button>
+            </div>
+          </form>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+
+<ng-template #repeatChangeDialog>
+    <div class="pop_design ">
+        <h3><span *ngIf="getRepeatValue(this.newCreatedEvent['repeat']) != 'Never Repeat'">Repeat </span> {{getRepeatValue(this.newCreatedEvent['repeat'])}}</h3> <span class="">
+            <!-- <mat-icon (click)="closeRepeatDialog()">close</mat-icon> -->
+        </span>
+    </div>
+    <div class="form cstm_radio_new">
+        <div class="">
+            
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat == 'never'">
+                <p class="care_detail">This scheduled Activity will never repeat.</p>
+            </div> 
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_day'">
+                <p class="care_detail">Occur(s) everyday</p>
+            </div> 
+
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_week'">
+                <p class="care_detail"> Occur(s) every {{ weekDayTextInForm(this.newCreatedEvent.repeat_on) }}</p>
+            </div> 
+
+            <div class="timeset timeset_desc list_option_radio" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_month'">
+                <p>Would you like to repeat Activity on the {{ newCreatedEvent.start_date | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                    <span *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">, the {{ newCreatedEvent.start_date | weekNumber | alphaNumber }} {{ newCreatedEvent.start_date | date: 'EEEE' }} </span>
+                    <span *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4"> or the last {{ newCreatedEvent.start_date | date: 'EEEE' }}</span>  of every month?
+                </p>
+            </div> 
+
+            <div class="timeset timeset_desc list_option_radio" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_year'">
+                <p>Would you like to repeat Activity on the {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}} 
+                <span *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">, the {{ newCreatedEvent.start_date | weekNumber | alphaNumber }} {{ newCreatedEvent.start_date | date: 'EEEE' }} </span>
+                <span *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4"> or the last {{ newCreatedEvent.start_date | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>    
+                 annually?</p>
+            </div> 
+
+
+            <!-- <div class="timeset timeset_desc" *ngIf="this.newCreatedEvent['repeat'] == 'every_month' || this.newCreatedEvent['repeat'] == 'every_year'">
+                <p *ngIf="this.newCreatedEvent['repeat_option'] == 'on_day'">Occurs <span *ngIf="this.newCreatedEvent['repeat'] == 'every_year'">every {{ newCreatedEvent.start_date | date: 'MMMM' }}</span><span *ngIf="this.newCreatedEvent['repeat'] == 'every_month'">on day</span> {{ newCreatedEvent.start_date | date: 'dd'}} </p>
+                <p *ngIf="this.newCreatedEvent['repeat_option'] == 'on_week_number'">Occurs <span *ngIf="this.newCreatedEvent['repeat'] == 'every_year'"> every year on the {{ newCreatedEvent.start_date | weekNumber | alphaNumber }} {{ newCreatedEvent.start_date | date: 'EEEE' }} of {{ newCreatedEvent.start_date | date: 'MMMM' }}</span> <span *ngIf="this.newCreatedEvent['repeat'] == 'every_month'"> on the {{ newCreatedEvent.start_date | weekNumber | alphaNumber }} {{ newCreatedEvent.start_date | date: 'EEEE' }}</span> </p>
+                <p *ngIf="this.newCreatedEvent['repeat_option'] == 'on_last_week'">Occurs <span *ngIf="this.newCreatedEvent['repeat'] == 'every_year'"> every year on the last {{ newCreatedEvent.start_date | date: 'EEEE' }} of {{ newCreatedEvent.start_date | date: 'MMMM' }}</span> <span *ngIf="this.newCreatedEvent['repeat'] == 'every_month'"> on the last {{ newCreatedEvent.start_date | date: 'EEEE' }}</span> </p>
+            </div>   -->    
+
+            <div class="timeset" *ngIf="this.scheduleRepeat.repeat == 'every_month' || this.scheduleRepeat.repeat == 'every_year'">
+                <mat-radio-group class="selyear radio-group" aria-label="Select an option" [ngModel]="this.scheduleRepeat.repeat_option" [ngModelOptions]="{standalone: true}">
+                    <ng-container>
+                        
+                        <mat-radio-button value="on_day" name="repeat_option" (change)="radioRepeatChange($event)"> 
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">{{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                                <span *ngIf="this.scheduleRepeat.repeat == 'every_month'"></span> 
+                                {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                            <!-- </button>   -->
+                        </mat-radio-button>
+
+                    </ng-container>
+
+                    <ng-container *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">
+                        <mat-radio-button value="on_week_number" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ dayNamesShort(this.scheduleRepeat.startDate) }}<span *ngIf="this.scheduleRepeat.repeat == 'every_year'"> of {{ this.scheduleRepeat.startDate | date: 'MMM' }}</span> 
+                            <!-- </button> -->
+                        </mat-radio-button>
+                    </ng-container>
+
+                    <ng-container *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4">
+                        <mat-radio-button value="on_last_week" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                Last {{ dayNamesShort(this.scheduleRepeat.startDate) }}<span *ngIf="this.scheduleRepeat.repeat == 'every_year'"> of {{ this.scheduleRepeat.startDate | date: 'MMM' }}</span> 
+                            <!-- </button> -->
+                        </mat-radio-button>
+                    </ng-container>
+                </mat-radio-group>
+            </div>
+
+            <div class="timeset activity-schedule" *ngIf="this.scheduleRepeat.repeat == 'every_month' || this.scheduleRepeat.repeat == 'every_year'">
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_day'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class=" font-modal"><!-- {{ this.newCreatedEvent.Activity.value }} --> Activity will occur 
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on {{ this.scheduleRepeat.startDate | date: 'MMM' }} {{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on </span> {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}} {{ newCreatedEvent.start_date | date: 'EEEE' }}
+                </p>
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_week_number'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class=" font-modal"><!-- {{ this.newCreatedEvent.Activity.value }} --> Activity will occur 
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on  {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ this.scheduleRepeat.startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span> 
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ this.scheduleRepeat.startDate | date: 'EEEE' }}</span>
+                </p>
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_last_week'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class=" font-modal"><!-- {{ this.newCreatedEvent.Activity.value }} --> Activity will occur 
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on the last {{ this.scheduleRepeat.startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span> 
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on the last {{ this.scheduleRepeat.startDate | date: 'EEEE' }}</span>
+                </p>
+            </div> 
+
+        </div>
+    </div>
+    <div class="adtime mt-0">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done" (click)="saveRepeatDialog()">Done</button>
+    </div>
+</ng-template>
+
+<ng-template #callRepeatDialog>
+    <div class="pop_heading">
+        <h3>Repeat</h3> <span class="">
+            <mat-icon (click)="closeRepeatDialog()">close</mat-icon>
+        </span>
+    </div>
+    <div class="form">
+        <!-- <div class="lbl"><label>Start date</label></div> -->
+        <div class="repinfo">
+             <!--<div class="selectdate">
+               <label>Start Date</label>
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker" placeholder="Start Date" [min]="minDate" (dateChange)="startDateChangeEvent('change', $event)" [(ngModel)]="scheduleRepeat.startDate" [ngModelOptions]="{standalone: true}" required readonly>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field> 
+            </div>-->
+            <div class="repdayweek cstm_class_repeat">
+                <div class="form_row">
+                    <label>Start Date</label>
+                    <div class="date">
+                        <mat-form-field>                                          
+                            <input matInput [matDatepicker]="picker" [min]="minDate" (dateChange)="startDateChangeEvent('change', $event)" (click)="picker.open()" [(ngModel)]="scheduleRepeat.startDate" [ngModelOptions]="{standalone: true}" required>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                        <!-- {{ scheduleRepeat.startDate | date: 'mediumDate'}} -->
+                    </div>
+                </div>
+                <div class="rht">
+                    <div class="form_row">
+                        <label>Repeat every</label>
+                        <div class="ldrep">
+                            <div class="day" *ngIf="scheduleRepeat.repeat !== 'every_year'">
+                                <mat-form-field>
+                                    <mat-select [(ngModel)]="scheduleRepeat.repeat_tenure" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true">
+                                        <ngx-mat-select-search [(ngModel)]="nSearch" placeholderLabel="Select Repeat" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <mat-option *ngFor="let i of arrayNumber(10) |stringFilterBy:nSearch:'i'" [value]="i"> {{i}} </mat-option>
+                                    </mat-select>
+                                    <!--  <mat-select [(ngModel)]="scheduleRepeat.repeat_tenure" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true">
+                                        <mat-option *ngFor="let i of arrayNumber(10)" [value]="i">
+                                            {{i}}
+                                        </mat-option>
+                                    </mat-select> -->
+                                </mat-form-field>
+                            </div>
+                            <div class="rep">
+                                <mat-form-field>
+                                    <mat-select [(ngModel)]="scheduleRepeat.repeat" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" (selectionChange)="repeatPopChanged()">
+                                        <ngx-mat-select-search [(ngModel)]="rSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <ng-container *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'">
+                                            <mat-option *ngIf="option.key != 'never'" [value]="option.key"> {{option.value}} </mat-option>
+                                            <!-- <mat-option *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'" [value]="option.key">
+                                            {{option.value}}
+                                          </mat-option> -->
+                                        </ng-container>
+                                    </mat-select>
+                                    <!-- <mat-select [(ngModel)]="scheduleRepeat.repeat" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" (selectionChange)="repeatPopChanged()" >
+                                        <ng-container *ngFor="let option of repeatOptions" >
+                                            <mat-option *ngIf="option.key != 'never'"  [value]="option.key">
+                                                {{option.value}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select> -->
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="customradio" *ngIf="scheduleRepeat.repeat == 'every_week' || scheduleRepeat.repeat == 'every_day' ">
+                        <div class="rd_hol">
+                            <input type="checkbox" id="M" value="Monday" [(ngModel)]="scheduleRepeat.repeat_on.monday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.monday" (change)="weekDayChanged($event)">
+                            <label for="M"><span>M</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="T" value="Tuesday" [(ngModel)]="scheduleRepeat.repeat_on.tuesday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.tuesday" (change)="weekDayChanged($event)">
+                            <label for="T"><span>T</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="W" value="Wednesday" [(ngModel)]="scheduleRepeat.repeat_on.wednesday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.wednesday" (change)="weekDayChanged($event)">
+                            <label for="W"><span>W</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="Th" value="Thursday" [(ngModel)]="scheduleRepeat.repeat_on.thursday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.thursday" (change)="weekDayChanged($event)">
+                            <label for="Th"><span>T</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="F" value="Friday" [(ngModel)]="scheduleRepeat.repeat_on.friday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.friday" (change)="weekDayChanged($event)">
+                            <label for="F"><span>F</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="Sa" value="Saturday" [(ngModel)]="scheduleRepeat.repeat_on.saturday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.saturday" (change)="weekDayChanged($event)">
+                            <label for="Sa"><span>S</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="Su" [(ngModel)]="scheduleRepeat.repeat_on.sunday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.sunday" (change)="weekDayChanged($event)">
+                            <label for="Su"><span>S</span></label>
+                        </div>
+                    </div>
+                    <div class="yearSelction">
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_day'">
+                            <p class="care_detail">{{ careData.Activity.value }} Occurs every day</p>
+                        </div>
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_week'">
+                            <p class="care_detail">{{ careData.Activity.value }} Occurs every {{ weekDayText() }}</p>
+                        </div>
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_month' || scheduleRepeat.repeat == 'every_year'">
+                            <mat-radio-group class="selyear" aria-label="Select an option" [ngModel]="scheduleRepeat.repeat_option" [ngModelOptions]="{standalone: true}">
+                                <ng-container>
+                                    <mat-radio-button value="on_day" name="repeat_option" (change)="radioRepeatChange($event)">On <span *ngIf="scheduleRepeat.repeat == 'every_year'">{{ scheduleRepeat.startDate | date: 'MMMM' }}</span><span *ngIf="scheduleRepeat.repeat == 'every_month'">day</span> {{ scheduleRepeat.startDate | date: 'dd'}} </mat-radio-button>
+                                </ng-container>
+                                <ng-container *ngIf="4 >= (scheduleRepeat.startDate | weekNumber : listfilterChar)">
+                                    <mat-radio-button value="on_week_number" name="repeat_option" (change)="radioRepeatChange($event)">On the {{ scheduleRepeat.startDate | weekNumber | alphaNumber }} {{ scheduleRepeat.startDate | date: 'EEEE' }}<span *ngIf="scheduleRepeat.repeat == 'every_year'"> of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> </mat-radio-button>
+                                </ng-container>
+                                <ng-container *ngIf="(scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4">
+                                    <mat-radio-button value="on_last_week" name="repeat_option" (change)="radioRepeatChange($event)">On the last {{ scheduleRepeat.startDate | date: 'EEEE' }}<span *ngIf="scheduleRepeat.repeat == 'every_year'"> of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> </mat-radio-button>
+                                </ng-container>
+                            </mat-radio-group>
+                        </div>
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_month' || scheduleRepeat.repeat == 'every_year'">
+                            <p *ngIf="scheduleRepeat.repeat_option == 'on_day'">Occurs <span *ngIf="scheduleRepeat.repeat == 'every_year'">every {{ scheduleRepeat.startDate | date: 'MMMM' }}</span><span *ngIf="scheduleRepeat.repeat == 'every_month'">on day</span> {{ scheduleRepeat.startDate | date: 'dd'}}</p>
+                            <p *ngIf="scheduleRepeat.repeat_option == 'on_week_number'">Occurs <span *ngIf="scheduleRepeat.repeat == 'every_year'"> every year on the {{ scheduleRepeat.startDate | weekNumber | alphaNumber }} {{ scheduleRepeat.startDate | date: 'EEEE' }} of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> <span *ngIf="scheduleRepeat.repeat == 'every_month'"> on the {{ scheduleRepeat.startDate | weekNumber | alphaNumber }} {{ scheduleRepeat.startDate | date: 'EEEE' }}</span></p>
+                            <p *ngIf="scheduleRepeat.repeat_option == 'on_last_week'">Occurs <span *ngIf="scheduleRepeat.repeat == 'every_year'"> every year on the last {{ scheduleRepeat.startDate | date: 'EEEE' }} of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> <span *ngIf="scheduleRepeat.repeat == 'every_month'"> on the last {{ scheduleRepeat.startDate | date: 'EEEE' }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="adtime">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done" (click)="saveRepeatDialog()">Done</button>
+    </div>
+</ng-template>
+
+<!-- Weeekly -->
+<ng-template #customweekly>
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Weekly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+    
+        <div>
+            <mat-form-field class="w-50 wd-170">
+                <mat-label>Every...</mat-label>
+                <mat-select [(ngModel)]="newCreatedEvent['repeat_tenure']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of weekList |stringFilterBy:weekSearch:'key'" [value]="option.value">
+                        {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="d-flex mr-10 mt-20">
+            <div class="customradio">
+                <div class="rd_hol">
+                    <input type="checkbox" id="Su" [(ngModel)]="newCreatedEvent.repeat_on.sunday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.sunday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Su"><span>Sun</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="M" value="Monday"
+                        [(ngModel)]="newCreatedEvent.repeat_on.monday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.monday"
+                        (change)="weekDayChanged($event)">
+                    <label for="M"><span>Mon</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="T" value="Tuesday"
+                        [(ngModel)]="newCreatedEvent.repeat_on.tuesday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.tuesday"
+                        (change)="weekDayChanged($event)">
+                    <label for="T"><span>Tues</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="W" value="Wednesday"
+                        [(ngModel)]="newCreatedEvent.repeat_on.wednesday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.wednesday"
+                        (change)="weekDayChanged($event)">
+                    <label for="W"><span>Wed</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="Th" value="Thursday"
+                        [(ngModel)]="newCreatedEvent.repeat_on.thursday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.thursday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Th"><span>Thurs</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="F" value="Friday"
+                        [(ngModel)]="newCreatedEvent.repeat_on.friday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.friday"
+                        (change)="weekDayChanged($event)">
+                    <label for="F"><span>Fri</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="Sa" value="Saturday"
+                        [(ngModel)]="newCreatedEvent.repeat_on.saturday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="newCreatedEvent.repeat_on.saturday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Sa"><span>Sat</span></label>
+                </div>
+            </div>
+    
+        </div>
+        <div class="d-flex mr-10 mt-20 mb-5 activity-schedule">
+            <span class="font-modal" style="width: 100%;">{{getSchedulePerformingTimeString(newCreatedEvent)}}</span>
+            <!-- <span>{{careString}}</span> -->
+        </div>
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(newCreatedEvent)">Done</button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Monthly -->
+<ng-template #custommonthly>
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Monthly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+    
+        <div class="d-flex mr-10 mt-20">
+            <div class="w-50 pr-15">
+                <mat-form-field class="w-100">
+                    <mat-label>Every...</mat-label>
+                    <mat-select [(ngModel)]="newCreatedEvent['repeat_tenure']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="monthSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of monthList |stringFilterBy:monthSearch:'key'"
+                            [value]="option.value"> {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>On the...</mat-label>
+                    <mat-select [(ngModel)]="newCreatedEvent['month_date']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="daySearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of monthDayList |stringFilterBy:daySearch:'name'"
+                            [value]="option.value"> {{option.name}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    
+        <div class="d-flex mr-10 mt-20 activity-schedule">
+            <span style="width: 100%;"
+                class="font-modal font-modal">{{getSchedulePerformingTimeString(newCreatedEvent)}}</span>
+            <!-- <span>{{careString}}</span> -->
+        </div>
+    
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(this.newCreatedEvent)">Done</button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Yearly -->
+<ng-template #customyearly>
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Yearly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+    
+        <div class="d-flex mr-10 mt-20">
+            <div class="w-50 pr-15">
+                <mat-form-field class="w-100">
+                    <mat-label>Every...</mat-label>
+                    <mat-select [(ngModel)]="newCreatedEvent['repeat_tenure']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="yearSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of yearList |stringFilterBy:yearSearch:'key'" [value]="option.value">
+                            {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>In the Month of...</mat-label>
+                    <mat-select (selectionChange)="checkWeekNumbers(newCreatedEvent['month_date'])"
+                        [(ngModel)]="newCreatedEvent['month_date']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="monthNameSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of monthNameList |stringFilterBy:monthNameSearch:'key'"
+                            [value]="option.value"> {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>On the...</mat-label>
+                    <mat-select [(ngModel)]="newCreatedEvent['repeat_option']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="customrepeatSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of customRepeat |stringFilterBy:customrepeatSearch:'key'"
+                            [value]="option.value"> {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>Day</mat-label>
+                    <mat-select [(ngModel)]="newCreatedEvent['repeat_on']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of customWeekDayList |stringFilterBy:weekSearch:'name'"
+                            [value]="option"> {{option.name | titlecase}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    
+        <div class="d-flex mr-10 mt-10 activity-schedule">
+            <span style="width: 100%;"
+                class="font-modal font-modal">{{getSchedulePerformingTimeString(newCreatedEvent)}}</span>
+        </div>
+    
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(newCreatedEvent)">Done</button>
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #openPreview>
+    <h3 class="mt-10">Preview</h3>
+    <div class="assigned">
+        <h3>{{categoryName ? categoryName : ''}}</h3>
+
+
+        <div class="lbl">
+    
+            <h4>{{newCreatedEvent.title}}</h4>
+            <!-- <span>{{ ruleTaskCount() }}</span> -->
+        </div>
+    
+        <div class="description">
+            
+            <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe explicabo doloremque earum voluptatem, amet doloribus excepturi ad temporibus nisi numquam! Hic sunt ad deserunt vero! Voluptate inventore nam animi consectetur?</p> -->
+            <p class="tile-data"
+            [innerHTML]="newCreatedEvent ? newCreatedEvent.description : ''">
+    
+        </div>
+    
+        <div class="date-label">
+            {{ newCreatedEvent.start_date | date:'EEEE, MMMM d' }} at {{ newCreatedEvent.start_time | date:'h:mm a' }}  - {{ newCreatedEvent.end_time | date: 'h:mm a'}}
+        </div>
+    
+        <div class="address">
+            <br>
+            
+            <p ><mat-icon class="location"> location_on</mat-icon> {{previewLocation ? previewLocation.name : ''}}</p><br>
+            {{previewLocation ? previewLocation.line1 : ''}} {{previewLocation ? previewLocation.line2 : ''}}<br>
+            {{previewLocation ? previewLocation.city : ''}} {{previewLocation ? previewLocation.state : ''}}<br>
+
+            {{previewLocation ? previewLocation.country : ''}}<br>
+            {{previewLocation ? previewLocation.phone : ''}}
+
+        </div>
+    </div>
+
+    <div class="float-r mt-10">
+        <button mat-button color="primary" (click)="closePreviewDialog()">Done</button>
+    </div>
+   
+</ng-template>

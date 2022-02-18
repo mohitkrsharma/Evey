@@ -1,0 +1,678 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center mb-3">
+        <mat-card-title>Scheduling</mat-card-title>
+        <mat-card-subtitle *ngIf='showFilter'>
+            <form [formGroup]="scheduleReportForm">
+             <!-- filter user data -->
+                <ng-container>
+                    <div class="d-flex justify-content-between form-row mt-20">
+                        <!-- old resident select start -->
+                        <!-- <div class="w-50 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Select Resident</mat-label>
+                                <mat-select [(ngModel)]="resident"(selectionChange)="residentFilter($event.value,'filter')" name="resident">
+                                    <ngx-mat-select-search [(ngModel)]="resSearch" placeholderLabel="Select Resident" noEntriesFoundLabel="Not Found"
+                                    name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of residentslist |stringFilterBy:resSearch:'name'" [value]="item.value">
+                                    {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>  -->
+                        <!-- old resident select ends -->
+
+                        <!-- new resident select start -->
+                        <div class="w-50 pr-15">
+                            <mat-form-field class="w-100">
+                            <mat-label>Residents</mat-label>
+                            <mat-select [(ngModel)]="scheduleReport.resident" [multiple]="true" #multiSelect formControlName="resident" (selectionChange)="changeResident($event.value)"
+                                required>
+                                <mat-select-trigger *ngIf="scheduleReport.resident && scheduleReport.resident.length">
+                                    {{scheduleReport.resident.length}} items
+                                    selected
+                                  </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="resSearch" [(ngModel)]="resSearch" placeholderLabel="Select Resident" noEntriesFoundLabel="Not Found"
+                                    name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                                (click)="selectAllresidents()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let item of residentslist |stringFilterBy:resSearch:'name'" [value]="item.value"
+                                (click)="selectResident(selectedResident.viewValue)">
+                                {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- new resident select ends -->
+
+                        <div class="w-50 pr-15 pl-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Select Shift</mat-label>
+                                <mat-select formControlName="shift" [(ngModel)]="shift"(selectionChange)="changeShift($event.value)" name="shift">
+                                    <ngx-mat-select-search formControlName="shiftSearch" [(ngModel)]="shiftSearch" placeholderLabel="Select Shifts" noEntriesFoundLabel="Not Found"
+                                    name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiftSearch:'name'" [value]="item">
+                                    {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div> 
+
+                        <div class="d-flex mt-15 pl-15">
+                            <!-- <button mat-flat-button class="ml-10" color="primary" (click)="getScheduleData(scheduleReport, scheduleReportForm.valid)" class="main_btn mr-10">Run</button> -->
+                            <button mat-flat-button class="ml-10" color="primary" (click)="resetFilter()" class="main_btn">Reset</button>
+                        </div>                  
+                    </div>
+                    
+                </ng-container>
+            </form>
+        </mat-card-subtitle>
+    </mat-card-header>
+    <div class="d-flex justify-content-between align-center mb-40">
+        <div class="example-button-row d-flex align-center">
+            <button *ngIf="scheduleDate && minDate" mat-stroked-button color="primary" [class.disabled_btn]="checkPrevious(scheduleDate,minDate)" [disabled]="checkPrevious(scheduleDate,minDate)" class="main_btn mr-10 ml-0" (click)="gotoPreviousDate()">Previous</button>
+            <button mat-stroked-button color="primary" class="main_btn mr-10 ml-0" (click)="goToToday()">Today</button>
+            <button mat-stroked-button color="primary" class="main_btn mr-10 ml-0" (click)="gotoNextDate()">Next</button>
+        </div>
+        <div class="selecteddate mb-0"> {{ scheduleDate | date:'EEEE, MMMM d, y' }} <span (click)="picker.open()">
+                <mat-form-field class="none">
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="calendarDate" placeholder="Choose a date" [min]="minDate" (dateChange)="dateChangeEvent($event)">
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-icon>calendar_today</mat-icon>
+            </span>
+        </div>
+        <div class="w-80 pl-15">
+            <div class="example-button-row text-right w-100">
+                <button mat-stroked-button color="primary" *ngIf="_commonService.checkPrivilegeModule('scheduling','add')" class="main_btn mr-10" (click)="moveToSchedCare()">Schedule Care</button>
+                <button mat-stroked-button color="primary" class="main_btn mr-10" (click)="filter()">Filter</button>
+                <button mat-stroked-button color="primary" class="main_btn" (click)="moveToCalendar()">Calendar</button>
+            </div>
+        </div>
+    </div>
+    <mat-card-content>
+        <!-- <div class="d-flex justify-content-between mb-20"> -->
+            
+            <!-- <div class="showassign"> -->
+                <!-- <button (click)="assigne = false" [ngClass]="{ active: !assigne }" class="btn_secondary"> Show Performers <span></span> </button> -->
+                <!-- <button (click)="assigne = true " [ngClass]="{ active: assigne }" class="btn_module"> Assign Care <span></span> </button> -->
+            <!-- </div> -->
+            <!-- <div class="ttl"> Total Cares - {{ totalTaskCount() }} </div>
+        </div> -->
+        <div class="alltask" cdkDropListGroup>
+            
+            <div class="todrop">
+                <ng-container>
+                    <div class="performer" *ngIf="assigne">
+                        <div class="lbl">
+                            <h4 class="main_heading text-center">Performers ({{assignedDataTotalSchedule}})</h4> <!-- <span>{{ performersCount() }}</span> -->
+                        </div>
+                        <div class="assignto">
+                            <mat-form-field>
+                                <mat-label>Assign Care</mat-label>
+                                <mat-select  [(ngModel)]="asignUserSelected" (selectionChange)="selectAssigned($event)">
+                                        <ngx-mat-select-search [(ngModel)]="asSearch" placeholderLabel="Select Assigned" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <mat-option *ngFor="let user of userslist |stringFilterBy:asSearch:'value'" [value]="user.key">
+                                            {{user.value}}
+                                        </mat-option>
+                                </mat-select>                                
+                            </mat-form-field>
+                        </div>
+                        <!-- <div class="droparea" id="assignToSection" cdkDropList [cdkDropListData]="done" (cdkDropListDropped)="drop($event)">
+                            <div class="selected" cdkDrag *ngFor="let schedCare of assignedCare.scheduleCares" [cdkDragData]="{ care : schedCare }">
+                                    <div class="info" *ngIf="schedCare.resident.care_level && schedCare.resident.care_level.length">
+                                        <h4 class="resident_name">{{ schedCare.resident.last_name }}, {{ schedCare.resident.first_name }}, {{ schedCare.zone.room }}</h4>
+                                        <h4 class="caredate_name"><span>{{ schedCare.resident.care_level[0] }}</span>  <span class="font_clr">{{ schedCare.careData.name }} </span></h4>                                                                        
+                                        <span>{{ scheduleTime(schedCare) }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center" cdkDragHandle *ngIf="schedCare.resident.care_level && schedCare.resident.care_level.length">
+                                        <mat-icon *ngIf="_commonService.checkPrivilegeModule('scheduling','delete')" aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="deleteCares(schedCare)">delete </mat-icon>
+                                        <svg width="24px" class="dragicon" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"> </path>
+                                            <path d="M0 0h24v24H0z" fill="none"></path>
+                                        </svg>
+                                    </div>
+                            </div>
+                            <div class="ifempty" *ngIf="assignedCare.scheduleCares.length == 0"> <i class="material-icons">cloud_upload</i>
+                                <h3>DRAG & DROP</h3>
+                                <p>your unassigned cares</p>
+                            </div>
+                        </div> -->
+                        <div class="d-flex justify-content-between " >
+                            <!-- <button mat-flat-button color="warn" class="mt-2 btn_cancel" (click)="assigne = false ">Cancel</button> -->
+                            <!-- <button mat-flat-button color="primary" class="btn_done" (click)="assignCares()">Done</button> -->
+                        </div>
+                        <div class="performer-assigne" *ngIf="assigne">
+                            <mat-accordion class="rulelist-headers-align" class="tree-node custom_accordin d-block scheduling_list_scroll" [multi]="true">
+                                <ng-container *ngFor="let assignItem of assignedData; let itr = index;">
+                                    <mat-expansion-panel #performerExpansionPanel [expanded]="assignItem._id.open" (mouseleave)="mouseLeaveHandler($event, performerExpansionPanel)" (mouseenter)="mouseEnterHandler($event, performerExpansionPanel)" (opened)="setStep(0,assignItem._id.assigned_to)" *ngIf="assignItem._id.performer" cdkDropList id="performer-{{ assignItem._id.assigned_to }}" (cdkDropListDropped)="drop($event)">
+                                        <mat-expansion-panel-header>
+                                            <mat-panel-title>{{ assignItem._id.performer }}</mat-panel-title>
+                                            <div class="othdetail">
+                                                <div class="ttl"> {{ assignItem.scheduleCares.length }} </div>
+                                            </div>
+                                            <mat-icon *ngIf="_commonService.checkPrivilegeModule('scheduling','delete')" aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons performer-delete" mat-raised-button="" role="img" (click)="deleteAllCares($event,assignItem)">remove_circle </mat-icon>
+                                        </mat-expansion-panel-header>
+                                        <div class="rulecares">
+                                            <div  class="tree-node" >
+                                                <div class="selected selected_assign" cdkDrag *ngFor="let schedCare of assignItem.scheduleCares" [cdkDragData]="{ care : schedCare}">
+                                                        <div class="info" *ngIf="schedCare.resident.care_level && schedCare.resident.care_level.length">
+                                                            <h4 class="resident_name">{{ schedCare.resident.last_name }}, {{ schedCare.resident.first_name }}, {{ schedCare.zone.room }}</h4>
+    
+                                                           
+                                                            <h4 class="caredate_name">
+                                                                <!-- <span>{{ schedCare.resident.care_level[0] }}</span>   -->
+                                                                <span class="font_clr">{{ schedCare.careData.name }} </span>
+                                                            </h4>
+                                                            
+                                                            <div class="assign_time">
+                                                                <span>{{ scheduleTime(schedCare) }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex align-items-center" cdkDragHandle *ngIf="schedCare.resident.care_level && schedCare.resident.care_level.length">
+                                                            <mat-icon aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="editCares(schedCare.schedule_id, assignItem, schedCare.dated)" *ngIf="schedCare.schedule_id && _commonService.checkPrivilegeModule('scheduling','edit')">edit </mat-icon>
+                                                            
+                                                            <mat-icon aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="editCares(schedCare._id, assignItem)" *ngIf="!schedCare.schedule_id && _commonService.checkPrivilegeModule('scheduling','edit')">edit </mat-icon>
+    
+                                                            <mat-icon *ngIf="_commonService.checkPrivilegeModule('scheduling','delete')" aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="deleteCares(schedCare)">delete </mat-icon>
+                                                            <svg *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" width="24px" class="dragicon" fill="currentColor" viewBox="0 0 24 24">
+                                                                <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"> </path>
+                                                                <path d="M0 0h24v24H0z" fill="none"></path>
+                                                            </svg>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </ng-container>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                    <!-- assign care to user -->
+                    <!-- <div class="performer" *ngIf="!assigne">
+                        <div class="lbl">
+                            <h4 class="main_heading">Performers ({{assignedDataTotalSchedule}})</h4>
+                        </div>
+                        <mat-accordion class="rulelist-headers-align" class="tree-node custom_accordin mt-15 d-block scheduling_list_scroll" [multi]="true">
+                            <ng-container *ngFor="let assignItem of assignedData; let itr = index;">
+                                <mat-expansion-panel #performerExpansionPanel [expanded]="assignItem._id.open" (mouseleave)="mouseLeaveHandler($event, performerExpansionPanel)" (mouseenter)="mouseEnterHandler($event, performerExpansionPanel)" (opened)="setStep(0,assignItem._id.assigned_to)" *ngIf="assignItem._id.performer" cdkDropList id="performer-{{ assignItem._id.assigned_to }}" (cdkDropListDropped)="drop($event)">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>{{ assignItem._id.performer }}</mat-panel-title>
+                                        <div class="othdetail">
+                                            <div class="ttl"> {{ assignItem.scheduleCares.length }} </div>
+                                        </div>
+                                    </mat-expansion-panel-header>
+                                    <div class="rulecares">
+                                        <div  class="tree-node" >
+                                            <div class="selected" cdkDrag *ngFor="let schedCare of assignItem.scheduleCares" [cdkDragData]="{ care : schedCare}">
+                                                    <div class="info" *ngIf="schedCare.resident.care_level && schedCare.resident.care_level.length">
+                                                        <h4 class="resident_name">{{ schedCare.resident.last_name }}, {{ schedCare.resident.first_name }}, {{ schedCare.zone.room }}</h4>
+
+                                                       
+                                                        <h4 class="caredate_name">
+                                                            <span class="font_clr">{{ schedCare.careData.name }} </span>
+                                                        </h4>
+                                                        
+                                                        <div class="assign_time">
+                                                            <span>{{ scheduleTime(schedCare) }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center" cdkDragHandle *ngIf="schedCare.resident.care_level && schedCare.resident.care_level.length">
+                                                        <mat-icon aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="editCares(schedCare.schedule_id, assignItem, schedCare.dated)" *ngIf="schedCare.schedule_id && _commonService.checkPrivilegeModule('scheduling','edit')">edit </mat-icon>
+                                                        
+                                                        <mat-icon aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="editCares(schedCare._id, assignItem)" *ngIf="!schedCare.schedule_id && _commonService.checkPrivilegeModule('scheduling','edit')">edit </mat-icon>
+
+                                                        <mat-icon *ngIf="_commonService.checkPrivilegeModule('scheduling','delete')" aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="deleteCares(schedCare)">delete </mat-icon>
+                                                        <svg *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" width="24px" class="dragicon" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"> </path>
+                                                            <path d="M0 0h24v24H0z" fill="none"></path>
+                                                        </svg>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-expansion-panel>
+                            </ng-container>
+                        </mat-accordion>
+                    </div> -->
+                    <div class="unassigned" cdkDropList id="unassignedSection" (cdkDropListDropped)="drop($event)">
+                        <div class="lbl">
+                            <h4>Unassigned Cares ({{unassignedData.length}})</h4> <!-- <span>{{ unassignedData.length }}</span> -->
+                        </div>
+                        <div id="check_scroll" class="mt-15 scheduling_list_scroll scheduling_list_scroll_un">
+                            <div [class.mr-10]="checkScroll('check_scroll')">
+                                <div class="selected mb-20"  cdkDrag *ngFor="let schedCare of unassignedData" [cdkDragData]="{ care : schedCare}">
+                                    <!-- <div class="info" *ngIf="schedCare.careLevalData && schedCare.careLevalData.length"> -->
+                                    <div class="info" [ngClass]="{'grey-out': schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' }">
+                                        <h4 class="resident_name">{{ schedCare.resident.last_name }}, {{ schedCare.resident.first_name }},  {{ schedCare.zone.room }} </h4>
+                                        <!-- <span style="text-align: right;">{{'Hospitalised'}}</span>                                                                        -->
+                                        
+                                        <h4 class="caredate_name" [ngClass]="{'grey-out': schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility' || schedCare.is_suspended_reason == 'Out of Building' }"> 
+                                            <!-- <span >{{ schedCare?.careLevalData[0] }} </span> -->
+                                            <span class="font_clr" [ngClass]="{'grey-out': schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility' || schedCare.is_suspended_reason == 'Out of Building' }">{{ schedCare?.careData?.name }}</span>
+                                        </h4>                                    
+
+                                        <div class="assign_time" [ngClass]="{'grey-out': schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility' || schedCare.is_suspended_reason == 'Out of Building' }">
+                                            <span class="sch_time" [ngClass]="{'grey-out': schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility' || schedCare.is_suspended_reason == 'Out of Building' }">{{ scheduleTime(schedCare) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="info" [ngClass]="{'grey-out': schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility', 'hiddenButtons': _commonService.checkPrivilegeModule('scheduling','edit') || _commonService.checkPrivilegeModule('scheduling','delete') }" >
+                                        <span *ngIf="schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation'">{{schedCare.resident.resident_status}}</span>
+                                        <span *ngIf="schedCare.resident.resident_status !== 'Hospitalized' && schedCare.resident.resident_status !== 'Skilled Nursing' && schedCare.resident.resident_status !== 'Vacation' && schedCare.is_suspended_reason == 'Outfacility'">{{'Out of Building'}}</span>
+                                        <span *ngIf="schedCare.resident.resident_status !== 'Hospitalized' && schedCare.resident.resident_status !== 'Skilled Nursing' && schedCare.resident.resident_status !== 'Vacation' && schedCare.is_suspended_reason == 'Out of Building'">{{'Out of Building'}}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center" cdkDragHandle *ngIf="schedCare.careLevalData && schedCare.careLevalData.length">
+                                        <mat-icon [ngStyle]="{'color': (schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility') ? 'grey' : '#e88424', 'pointer-events': (schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility' || schedCare.is_suspended_reason == 'Out of Building') ? 'none' : '' }"  *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" aria-hidden="true" class="material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="editCares(schedCare.schedule_id)">edit </mat-icon>
+                                        <mat-icon [ngStyle]="{'color': (schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility') ? 'grey' : '#e88424', 'pointer-events': (schedCare.resident.resident_status == 'Hospitalized' || schedCare.resident.resident_status == 'Skilled Nursing' || schedCare.resident.resident_status == 'Vacation' || schedCare.is_suspended_reason == 'Outfacility' || schedCare.is_suspended_reason == 'Out of Building') ? 'none' : '' }" *ngIf="_commonService.checkPrivilegeModule('scheduling','delete')" aria-hidden="true" class="material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="deleteCares(schedCare)">delete </mat-icon>
+                                        <svg *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" width="24px" class="dragicon" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"> </path>
+                                            <path d="M0 0h24v24H0z" fill="none"></path>
+                                        </svg>
+                                    </div>
+                            </div>
+                            <div class="unlistempty" *ngIf="!unassignedData.length"> Well done, unassigned cares list is empty. </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="assigned">
+                        <div class="lbl">
+                            <h4>Missed Cares ({{missedCareData.length}})</h4> <!-- <span>{{ ruleTaskCount() }}</span> -->
+                        </div>                        
+                        <div id="check_scroll_missed" class="mt-15 scheduling_list_scroll scheduling_list_scroll_un" >
+                            <div [class.mr-10]="checkScrollMissed('check_scroll_missed')">
+                                <div class="selected mb-20" *ngFor="let schedCare of missedCareData" >
+                                    <!-- <div class="info" *ngIf="schedCare.careLevalData && schedCare.careLevalData.length"> -->
+                                    <div class="info" >
+                                        <h4 class="resident_name">{{ schedCare.resident.last_name }}, {{ schedCare.resident.first_name }}, {{ schedCare.zone.room }}</h4>
+                                                   
+                                        
+                                        <h4 class="caredate_name"> 
+                                            <!-- <span >{{ schedCare?.careLevalData[0] }} </span> -->
+                                            <span class="font_clr">{{ schedCare?.careData?.name }}</span>
+                                        </h4>                                   
+
+                                        <div class="assign_time">
+                                            <span class="sch_time missed_care_time">{{ scheduleTime(schedCare) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center missedAction" *ngIf="schedCare?.careLevalData && schedCare?.careLevalData.length && !schedCare.reschedule_id">
+                                            <button class="missed_button" *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" mat-icon-button (click)="reScheduleMissedCare(schedCare?.schedule_id? schedCare?.schedule_id : schedCare?._id)">
+                                               <mat-icon aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons missed-icon" mat-raised-button="" role="img">edit </mat-icon>
+                                               Reschedule  
+                                            </button>
+                                       <!--  <mat-icon aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" mat-raised-button="" role="img" (click)="deleteCares(schedCare)">delete </mat-icon>
+                                        <svg width="24px" class="dragicon" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"> </path>
+                                            <path d="M0 0h24v24H0z" fill="none"></path>
+                                        </svg> -->
+                                    </div>
+                                    <div class="rescheduled reSchedule-color" *ngIf="schedCare.reschedule_id">
+                                        Rescheduled
+                                        <mat-icon  [matTooltip]="setDateTime(schedCare.rescheduleData)"
+                                        aria-hidden="true" class="mat-icon material-icon basecolor cursor material-icons" >info </mat-icon>
+                                    </div>
+                            </div>
+                            <div class="unlistempty" *ngIf="!missedCareData.length"> Well done, missed cares list is empty. </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+<ng-template #confirmDialog>
+    <div mat-dialog-content class="pop_txt p-0">
+        <span>You're changing a repeating care.</span>
+        <p class="mb-15">Do you want to change only this occurance of this schedule care or all future occurences?</p>
+    </div>
+    <div mat-dialog-actions class="text-center justify-content-center modal_btn_pad">
+        <div class="btn_top">
+            <button class="mt-10 btn" mat-flat-button (click)="allCares()" class="btn_modual btn-re-modal">All Future Care</button>
+            <button mat-flat-button (click)="thisCare()" class="btn_modual btn-re-modal occurnce-btn">Only This Care</button>
+        </div>
+        <div class="btn_btm mt-20">
+            <button mat-flat-button (click)="onNoClick()" class="btn_window_cancle">Cancel</button>
+        </div>
+    </div>
+</ng-template>
+<ng-template #unassignDialog >
+    <div mat-dialog-content class="pop_txt">
+        <span class="text-center mt-0">Are you sure?</span>
+        <p class="text-center mt-0">Unassign this Scheduled Care will Unassigned all the care in series.</p>
+    </div>
+    <div mat-dialog-actions class="text-center justify-content-between block_btn">
+        <button mat-flat-button (click)="onNoClick()"  class="mr-10 cancel-btn btn_window_cancle">Cancel</button>
+        <button mat-flat-button (click)="unassignCares()" color="primary" class="btn_window_done">Unassign Scheduled Care</button>
+    </div>
+</ng-template>
+<ng-template #deleteDialog style="max-width: 450px;">
+    <div mat-dialog-content class="pop_txt">
+        <span class="text-center mt-0">Are you sure?</span>
+        <p class="text-center mt-0">Deleting this scheduled care will permanently delete all care in the series.</p>
+    </div>
+    <div mat-dialog-actions class="text-center justify-content-between cus_height">
+        <button mat-flat-button (click)="onNoClick()" class="mr-10 cancel-btn btn_window_cancle">Cancel</button>
+        <button mat-flat-button (click)="deletePopCare()" color="primary" class="btn_window_done">Confirm</button>
+    </div>
+</ng-template>
+<ng-template #repeatDialog>
+    <div class="pop_heading">
+        <h3>Edit Schedule Care</h3> <span class="">
+        </span>
+    </div>
+    <div class="form">
+        <form #f="ngForm">
+            <div class="repinfo">
+                <div class="repdayweek">
+                    
+                    <div class="d-flex justify-content-between form-row" *ngIf="assignedCare.user_id">
+                        <div class="w-100">
+
+                            <mat-form-field class="w-100">
+                                <mat-label>Assign Care</mat-label>
+
+                                <mat-select [(ngModel)]="assignedCare.user_id" [ngModelOptions]="{standalone: true}" [required]="true">
+                                <ngx-mat-select-search [(ngModel)]="asSearch" placeholderLabel="Select Assigned" noEntriesFoundLabel="Not Found"
+                                name="search" ></ngx-mat-select-search>
+                                <mat-option *ngFor="let user of userslist |stringFilterBy:asSearch:'value'" [value]="user.key">
+                                {{user.value}}
+                                </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>                        
+                    </div>   
+
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100 pr-15">
+                            <ng-container *ngIf="afterpreview">
+                                <label>Start Date</label> {{ scheduleDuration.startDate | date:'mediumDate' }} </ng-container>
+                            <mat-form-field class="w-100">
+                                <input matInput [matDatepicker]="picker" placeholder="Start Date" [min]="minDate" (dateChange)="startDateChangeEvent('change', $event)" (click)="picker.open()" [(ngModel)]="editSchedule.startDate" [ngModelOptions]="{standalone: true}" required>
+                                <mat-datepicker-toggle matSuffix [for]="picker">
+                                    <mat-icon matDatepickerToggleIcon>
+                                        <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                      </mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15 date_icon_between">
+                            <ng-container *ngIf="afterpreview && scheduleDuration.endDate">
+                                <label>End Date</label> {{ scheduleDuration.endDate | date:'mediumDate' }} </ng-container>
+                            <mat-form-field class="w-100">
+                                <input matInput [matDatepicker]="picker2" placeholder="End Date" [min]="minDateEnd" [ngModelOptions]="{standalone: true}" [(ngModel)]="editSchedule.endDate" (click)="picker2.open()">
+                                <mat-datepicker-toggle matSuffix [for]="picker2">
+                                    <mat-icon matDatepickerToggleIcon>
+                                        <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                      </mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker2></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between form-row date_icon_between">
+                        <div class="w-100 pr-15">
+                            <label class="w-100 d-block time-label">Start Time</label>
+                            <!-- <p-calendar class="w-100" timeOnly="true" hourFormat="24" [(ngModel)]="this.editSchedule.startTime" (onSelect)="updateCareTimeChanged()" [ngModelOptions]="{standalone: true}" [required]="true"> </p-calendar> -->
+
+                            <ejs-timepicker [(ngModel)]="this.editSchedule.startTime" [format]='formatString' [ngModelOptions]="{standalone: true}"  class="w-50" (change)="updateCareTimeChanged($event,'editSchedule')" [value]="this.editSchedule.startTime" [min]="" [step]='15'></ejs-timepicker>
+
+                        </div>
+                        <div class="w-100 pl-15">
+                            <label class="w-100 d-block time-label">End Time</label>
+                            <!-- <p-calendar matInput class="w-100" timeOnly="true" [minDate]="this.editSchedule.startTime" hourFormat="24" [(ngModel)]="this.editSchedule.endTime" [ngModelOptions]="{standalone: true}" [required]="true"> </p-calendar> -->
+
+                            <ejs-timepicker [(ngModel)]="this.editSchedule.endTime" [format]='formatString' [ngModelOptions]="{standalone: true}"  class="w-50" (change)="updateCareTimeChanged2($event,'editSchedule')" [value]="this.editSchedule.endTime" [step]='15' [min]="this.editSchedule.startTime"  ></ejs-timepicker><!---->
+
+                        </div>
+                    </div>
+                    <div class="rht">
+                        <div class="ldrep">
+                            <label>Repeat every</label>
+                            <!-- <div class="day" *ngIf="showCustom && editSchedule.repeat !== 'every_year'"> -->
+                            <div class="day" *ngIf="editSchedule.repeat == 'every_week' || editSchedule.repeat == 'every_day' || editSchedule.repeat == 'every_month' || editSchedule.repeat == 'custom_weekly'">
+                                <mat-form-field>
+                                     <mat-select [(ngModel)]="editSchedule.repeat_tenure" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" >
+                                     <ngx-mat-select-search [(ngModel)]="nSearch" placeholderLabel="Select Repeat" noEntriesFoundLabel="Not Found"
+                                    name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let i of arrayNumber |stringFilterBy:nSearch:'i'" [value]="i">
+                                     {{i}}
+                                    </mat-option>
+                                </mat-select>
+                                    <!-- <mat-select [(ngModel)]="editSchedule.repeat_tenure" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true">
+                                        <mat-option *ngFor="let i of arrayNumber" [value]="i"> {{i}} </mat-option>
+                                    </mat-select> -->
+                                </mat-form-field>
+                            </div>
+                            <div class="rep no_margin">
+                                <mat-form-field>
+                                    <mat-select [(ngModel)]="editSchedule.repeat" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" (selectionChange)="repeatPopChanged(ci)">
+                                        <ngx-mat-select-search [(ngModel)]="rSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found"
+                                        name="search"></ngx-mat-select-search>
+                                        <ng-container *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'" >
+                                            <mat-option [value]="option.key">{{option.value}}</mat-option>
+                                        </ng-container>
+                                    </mat-select>                                  
+                                </mat-form-field>
+                            </div>                            
+                        </div>
+                        <ng-container>
+                            <div class="customradio" *ngIf="editSchedule.repeat == 'every_week' || editSchedule.repeat == 'every_day' || editSchedule.repeat == 'custom_weekly'">
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="M" value="Monday" [(ngModel)]="editSchedule.repeat_on.monday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.monday" (change)="weekDayChanged($event)">
+                                    <label for="M"><span>M</span></label>
+                                </div>
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="T" value="Tuesday" [(ngModel)]="editSchedule.repeat_on.tuesday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.tuesday" (change)="weekDayChanged($event)">
+                                    <label for="T"><span>T</span></label>
+                                </div>
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="W" value="Wednesday" [(ngModel)]="editSchedule.repeat_on.wednesday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.wednesday" (change)="weekDayChanged($event)">
+                                    <label for="W"><span>W</span></label>
+                                </div>
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="Th" value="Thursday" [(ngModel)]="editSchedule.repeat_on.thursday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.thursday" (change)="weekDayChanged($event)">
+                                    <label for="Th"><span>T</span></label>
+                                </div>
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="F" value="Friday" [(ngModel)]="editSchedule.repeat_on.friday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.friday" (change)="weekDayChanged($event)">
+                                    <label for="F"><span>F</span></label>
+                                </div>
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="Sa" value="Saturday" [(ngModel)]="editSchedule.repeat_on.saturday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.saturday" (change)="weekDayChanged($event)">
+                                    <label for="Sa"><span>S</span></label>
+                                </div>
+                                <div class="rd_hol">
+                                    <input type="checkbox" id="Su" [(ngModel)]="editSchedule.repeat_on.sunday" [ngModelOptions]="{standalone: true}" [checked]="editSchedule.repeat_on.sunday" (change)="weekDayChanged($event)">
+                                    <label for="Su"><span>S</span></label>
+                                </div>
+                            </div>
+                            <div class="grid-cl2" *ngIf="editSchedule.repeat == 'custom_monthly'">
+                                <div class="">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Every...</mat-label>
+                                        <mat-select [(ngModel)]="editSchedule['repeat_tenure']" [ngModelOptions]="{standalone: true}" required>
+                                            <ngx-mat-select-search [(ngModel)]="monthSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                            <mat-option *ngFor="let option of monthList |stringFilterBy:monthSearch:'key'" [value]="option.value"> {{option.key}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>On the...</mat-label>
+                                        <mat-select [(ngModel)]="editSchedule['month_date']" [ngModelOptions]="{standalone: true}" required>
+                                            <ngx-mat-select-search [(ngModel)]="daySearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                                            <mat-option *ngFor="let option of monthDayList |stringFilterBy:daySearch:'name'" [value]="option.value"> {{option.name}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div *ngIf="editSchedule.repeat == 'custom_yearly'" class="grid-cl4">
+                                <div class="">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>Every...</mat-label>
+                                        <mat-select [(ngModel)]="editSchedule['repeat_tenure']" [ngModelOptions]="{standalone: true}" required>
+                                            <ngx-mat-select-search [(ngModel)]="yearSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                            <mat-option *ngFor="let option of yearList |stringFilterBy:yearSearch:'key'" [value]="option.value"> {{option.key}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>In the  Month of...</mat-label>
+                                        <mat-select [(ngModel)]="editSchedule['month_date']" [ngModelOptions]="{standalone: true}" required>
+                                            <ngx-mat-select-search [(ngModel)]="monthNameSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                                            <mat-option *ngFor="let option of monthNameList |stringFilterBy:monthNameSearch:'key'" [value]="option.value"> {{option.key}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="">
+                                    <mat-form-field class="w-100">
+                                        <mat-label>On the...</mat-label>
+                                        <mat-select [(ngModel)]="editSchedule['repeat_option']" [ngModelOptions]="{standalone: true}" required>
+                                            <ngx-mat-select-search [(ngModel)]="customrepeatSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                                            <mat-option *ngFor="let option of customRepeat |stringFilterBy:customrepeatSearch:'key'" [value]="option.value"> {{option.key}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="">
+                                    <mat-form-field class="w-100">
+                                        <mat-select [(ngModel)]="customWeekDay" (selectionChange)="yearlyWeeklyChange(editSchedule, $event)" [ngModelOptions]="{standalone: true}" required>
+                                            <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                                            <mat-option *ngFor="let option of customWeekDayList |stringFilterBy:weekSearch:'name'" [value]="option"> {{option.name | titlecase}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="yearSelction">
+                                <div class="timeset" *ngIf="editSchedule.repeat == 'every_day'">
+                                    <p>Occurs every day</p>
+                                </div>
+                                <div class="timeset" *ngIf="editSchedule.repeat == 'every_week' || editSchedule.repeat == 'custom_weekly'">
+                                    <p>Occurs every {{ weekDayText() }}</p>
+                                </div>
+                                <div class="timeset" *ngIf="editSchedule.repeat == 'every_month' || editSchedule.repeat == 'every_year'">
+                                    <mat-radio-group class="selyear" aria-label="Select an option" [ngModel]="editSchedule.repeat_option" [ngModelOptions]="{standalone: true}">
+                                        <ng-container>
+                                            <mat-radio-button value="on_day" name="repeat_option" (change)="radioRepeatChange($event)">On <span *ngIf="editSchedule.repeat == 'every_year'">{{ editSchedule.startDate | date: 'MMMM' }}</span><span *ngIf="editSchedule.repeat == 'every_month'">day</span> {{ editSchedule.startDate | date: 'dd'}} </mat-radio-button>
+                                        </ng-container>
+                                        <ng-container *ngIf="4 >= (editSchedule.startDate | weekNumber : listfilterChar)">
+                                            <mat-radio-button value="on_week_number" name="repeat_option" (change)="radioRepeatChange($event)">On the {{ editSchedule.startDate | weekNumber | alphaNumber }} {{ editSchedule.startDate | date: 'EEEE' }}<span *ngIf="editSchedule.repeat == 'every_year'"> of {{ editSchedule.startDate | date: 'MMMM' }}</span> </mat-radio-button>
+                                        </ng-container>
+                                        <ng-container *ngIf="(editSchedule.startDate | weekNumber : listfilterChar) >= 4">
+                                            <mat-radio-button value="on_last_week" name="repeat_option" (change)="radioRepeatChange($event)">On the last {{ editSchedule.startDate | date: 'EEEE' }}<span *ngIf="editSchedule.repeat == 'every_year'"> of {{ editSchedule.startDate | date: 'MMMM' }}</span> </mat-radio-button>
+                                        </ng-container>
+                                    </mat-radio-group>
+                                </div>
+                                <div class="timeset" *ngIf="editSchedule.repeat == 'every_month' || editSchedule.repeat == 'every_year'">
+                                    <p *ngIf="editSchedule.repeat_option == 'on_day'">Occurs <span *ngIf="editSchedule.repeat == 'every_year'">every {{ editSchedule.startDate | date: 'MMMM' }}</span><span *ngIf="editSchedule.repeat == 'every_month'">on day</span> {{ editSchedule.startDate | date: 'dd'}}</p>
+                                    <p *ngIf="editSchedule.repeat_option == 'on_week_number'">Occurs <span *ngIf="editSchedule.repeat == 'every_year'"> every year on the {{ editSchedule.startDate | weekNumber | alphaNumber }} {{ editSchedule.startDate | date: 'EEEE' }} of {{ editSchedule.startDate | date: 'MMMM' }}</span> <span *ngIf="editSchedule.repeat == 'every_month'"> on the {{ editSchedule.startDate | weekNumber | alphaNumber }} {{ editSchedule.startDate | date: 'EEEE' }}</span></p>
+                                    <p *ngIf="editSchedule.repeat_option == 'on_last_week'">Occurs <span *ngIf="editSchedule.repeat == 'every_year'"> every year on the last {{ editSchedule.startDate | date: 'EEEE' }} of {{ editSchedule.startDate | date: 'MMMM' }}</span> <span *ngIf="editSchedule.repeat == 'every_month'"> on the last {{ editSchedule.startDate | date: 'EEEE' }}</span></p>
+                                </div>
+                                <div class="timeset" *ngIf="editSchedule.repeat == 'custom_monthly' || editSchedule.repeat == 'custom_yearly'">
+                                    <p>{{getSchedulePerformingTimeString(editSchedule)}}</p>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="adtime">
+        <button mat-button color="basic" class="cancel-btn btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" mat-button color="primary" class="done-btn btn_window_done" (click)="saveRepeatDialog()">Done</button>
+    </div>
+</ng-template>
+<ng-template #deletePerformerDialog style="max-width: 450px;">
+    <div mat-dialog-content class="pop_txt">
+        <span class="text-center mt-0">Are you sure?</span>
+        <p class="text-center mt-0">Deleting a performer will unassign all of their assigned care.</p>
+    </div>
+    <div mat-dialog-actions class="text-center justify-content-between cus_height">
+        <button mat-flat-button (click)="closeDialog()" class="mr-10 cancel-btn btn_window_cancle">Cancel</button>
+        <button mat-flat-button (click)="unassignedAllCares()" color="primary" class="btn_window_done">Delete</button>
+    </div>
+</ng-template>
+<!-- Start Pop up for edit assignee for care in Performer List -->
+<ng-template #reScheduleCareDialog>
+    <div class="pop_heading">
+        <h3>Re-Schedule Care</h3> 
+    </div>
+    <div class="form">
+        <form #f="ngForm">
+            <div class="repinfo">
+                <div class="repdayweek">
+                                        
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100">
+                            <ng-container *ngIf="afterpreview">
+                                <label>Frequency</label> Frequency </ng-container>
+                            <mat-form-field class="w-100">
+                                <input matInput placeholder="Frequency" [(ngModel)]="reSchedule.frequency" [ngModelOptions]="{standalone: true}" readonly>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100">
+                            <ng-container *ngIf="afterpreview">
+                                <label>Resident</label> {{ reSchedule.residentName }} </ng-container>
+                            <mat-form-field class="w-100">
+                                <input matInput placeholder="Resident" [(ngModel)]="reSchedule.residentName" [ngModelOptions]="{standalone: true}" required readonly>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100">
+                            <ng-container *ngIf="afterpreview">
+                                <label>Care</label> {{ reSchedule.careName }} </ng-container>
+                            <mat-form-field class="w-100">
+                                <input matInput placeholder="Care" [(ngModel)]="reSchedule.careName" [ngModelOptions]="{standalone: true}" required readonly>
+                            </mat-form-field>
+                        </div>
+                        
+                    </div>
+
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100">
+                            <ng-container *ngIf="afterpreview">
+                                <label>Start Date</label> {{ reSchedule.startDate | date:'mediumDate' }} </ng-container>
+                            <mat-form-field class="w-100">
+                                <input matInput [matDatepicker]="picker" placeholder="Start Date" [min]="scheduleDateEnd" (dateChange)="startDateChangeEvent('change', $event)" (click)="picker.open()" [(ngModel)]="reSchedule.startDate" [ngModelOptions]="{standalone: true}" required>
+                                <mat-datepicker-toggle matSuffix [for]="picker">
+                                    <mat-icon matDatepickerToggleIcon>
+                                        <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                      </mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        
+                    </div>
+
+                    <div class="d-flex justify-content-between form-row date_icon_between">
+                        <div class="w-100 pr-15">
+                            <label class="w-100 d-block time-label">Start Time</label>                            
+
+                            <ejs-timepicker [(ngModel)]="this.reSchedule.startTime" [format]='formatString' [ngModelOptions]="{standalone: true}"  class="w-50" (change)="updateCareTimeChanged($event,'reSchedule')" [value]="this.reSchedule.startTime" [min]="minDateValue" [step]='15'></ejs-timepicker>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <label class="w-100 d-block time-label">End Time</label>
+                            
+                            <ejs-timepicker [(ngModel)]="this.reSchedule.endTime" [format]='formatString' [ngModelOptions]="{standalone: true}"  class="w-50" (change)="updateCareTimeChanged2($event,'reSchedule')" [value]="this.reSchedule.endTime" [step]='15' [min]="this.reSchedule.startTime" ></ejs-timepicker>
+                        </div>
+                    </div>  
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="adtime">
+        <button mat-button color="basic" class="cancel-btn btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button *ngIf="_commonService.checkPrivilegeModule('scheduling','edit')" mat-button color="primary" class="done-btn btn_window_done" (click)="saveReScheduleDialog()">Done</button>
+    </div>           
+</ng-template>
+<!-- End Pop up for Edit Assignee in Performer List -->

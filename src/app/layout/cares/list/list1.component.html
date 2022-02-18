@@ -1,0 +1,157 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title>Cares</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search by name, selection, type" />
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+                        <button mat-stroked-button class="ml-3" (click)="toggle()">Filter</button>
+                        <button mat-stroked-button class="ml-3" (click)="exportCares()">Export</button>
+                        <button *ngIf="_commonService.checkPrivilegeModule('cares','add')" mat-stroked-button class="ml-3" (click)="addForm()">Add New</button>
+                        <button *ngIf="_commonService.checkPrivilegeModule('cares','delete')" #deleteButton mat-stroked-button class="ml-3" (click)="delete()">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <ng-container *ngIf="show">
+                <div class="d-flex justify-content-between form-row mt-20">
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Name </mat-label>
+                            <mat-select [(ngModel)]="value" (selectionChange)="changeOrg(value)">
+                                <mat-option *ngFor="let item of organiz" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Outcome</mat-label>
+                            <mat-select [(ngModel)]="fac" (selectionChange)="changeFac(fac)">
+                                <mat-option *ngFor="let item of faclist" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Selection</mat-label>
+                            <mat-select [(ngModel)]="fac" (selectionChange)="changeFac(fac)">
+                                <mat-option *ngFor="let item of faclist" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Default value</mat-label>
+                            <mat-select [(ngModel)]="fac" (selectionChange)="changeFac(fac)">
+                                <mat-option *ngFor="let item of faclist" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Order</mat-label>
+                            <mat-select [(ngModel)]="fac" (selectionChange)="changeFac(fac)">
+                                <mat-option *ngFor="let item of faclist" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Type</mat-label>
+                            <mat-select [(ngModel)]="fac" (selectionChange)="changeFac(fac)">
+                                <mat-option *ngFor="let item of faclist" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+            </ng-container>
+        </mat-card-subtitle>
+
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" [matSortActive]="sortActive" [matSortDirection]="sortDirection">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef>Icon </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <img *ngIf="elements.icon!=''" [src]="elements.icon" height="50">
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element"> {{element[column.id]}} </td>
+                </ng-container>
+                <ng-container matColumnDef="change_status">
+                    <th mat-header-cell *matHeaderCellDef> Status</th>
+                    <td mat-cell *matCellDef="let elements">
+                      <mat-slide-toggle (change)="changeStatus($event,elements._id)" color="primary" [checked]="elements.status">
+                      </mat-slide-toggle>
+                    </td>
+                  </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button *ngIf="_commonService.checkPrivilegeModule('cares','edit')" mat-mini-fab color="primary" (click)="editCare(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button *ngIf="_commonService.checkPrivilegeModule('cares','delete')" mat-mini-fab color="primary" (click)="deleteCare(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="viewCare(elements._id)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <mat-paginator [length]=count [pageSize]="10" [pageSizeOptions]="[10, 50, 100, 500]" [pageIndex]="pageIndex"
+            (page)="getServerData($event)"></mat-paginator>
+    </mat-card-actions>
+</mat-card>
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

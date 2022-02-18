@@ -1,0 +1,289 @@
+<mat-card>
+
+  <mat-card-header class="d-flex justify-content-between align-center">
+    <mat-card-title>{{paramId || flag?'Edit Unit':'Add Unit'}}
+    </mat-card-title>
+  </mat-card-header>
+  <div class="d-flex align-center w-100 justify-content-end" *ngIf="paramId && !flag">
+    <span class="pl-15 ready_to_move">Ready to move-in</span>
+    <mat-slide-toggle color="primary"
+                      [checked]="unit.ready_to_move" class="pl-15" (change)="onChangeReady($event)">
+    </mat-slide-toggle>
+
+  </div>
+
+  <mat-card-content>
+
+    <form #unitForm="ngForm">
+
+      <div>
+
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100 pr-15">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Floor </mat-label>
+              <mat-select #floor="ngModel" [(ngModel)]="unit.floor" name="floor"
+                          (selectionChange)="changeFloor($event.value)" required [disabled]="flag">
+                <ngx-mat-select-search [(ngModel)]="floSearch" placeholderLabel="Select Floor"
+                                       noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of floorList |stringFilterBy:floSearch:'label'" [value]="item.value">
+                  {{item.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="w-100 pl-15">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Sector</mat-label>
+              <mat-select #sector="ngModel" [(ngModel)]="unit.sector" name="sector"
+                          (selectionChange)="changeSector($event.value)" required [disabled]="flag">
+                <ngx-mat-select-search [(ngModel)]="secSearch" placeholderLabel="Select Floor"
+                                       noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of secList |stringFilterBy:secSearch:'label'" [value]="item.value">
+                  {{item.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between form-row pb-15">
+          <div class="w-100 pr-15">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Unit Type </mat-label>
+              <mat-select #type="ngModel" [(ngModel)]="unit.type" name="type" required>
+                <ngx-mat-select-search [(ngModel)]="typeSearch" placeholderLabel="Select Unit Type"
+                                       noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of roomTypes |stringFilterBy:typeSearch:'label'" [value]="item.value">
+                  {{item.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="w-100 pl-15">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Unit Name</mat-label>
+              <input matInput placeholder="Room" name="room" [(ngModel)]="unit.room" (keypress)="checkAlphanum($event)"
+                     required>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between form-row pt-15 pb-15">
+          <div class="w-100 pr-15">
+            <mat-card class="border-card margin-bottom15">
+              <mat-card-header>
+                <mat-card-title class="ann_heading">Residents</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ul class="beacon-listing">
+                  <li *ngFor="let item of residentList">
+                    <span class="user-name">
+                      {{item.last_name| titlecase}}, {{item.first_name| titlecase}}
+                    </span>
+                    <div class="d-flex justify-content-end">
+                      <span>
+                          <mat-icon class="removeicon" (click)="unassignResident(item)">remove_circle</mat-icon>
+                      </span>
+                    </div>
+
+                  </li>
+                </ul>
+
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Select an Unassigned Resident</mat-label>
+                  <mat-select [(ngModel)]="resident" name="residents" [ngModelOptions]="{standalone: true}">
+                    <ngx-mat-select-search [(ngModel)]="resSearch" placeholderLabel="Select Residents"
+                                           noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let item of residents |searchDataFilterBy:resSearch: 'last_name|first_name'"
+                                [value]="item" (click)="assignResident(item)">
+                      {{item.last_name | titlecase}}, {{item.first_name | titlecase}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="w-100 pl-15">
+            <mat-card class="border-card margin-bottom15">
+              <mat-card-header>
+                <mat-card-title class="ann_heading">Beacons</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ul class="beacon-listing">
+                  <li *ngFor="let item of beaconList">
+                    <span *ngIf="_commonService.checkPrivilegeModule('beacons','add')" class="user-name "
+                          (click)="editBeacon(item._id)">
+                      <a class="cursor">{{item.name}}</a>
+                    </span>
+                    <span *ngIf="!_commonService.checkPrivilegeModule('beacons','add')" class="user-name ">
+                      {{item.name}}
+                    </span>
+                    <div class="d-flex justify-content-end">
+                      <span>
+                        <!-- <button mat-mini-fab class="mr-10 small-btn" color="primary" > -->
+                          <mat-icon class="removeicon" (click)="unassignBeacon(item)">remove_circle</mat-icon>
+                        <!-- </button> -->
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Select an Unassigned Beacon</mat-label>
+                  <mat-select [(ngModel)]="beacon" name="beacons" [ngModelOptions]="{standalone: true}">
+                    <ngx-mat-select-search [(ngModel)]="beaSearch" placeholderLabel="Select Beacons"
+                                           noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let item of beacons |stringFilterBy:beaSearch:'name'" [value]="item"  (click)="assignBeacon(beacon)">
+                      {{item.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+
+        <!-- <div class="d-flex justify-content-between form-row">
+        </div> -->
+
+        <!-- Start NFC assigned -->
+        <div class="d-flex justify-content-between form-row pt-15">
+          <div class="w-100 pr-15"></div>
+          <div class="w-100 pl-15">
+            <mat-card class="border-card margin-bottom15">
+              <mat-card-header>
+                <mat-card-title class="ann_heading">NFC</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ul class="beacon-listing">
+                  <li *ngFor="let item of assignNFCList">
+                    <span class="user-name ">
+                      <a class="cursor">{{item.ntagid}}</a>
+                    </span>
+                    <div class="d-flex justify-content-end">
+                      <span>
+                        <!-- <button mat-mini-fab class="mr-10 small-btn" color="primary" > -->
+                          <mat-icon class="removeicon" (click)="unassignNFC(item)">remove_circle</mat-icon>
+                        <!-- </button> -->
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Select an Unassigned NFC Tag</mat-label>
+                  <mat-select [(ngModel)]="nfc" name="nfc" [ngModelOptions]="{standalone: true}">
+                    <ngx-mat-select-search [(ngModel)]="nfcSearch" placeholderLabel="Select NFC"
+                                           noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let item of nfcList |stringFilterBy:nfcSearch: 'ntagid'" [value]="item" (click)="assignNFC(nfc)">
+                      {{item.ntagid}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>
+<div class="d-flex justify-content-between new_btn">
+  <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle">Cancel</button>
+  <button *ngIf="_commonService.checkPrivilegeModule('zones', privilege)" mat-flat-button color="primary" (click)="onSubmit(unitForm,unit)" class="btn_main_done ml-10">Done</button>
+
+</div>
+
+<ng-template #addBeaconEle>
+  <form #beaconForm="ngForm">
+
+    <div class="popup_design">
+      <div class="pop_heading">
+        <h3>Edit Beacon</h3>
+
+      </div>
+    </div>
+
+    <div class="newrule">
+
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput (keypress)="allwoAlphaNumDash($event)" placeholder="Beacon Name" name="name"
+                   [(ngModel)]="beacon_value.name" required>
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput type="number" step="2" placeholder="Acceptable Range" name="acceptable_range"
+                   [(ngModel)]="beacon_value.acceptable_range" required>
+
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput type="text" mask="AAAAAA" (keypress)="checkAlphanum($event)" maxlength="6" pKeyFilter="int"
+                   #major="ngModel" (change)="beacon_value.major = prependZeros(beacon_value.major)" placeholder="Major"
+                   name="major" [(ngModel)]="beacon_value.major" required>
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput type="text" mask="AAAAAA" maxlength="6" placeholder="Minor" name="minor"
+                   [(ngModel)]="beacon_value.minor" pKeyFilter="int" maxlength="6" #minor="ngModel"
+                   (change)="beacon_value.minor = prependZeros(beacon_value.minor)" required>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-100 pr-15">
+          <label class="d-block mb-10">Beacon Type</label>
+          <mat-radio-group aria-label="Select an option" name="beacon_type" [(ngModel)]="beacon_value.beacon_type"
+                           required>
+            <mat-radio-button class="mr-10" color="primary" value="location" aria-selected="true">Location
+            </mat-radio-button>
+            <mat-radio-button class="mr-10" color="primary" value="resident">Resident</mat-radio-button>
+            <mat-radio-button class="mr-10" color="primary" value="asset">Asset</mat-radio-button>
+            <mat-radio-button class="mr-10" color="primary" value="none">None</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Protocol" value="ibeacon" name="protocol" disabled
+                   [(ngModel)]="beacon_value.protocol">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+
+        <div class="w-100">
+          <mat-form-field class="w-100">
+            <textarea matInput placeholder="Tag" name="tag" [(ngModel)]="beacon_value.tag">
+                            </textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button mat-flat-button class="mr-0 cancel_btn" color="warn" (click)="closeBeaconDialog()">Cancel</button>
+        <button mat-flat-button color="primary" class="ml-10 done_btn"
+                (click)="saveBeaconDialog(beaconForm,beacon_value)">{{'Done'}}</button>
+      </div>
+    </div>
+  </form>
+
+</ng-template>

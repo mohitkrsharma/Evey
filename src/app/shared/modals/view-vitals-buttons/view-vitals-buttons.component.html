@@ -1,0 +1,58 @@
+<div class="vital_btn_popup">
+  <h2>All Vitals</h2>
+  <div class="row row-margin">
+    <div class="col">
+      <button type="button" mat-stroked-button (click)="onVitalBtnClick($event)" Carename="Blood Pressure"
+        [ngClass]="{'disabled-btn': vital === 'Blood Pressure',resident_btn:true}"
+        [disabled]="vital === 'Blood Pressure'">
+        <img src="./assets/images/sidenav/blood-pressure-care-icon.svg" width="28" (click)="onVitalBtnClick($event)">
+        <p>Blood Pressure</p>
+      </button>
+    </div>
+    <div class="col">
+      <button type="button" mat-stroked-button (click)="onVitalBtnClick($event)" Carename="Pulse"
+        [ngClass]="{'disabled-btn': vital === 'Pulse',resident_btn:true} " [disabled]="vital === 'Pulse'">
+        <img src="./assets/images/sidenav/pulse-automatic-care-icon.svg" width="28">
+        <p>Pulse</p>
+      </button>
+    </div>
+    <div class="col">
+      <button type="button" mat-stroked-button (click)="onVitalBtnClick($event)" Carename="Oxygen"
+        [ngClass]="{'disabled-btn': vital === 'Oxygen',resident_btn:true}" [disabled]="vital === 'Oxygen'">
+        <img src="./assets/images/sidenav/oxygen-care-icon.svg" width="28">
+        <p>Oxygen</p>
+      </button>
+    </div>
+    <div class="col">
+      <button type="button" mat-stroked-button (click)="onVitalBtnClick($event)" Carename="Respirations"
+        [ngClass]="{'disabled-btn': vital === 'Respirations',resident_btn:true}" [disabled]="vital === 'Respirations'">
+        <img src="./assets/images/sidenav/respirations-care-icon.svg" width="28">
+        <p>Respirations</p>
+      </button>
+    </div>
+  </div>
+  <div class="row row-margin">
+    <div class="col">
+      <button type="button" mat-stroked-button (click)="onVitalBtnClick($event)" Carename="Blood Sugar"
+        [ngClass]="{'disabled-btn': vital === 'Blood Sugar',resident_btn:true}" [disabled]="vital === 'Blood Sugar'">
+        <img src="./assets/images/sidenav/accu-check-care-icon.svg" width="28">
+        <p>Blood Sugar</p>
+      </button>
+    </div>
+    <div class="col">
+      <button type="button" mat-stroked-button (click)="onVitalBtnClick($event)" Carename="Weight"
+        [ngClass]="{'disabled-btn': vital === 'Weight',resident_btn:true}" [disabled]="vital === 'Weight'">
+        <img src="./assets/images/sidenav/weight-care-icon.svg" width="28">
+        <p>Weight</p>
+      </button>
+    </div>
+    <div class="col">
+    </div>
+    <div class="col">
+    </div>
+  </div>
+  <div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+    <button mat-button color="basic" class="mr-10 cancel_btn p-0" (click)="onCancel()">Cancel</button>
+    <button mat-button color="primary" class="done_btn p-0" cdkFocusInitial (click)="onDone()">Done</button>
+  </div>
+</div>

@@ -1,0 +1,188 @@
+@import "./../../../../../styles/_cstm-variable.scss";
+
+.mat-cell{
+    text-transform: capitalize;
+}
+
+.shifttimencreated {
+    .shifttime {
+      @include second-heading;
+  
+      h4 {
+        margin: 0;
+      }
+    }
+  
+    .created {
+      h4 {
+        @include title-text;
+      }
+  
+      span {
+        @include title-text;
+      }
+    }
+  }
+
+.btn_Secondary{
+    margin:0 0 0 5px !important;
+    @include btn-main;
+}
+
+.include_susp_custm {
+    p {
+        padding-right: 10px;
+    }
+}
+
+.Shiftreportclass {
+    width: 45%;
+    padding: 20px;
+
+    .mat-dialog-container {
+        overflow: visible !important;
+
+        h3 {
+            @include second-heading-medium;
+            margin: 0;
+        }
+    }
+}
+
+.custom_font {
+
+    h3 {
+        @include second-heading-medium;
+    }
+}
+
+.pop_heading {
+    margin-bottom: 25px;
+
+    h3 {
+        margin: 0;
+    }
+
+    .font_style {
+        @include secondary-text-regular;
+    }
+}
+
+.suspendUsers {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .switch_ann_header {
+        display: flex;
+        align-items: center;
+        margin-left: 15px;
+
+        p {
+            @include regular-text;
+            margin: 0;
+        }
+
+        span {
+            padding-left: 10px;
+
+            .mat-slide-toggle-bar {
+                &:hover {
+                    .mat-slide-toggle-persistent-ripple {
+                        opacity: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.calendrform {
+    position: absolute;
+    right: 0;
+    top: auto;
+    font-size: 21px;
+    color: #757575;
+}
+
+.calendrformfall{
+    position: absolute;
+    right: 0;
+    top: auto;
+    font-size: 16px;
+    color: #757575;
+}    
+.calender_icon.calendrformfall.mat-icon.notranslate.material-icons.mat-icon-no-color {
+    width: 17px !important;
+   }
+
+.shift_detail {
+    width: 170px;
+    height: 170px;
+    border: 1px solid #24A6DF;
+    padding: 5% 15px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 15px;
+}
+
+.shifttimencreated {
+    .shifttime {
+        font-size: 20px !important;
+        font-family: "SFProDisplay-Bold" !important;
+        h4 {
+            margin: 0;
+        }
+    }
+}
+
+.shifttimencreated {
+    display: flex;
+    justify-content: space-between;
+    background: #1975B8;
+    padding: 10px 15px;
+    color: #BFE7F6;
+    border-radius: 5px;
+    margin-top: 35px !important;
+    .shifttime,
+    .created {
+      h4 {
+        margin: 0 0 5px 0;
+        color: #fff;
+        font-weight: 400;
+      }
+  
+      span {
+        color: #BFE7F6;
+      }
+    }
+  
+    .repname {
+      display: flex;
+      align-items: center;
+  
+      h3 {
+        margin: 0;
+        font-weight: 400;
+        color: #fff;
+      }
+    }
+  }
+
+  .export_image {
+    height: 36px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.export_imagepdf {
+    height: 42px;
+    cursor: pointer;
+    margin-left: 2px;
+}
+
+.export_imagepdf_unselect {
+    height: 42px;
+    margin-left: 2px;
+}

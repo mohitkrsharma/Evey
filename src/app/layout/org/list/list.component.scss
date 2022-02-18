@@ -1,0 +1,14 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+.mat-column-org_name {
+    text-transform: capitalize;
+}
+
+.btn_Secondary{
+    margin:0 0 0 5px !important;
+    @include btn-main;
+}
+
+span.iconalign a {
+    cursor: pointer;
+  }

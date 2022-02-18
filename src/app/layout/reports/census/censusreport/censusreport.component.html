@@ -1,0 +1,285 @@
+<mat-card id="doc">
+  <mat-card-header>
+    <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+      <mat-card-title class="mb-0">Census</mat-card-title>
+        <div class="report_export_btn d-flex align-center">
+          <button mat-stroked-button color="primary" (click)="openCensusReport()" class="btn_Secondary"style="margin-right: 10px;">
+              Run Another
+          </button>
+            <img *ngIf="commonService.checkPrivilegeModule('reports','export')" (click)="exportXlsx()" class="export_image" src="assets/images/download-xls-icon.svg"/>
+            <img *ngIf="!commonService.checkPrivilegeModule('reports','export')" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+            <img *ngIf="commonService.checkPrivilegeModule('reports','export')" (click)="onExportAsPDF()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+        </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <div id="contentToConvert">
+  <mat-card-content class="head-page">
+   
+    <div class="censuscreated d-flex align-items-center mb-20">
+      <div class="shifttime">
+       
+      </div>
+      <div class="created">
+        <h4>Created by: {{username}}</h4>
+        
+        <span>{{runreportDate}}</span>
+      </div>
+    </div>
+
+    
+    <div class="census-grids mb-20">
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ totalResident }}
+          </div>
+          <div *ngIf="goalDiffrnc!=0" class="w-50 count2 text-right"
+            [ngClass]="goalDiffrnc >= 0 ? 'text-green' : 'text-red'">
+            {{ goalDiffrnc > 0 ? '+' + goalDiffrnc : goalDiffrnc }}
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-60 totalresi text-left">
+            Total Residents
+          </div>
+          <div *ngIf="goalPercentage!=0" class="w-40 text-right  goalresi"
+            [ngClass]="goalPercentage < 100 ? 'text-red' : 'text-green'">
+            {{goalPercentage}}% of goal
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ totalUnit }}
+          </div>
+          <div class="w-50 count2 text-right text-red visibility-hidden">
+            -12
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-60 totalresi text-left">
+            Total Units
+          </div>
+          <div class="w-40 text-right text-red goalresi visibility-hidden">
+            82% of goal
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ not_ready }}
+          </div>
+          <div class="w-50 count2 text-right text-red visibility-hidden">
+            -12
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-60 totalresi text-left">
+            Open Units
+          </div>
+          <div class="w-40 text-right text-red goalresi visibility-hidden">
+            82% of goal
+          </div>
+        </div>
+      </div>
+      <div class="censusgrid">
+        <div class="d-flex">
+          <div class="w-50 countab text-left">
+            {{ ready }}
+          </div>
+          <div class="w-50 count2 text-right text-red visibility-hidden">
+            -12
+          </div>
+        </div>
+        <div class="d-flex">
+          <div class="w-60 totalresi text-left">
+            Move-In Ready Units
+          </div>
+          <div class="w-40 text-right text-red goalresi visibility-hidden">
+            82% of goal
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+
+      <div class="w-50 pr-10">
+        <mat-card class="no_drop_shadow bdr_crd ">
+          <mat-card-header class=" w-100 border-bottom">
+            <mat-card-title class="ann_heading mt-0">Resident Levels</mat-card-title>
+          </mat-card-header>
+
+          <mat-card-content class="view-height-center">
+            <div class="table-responsives listing">
+              <table class="table table-striped table-hover table-bordered" style="width: 100%;">
+                <thead>
+                  <tr style="text-align: center;">
+                    <th></th>
+                    <th>Total</th>
+                    <th>Goal</th>
+                    <th>% of Budget</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let level of careLevel">
+                    <td>{{ level.name }}</td>
+                    <td class="value">{{level.count}}</td>
+                    <td class="value">{{ level.goal }}</td>
+                   
+                    <td class="value" [ngClass]="getDiff(level.count, level?.goal) >= 0 ? 'text-green' : 'text-red'">
+                      {{ level.goal ? getPercentage(level?.goal, level.count) : '' }}
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="w-50 pl-10">
+        <mat-card class="no_drop_shadow bdr_crd mb-20">
+          <mat-card-header class=" w-100 border-bottom">
+            <mat-card-title class="ann_heading mt-0">Resident Status</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="view-height-center">
+            <div class="table-responsives listing">
+              <table class="table table-striped table-hover table-bordered" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Active (resident residing in the facility)</td>
+                    <td class="value">{{ totalActiveResident }}</td>
+                  </tr>
+                  <tr>
+                    <td>Skilled Nursing</td>
+                    
+                    <td class="value">{{ skillNursCount }}</td>
+                  </tr>
+                  <tr>
+                    <td>Hospitalized</td>
+                   
+                    <td class="value">{{ hospitalizedCount }}</td>
+                  </tr>
+                  <tr>
+                    <td>Vacation</td>
+                    
+                    <td class="value">{{ vacationCount }}</td>
+                  </tr>
+                  <tr>
+                    <td>Hospice</td>
+                    <td class="value">{{ hospice }}</td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <div class="d-flex justify-content-between">
+          <div class="w-50 pr-10">
+            <div class="censusgrid2">
+              <div class="d-flex">
+                <div class="w-50 countab text-left">
+                  {{ admits }}
+                </div>
+                <div class="w-50 count2 text-right text-red visibility-hidden">
+                  -12
+                </div>
+              </div>
+              <div class="d-flex">
+                <div class="w-60 totalresi text-left">
+                  Admits <span class="text-grey small-2p">(last 7 days)</span>
+                </div>
+                <div class="w-40 text-right text-red goalresi visibility-hidden">
+                  82% of goal
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-50 pl-10">
+            <div class="censusgrid2">
+              <div class="d-flex">
+                <div class="w-100 countab text-left">
+                  {{ discharges }}
+                </div>
+              </div>
+              <div class="d-flex">
+                <div class="w-100 totalresi text-left">
+                  Discharges <span class="text-grey small-2p">(last 7 days)</span>
+                </div>
+              </div>
+              <div class="table-responsives listing">
+                <table class="table table-striped table-hover table-bordered" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Moved</td>
+                      <td class="value">{{ moved }}</td>
+                    </tr>
+                    <tr>
+                      <td>Transferred</td>
+                      <td class="value">{{ transfered }}</td>
+                    </tr>
+                    <tr>
+                      <td>Deceased</td>
+                      <td class="value">{{ deceased }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </mat-card-content>
+</div>
+</mat-card>
+
+<ng-template #censusReport>
+  <div>
+    <form #f="ngForm" (ngSubmit)="CensusSubmit(picker)" class="custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Census Report</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row font_style">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput name="date" (click)="picker.open()" [matDatepicker]="picker" placeholder="Choose a date"
+              [(ngModel)]="censusreport.date" onPaste="return false" (keypress)="checkAllwoNum($event)" required
+              [max]="maxDate">
+            <mat-datepicker-toggle matSuffix [for]="picker" #picker>
+              <mat-icon matDatepickerToggleIcon>
+                <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+                  height="20.321">
+              </mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_report_pop">
+        <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelCensus()"
+          type="button">Cancel</button>
+        <button mat-flat-button color="primary" class="btn_main_done" type="submit">Run</button>
+      </div>
+    </form>
+
+  </div>
+</ng-template>

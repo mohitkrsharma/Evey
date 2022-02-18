@@ -1,0 +1,88 @@
+@import "./../../../styles/_cstm-variable.scss";
+
+.login-page {
+    display: flex;
+    //align-items: center;
+    justify-content: center;
+    min-height: 100%;
+    position: relative;
+    padding: 0px 15px;
+    height: 100vh;
+
+    .mat-icon {
+        cursor: pointer;
+    }
+
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+
+    h2 {
+        /*font-size: 20px;*/
+        color: #000;
+        @include second-heading-medium;
+        /*font-weight: 500;*/
+        margin-bottom: 25px;
+    }
+
+    .sec-heading {
+        @include secondary-title;
+    }
+
+    a {
+        color: #1975B8;
+        cursor: pointer;
+
+        &:hover {
+            color: #28A5DE;
+        }
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .content {
+        max-width: 340px;
+        width: 100%;
+
+        .app-name {
+            margin-top: 0px;
+
+            img {
+                max-width: 100%;
+                width: 185px;
+            }
+        }
+
+        .login-form {
+            padding: 25vh 0px 20px;
+            max-width: 340px;
+            width: 100%;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .login-page {
+        .mat-icon {
+            font-size: 120%;
+        }
+    }
+}
+
+.invalid-OTP {
+     color: #EF4036
+}
+
+.btn_login {
+    @include btn-primary-done;
+    /*height: auto !important;
+    box-shadow: 0 0!important;*/
+}
+
+.text_custom {
+    @include secondary-text-regular;
+}

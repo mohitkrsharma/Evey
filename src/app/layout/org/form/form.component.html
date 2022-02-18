@@ -1,0 +1,178 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title>{{paramId?'Edit Organization':'Add Organization'}}
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <form #f="ngForm">
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Organization Name" autocorrect="off"
+                            autocapitalize="off" spellcheck="off" #search [(ngModel)]="organization.org_name"
+                            name="org_name" required (keypress)="checkAlpha($event)">
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput type="url" placeholder="Website" [(ngModel)]="organization.org_website"
+                            name="org_website"
+                            pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
+                            (focus)="onFocus()" required>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Work Phone 1" [(ngModel)]="organization.org_phone1"
+                            name="org_phone1" required maxlength="14" mask="(000) 000-0000">
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Work Phone 2" [(ngModel)]="organization.org_phone2"
+                            name="org_phone2" maxlength="14" mask="(000) 000-0000">
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Address 1" [(ngModel)]="organization.org_address1"
+                            name="org_address1" required>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Address 2" [(ngModel)]="organization.org_address2"
+                            name="org_address2">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <mat-label>
+                            State</mat-label>
+                        <mat-select #org_state="ngModel" [(ngModel)]="organization.org_state" name="org_state"
+                            (selectionChange)="changeState($event.value)" (selectionChange)="select($event,'',0)"
+                            required>
+                            <ngx-mat-select-search [(ngModel)]="staSearch" placeholderLabel="Select State"
+                                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let item of statelist |stringFilterBy:staSearch:'name'"
+                                [value]="item.id" (focus)="select(item.name,'',1)">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                        <!--  <mat-select [(ngModel)]="organization.org_state" placeholder="State" name="org_state" required
+                            (selectionChange)="changeState(organization.org_state)">
+                            <mat-option *ngFor="let item of statelist" [value]="item.id" (focus)="select(item.name,'')">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select> -->
+                    </mat-form-field>
+
+                </div>
+                <div class="w-100 pl-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <mat-label>
+                            City</mat-label>
+                        <mat-select #org_city="ngModel" [(ngModel)]="organization.org_city" name="org_city"
+                            (selectionChange)="changeCity($event.value)" (selectionChange)="select('',$event,0)"
+                            required>
+                            <ngx-mat-select-search [(ngModel)]="citSearch" placeholderLabel="Select City"
+                                noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let item of Citielist |stringFilterBy:citSearch:'name'"
+                                [value]="item.id" (focus)="select('',item.name,1)">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                        <!--  <mat-select [(ngModel)]="organization.org_city" placeholder="City" name="org_city" required
+                            (selectionChange)="changeCity(organization.org_city)">
+                            <mat-option *ngFor="let item of Citielist" [value]="item.id" (focus)="select('',item.name)">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select> -->
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Zip 1" [(ngModel)]="organization.org_zip1" mask="00000"
+                            maxlength="5" minlength="5" name="org_zip1" required>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Zip 2" [(ngModel)]="organization.org_zip2" mask="0000"
+                            maxlength="4" minlength="4" name="org_zip2">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15 edit_org">
+                    <mat-form-field class="w-100">
+                        <input matInput name="uuid" styleClass="form-control " placeholder="UUID"
+                            [(ngModel)]="organization.uuid" mask="AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA" maxlength="36"
+                            required>
+                    </mat-form-field>
+                </div>
+                <div class="w-100 pl-15 d-flex edit_org">
+                        <div class="drop-zone">
+                            <div class="addfile">
+                                <span>
+                                    Upload Logo
+                                </span>
+                                <input name="logo" type="file" ng2FileSelect accept="image/*" [uploader]="uploader"
+                                    (change)="onFileChanged($event)">
+                            </div>
+
+                            <mat-hint *ngIf="logoSelected!=''">{{logoSelected}}</mat-hint>
+                            <mat-error *ngIf="logoError!=''">{{logoError}}</mat-error>
+                        </div>
+                        <img *ngIf="organization.logo && organization.logo.location!=undefined"
+                            [src]="organization.logo.location" class="logosize">
+                  
+
+                </div>
+            </div>
+
+
+        </form>
+    </mat-card-content>
+
+    <agm-map [latitude]="latitude" [longitude]="longitude" [streetViewControl]="false" [disableDefaultUI]="false"
+        [zoomControlOptions]="zoomControlOptions" [zoom]="zoom">
+        <agm-map [latitude]="latitude" [longitude]="longitude" [streetViewControl]="false" [disableDefaultUI]="false"
+            [zoomControlOptions]="zoomControlOptions" [zoom]="zoom">
+            <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="iconUrl">
+                <agm-info-window [disableAutoPan]="false" [isOpen]="mapOpen">
+                    <p><strong>{{organization.org_name}}</strong></p>
+                    <p>{{organization.org_address1}}, {{organization.org_address2}}</p>
+                    <p>{{organization.org_city}}, {{organization.org_state}}, {{organization.org_zip1}}
+                        {{organization.org_zip2}}
+                    </p>
+                </agm-info-window>
+            </agm-marker>
+        </agm-map>
+    </agm-map>
+
+</mat-card>
+<div class="d-flex justify-content-between btn_detail">
+    <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle">Cancel</button>
+    <div>
+        <button mat-flat-button color="primary" *ngIf="!paramId" class="ml-10 btn_main_done"
+            (click)="onSubmit(f,organization,1)">Add Buildings</button>
+        <button *ngIf="_commonService.checkPrivilegeModule('organization',privilege)" mat-flat-button color="primary" class="ml-10 btn_main_done"
+            (click)="onSubmit(f,organization,0)">{{paramId?'Done':'Done'}}</button>
+
+    </div>
+
+</div>

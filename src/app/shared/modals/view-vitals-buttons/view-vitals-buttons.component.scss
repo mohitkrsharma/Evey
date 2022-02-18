@@ -1,0 +1,49 @@
+@import "./../../../../styles/cstm-variable";
+//@import '../../../../../node_modules//bootstrap/dist/css/bootstrap.min.css';
+
+.vital_btn_popup {
+    padding: 30px 20px 24px 20px !important; 
+    max-height: 80vh !important;
+    overflow-y: auto;
+    .mt-10 {
+      margin-top: 14px !important;
+    } 
+}
+
+.cancel_btn { 
+    @include window_cancel;
+        background-color: transparent !important;
+    }
+     .done_btn {
+        @include window_done;
+         background-color: #fff !important;
+}
+
+
+.row.row-margin{
+    margin:0 -15px;
+}
+.row-margin .col{
+    padding:0 15px;
+    max-width:100%;
+    width: 100%;
+    margin-top: 15px;
+}
+.row-margin .col button{
+    margin:0;
+    width: 100%;
+    height: 110px;
+    border: 1px solid #53b7e5;
+}
+
+.disabled-btn{
+    border: 1px solid #DFE0E1 !important;
+}
+
+.disabled-btn img{
+    filter: grayscale(100%);
+}
+
+p{
+    margin-top: 0;
+}

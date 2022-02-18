@@ -1,0 +1,92 @@
+
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Weekly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+
+        <div>
+            <mat-form-field class="w-50 wd-170">
+                <mat-label>Every...</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_tenure']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of weekList |stringFilterBy:weekSearch:'key'" [value]="option.value">
+                        {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="d-flex mr-10 mt-20">
+            <div class="customradio">
+                <div class="rd_hol">
+                    <input type="checkbox" id="Su" [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.sunday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.sunday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Su"><span>Sun</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="M" value="Monday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.monday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.monday"
+                        (change)="weekDayChanged($event)">
+                    <label for="M"><span>Mon</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="T" value="Tuesday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.tuesday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.tuesday"
+                        (change)="weekDayChanged($event)">
+                    <label for="T"><span>Tues</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="W" value="Wednesday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.wednesday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.wednesday"
+                        (change)="weekDayChanged($event)">
+                    <label for="W"><span>Wed</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="Th" value="Thursday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.thursday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.thursday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Th"><span>Thurs</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="F" value="Friday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.friday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.friday"
+                        (change)="weekDayChanged($event)">
+                    <label for="F"><span>Fri</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="Sa" value="Saturday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.saturday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.saturday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Sa"><span>Sat</span></label>
+                </div>
+            </div>
+
+        </div>
+        <div class="d-flex mr-10 mt-20 mb-5 repeat-text">
+            <span class="font-modal" style="width: 100%;">{{getSchedulePerformingTimeString(selectedCareList[scheduleRepeat.index])}}</span>
+            <!-- <span>{{careString}}</span> -->
+        </div>
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(selectedCareList[scheduleRepeat.index])">Done</button>
+        </div>
+    </div>
+  

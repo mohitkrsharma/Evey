@@ -1,0 +1,203 @@
+<form #f="ngForm">
+  <mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+      <mat-card-title>Announcement
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+      <mat-card-content class="mb-10" *ngIf="showfaclist">
+
+        <div class=" bg-light table-responsive no-shadow no-wrap-table listing">
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z bg-transparent">
+            <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef> No. </th>
+              <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}} </td>
+            </ng-container>
+            <ng-container matColumnDef="org">
+              <th mat-header-cell *matHeaderCellDef width="44%"> Organization </th>
+              <td mat-cell *matCellDef="let element"> {{element.org_name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="fac">
+              <th mat-header-cell *matHeaderCellDef width="42%"> Building </th>
+              <td mat-cell *matCellDef="let element"> {{element.fac_name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Action </th>
+              <td mat-cell *matCellDef="let element;let i=index;">
+                <button mat-mini-fab color="primary" (click)="onRemoveFac(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr class="bg-transparent" mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr class="bg-transparent" mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+
+
+
+      <div class="addfacility mb-20">
+        <div class="field">
+          <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Organization</mat-label>
+              <mat-select #organization="ngModel" [(ngModel)]="announcement.organization"
+                (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)" name="organization">
+                <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                  (focus)="select(item.org_name,'',1)">
+                  {{item.org_name}}
+                </mat-option>
+              </mat-select>
+              <!--  <mat-select name="organization" [(ngModel)]="announcement.organization"
+                (selectionChange)="changeOrg(announcement.organization)">
+                <mat-option *ngFor="let item of organiz" [value]="item._id" (focus)="select(item.org_name,'')">
+                  {{item.org_name}}
+                </mat-option>
+              </mat-select> -->
+            </mat-form-field>
+          </span>
+
+          <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Organization </mat-label>
+              <mat-select #organization="ngModel" [(ngModel)]="announcement.organization"
+                (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)" name="organization">
+                <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                  (focus)="select(item.org_name,'',1)">
+                  {{item.org_name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </span>
+        </div>
+        <div class="field">
+          <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Building</mat-label>
+              <mat-select #facility="ngModel" [(ngModel)]="announcement.fac"
+                (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)"
+                name="facility">
+                <ngx-mat-select-search [(ngModel)]="searchCtrl" placeholderLabel="Select Building"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of faclist |stringFilterBy:searchCtrl:'fac_name'" [value]="item._id"
+                  (focus)="select('',item.fac_name,1)">
+                  {{item.fac_name}}
+                </mat-option>
+              </mat-select>
+              <!-- <mat-select name="facility" [(ngModel)]="announcement.fac" #facility
+                (selectionChange)="changeFac(announcement.fac,user)">
+                <mat-option *ngFor="let item of faclist" [value]="item._id" (focus)="select('',item.fac_name)">
+                  {{item.fac_name}}
+                </mat-option>
+              </mat-select> -->
+            </mat-form-field>
+          </span>
+          <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Building </mat-label>
+              <mat-select #facility="ngModel" [(ngModel)]="announcement.fac"
+                (selectionChange)="changeFac($event.value,user)" (selectionChange)="select('',$event,0)" name="facility"
+                required>
+                <ngx-mat-select-search [(ngModel)]="searchCtrl" placeholderLabel="Select Building"
+                  noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                <mat-option *ngFor="let item of faclist | stringFilterBy:searchCtrl:'fac_name'" [value]="item._id"
+                  (focus)="select('',item.fac_name,1)">
+                  {{item.fac_name}}
+                </mat-option>
+              </mat-select>
+              <!-- <mat-select name="facility" [(ngModel)]="announcement.fac" #facility
+                (selectionChange)="changeFac(announcement.fac,user)" required>
+                <mat-option *ngFor="let item of faclist" [value]="item._id" (focus)="select('',item.fac_name)">
+                  {{item.fac_name}}
+                </mat-option>
+              </mat-select> -->
+            </mat-form-field>
+          </span>
+        </div>
+        <div class="add">
+          <button mat-flat-button color="primary" (click)="addFacilityList(announcement)" class="btn_modual">
+            Add Building
+          </button>
+        </div>
+      </div>
+
+      <div class="w-100 d-flex justify-content-between mb-10">
+        <h5 class="m-0 announcement_heading">Message</h5>
+      </div>
+
+      <div class="w-100 mb-20">
+
+        <p-editor [(ngModel)]="announcement.message" placeholder="Write you message here…" name="message"
+          [style]="{'height':'120px'}" required (ngModelChange)="onchangemessage($event)">
+          <p-header>
+            <span class="ql-formats">
+              <button class="ql-bold" aria-label="Bold"></button>
+              <button class="ql-italic" aria-label="Italic"></button>
+              <button class="ql-underline" aria-label="Underline"></button>
+            </span>
+          </p-header>
+        </p-editor>
+        <mat-error *ngIf="messagerequired">Please enter message</mat-error>
+      </div>
+
+      <div class=" d-flex ">
+        <h5 class="activ m-0 mr-10">Active</h5>
+        <mat-slide-toggle color="primary" [(ngModel)]="announcement.isactive" name="isactive"></mat-slide-toggle>
+      </div>
+      <div class="w-100 mb-10 " *ngIf="announcement.message!=''">
+
+        <div class="w-100">
+          <h5 class="preview_title">Preview</h5>
+          <mat-card style="word-break:break-word" class="alert-box mb-10"
+            [ngStyle]="{'background-color':announcement.background_color,'border-color':announcement.border_color,'color':announcement.font_color,'font-size':announcement.font_size+'px'}">
+
+            <mat-card-content class="m-0 p-0" [ngStyle]="{'font-size':announcement.font_size+'px'}">
+              <p [innerHTML]=" announcement.message | sanitizeText "></p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+      </div>
+
+      <div class="w-50 mt-10 " *ngIf="announcement.message!='' && announcement.isdefault">
+        <mat-form-field class="w-100">
+          <mat-label>Theme</mat-label>
+          <mat-select #theme="ngModel" [(ngModel)]="announcement.theme" (selectionChange)="changeTheme($event)"
+            name="theme">
+            <ngx-mat-select-search [(ngModel)]="theSearch" placeholderLabel="Select Theme"
+              noEntriesFoundLabel="Not Found" name="search" class="custom_input"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of defaultAlert |stringFilterBy:theSearch:'name'" [value]="item.name">
+              <div class="opt">
+                <img src="{{item.icon}}" alt=""> {{item.name}}
+              </div>
+            </mat-option>
+          </mat-select>
+          <!-- <mat-select name="theme" [(ngModel)]="announcement.theme" (selectionChange)="changeTheme($event)">
+            <mat-option *ngFor="let item of defaultAlert" [value]="item.name">
+              <div class="opt">
+                <img src="{{item.icon}}" alt=""> {{item.name}}
+              </div>
+            </mat-option>
+          </mat-select> -->
+        </mat-form-field>
+      </div>
+
+      <div class="d-flex justify-content-between mt-20">
+        <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle">Cancel</button>
+        <button mat-flat-button color="primary" class="ml-10" (click)="addAnnouncement(f)"
+          class="btn_main_done">Done</button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</form>

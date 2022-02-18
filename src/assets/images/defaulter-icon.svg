@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28.341" height="34.761" viewBox="0 0 28.341 34.761">
+  <g id="Group_191" data-name="Group 191" transform="translate(-298.557 -802.136)">
+    <g id="Group_8" data-name="Group 8" transform="translate(-2.735 16.258)">
+      <g id="Group_187" data-name="Group 187" transform="translate(289.693 785.878)">
+        <g id="Group_184" data-name="Group 184" transform="translate(11.599 0)">
+          <path id="Path_217" data-name="Path 217" d="M318.774,807.209c0,.244-.005.487-.018.729a14.759,14.759,0,0,1-.906,4.493c-1.813,1.708-5.233,2.861-9.152,2.861s-7.34-1.152-9.155-2.861a14.838,14.838,0,0,1-.906-4.493c-.012-.242-.018-.485-.018-.729a15.542,15.542,0,0,1,.156-2.193,12.6,12.6,0,0,1,5.239-8.852,7.635,7.635,0,0,0,9.365,0,12.6,12.6,0,0,1,5.24,8.852A15.338,15.338,0,0,1,318.774,807.209Z" transform="translate(-298.62 -782.8)" fill="#1975b8"/>
+          <circle id="Ellipse_43" data-name="Ellipse 43" cx="6.322" cy="6.322" r="6.322" transform="translate(2.551 12.352) rotate(-77.665)" fill="#1975b8"/>
+          <circle id="Ellipse_44" data-name="Ellipse 44" cx="8.381" cy="8.381" r="8.381" transform="translate(7.491 30.287) rotate(-77.665)" fill="#1975b8" stroke="#fff" stroke-width="1.5"/>
+        </g>
+      </g>
+    </g>
+    <path id="Icon_metro-cross" data-name="Icon metro-cross" d="M10.771,8.577h0L8.26,6.066l2.511-2.511h0a.259.259,0,0,0,0-.366L9.585,2a.259.259,0,0,0-.366,0h0L6.709,4.514,4.2,2h0a.259.259,0,0,0-.366,0L2.646,3.19a.259.259,0,0,0,0,.366h0L5.157,6.066,2.646,8.577h0a.259.259,0,0,0,0,.366l1.186,1.186a.259.259,0,0,0,.366,0h0L6.709,7.618l2.511,2.511h0a.259.259,0,0,0,.366,0l1.186-1.186a.259.259,0,0,0,0-.366Z" transform="translate(309.443 820.086)" fill="#fff"/>
+  </g>
+</svg>

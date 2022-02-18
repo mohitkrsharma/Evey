@@ -1,0 +1,135 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+
+.logosize {
+  height: 100px;
+  width: auto;
+}
+
+.drop-zone {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  /*margin: 0px 0 20px;*/
+  .addfile {
+    width: 130px;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    border-radius: 5px;
+    color: #1975b8;
+    margin-right: 10px;
+    cursor: pointer;
+
+    span {
+      font-size: 14px;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      color: #1975b8;
+
+      mat-icon {
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        color: #1975b8;
+      }
+    }
+
+    input {
+      position: absolute;
+      height: 40px;
+      width: 130px;
+      z-index: 2;
+      border-radius: 5px;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+}
+
+.addfile {
+
+  span {
+
+    margin: 0 0 0 5px !important;
+    border: 1px solid #1975b8 !important;
+    min-width: 80px !important;
+    line-height: 38px !important;
+    height: 38px !important;
+    background: transparent !important;
+    font-size: 16px !important;
+    color: #1975b8 !important;
+    border-radius: 4px !important;
+    text-align: center !important;
+    font-family: 'SFProText-Semibold' !important;
+
+  }
+
+
+}
+
+.example-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.example-container>* {
+  width: 100%;
+}
+
+agm-map {
+  height: 300px;
+}
+
+.edit_org {
+
+  placeholder {
+
+    font-size: 12px;
+    font-family: 'SFProText-Regular !important';
+
+
+  }
+
+  input {
+
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    font-family: 'SFProText-Regular' !important;
+    color: #414042 !important;
+
+  }
+
+}
+
+.btn_main_cancle {
+  @include btn-primary-cancle;
+}
+
+.btn_main_done {
+  margin: 0 0 0 5px !important;
+  @include btn-primary-done;
+
+  &.w_auto {
+    min-width: auto !important;
+  }
+}
+
+
+.btn_detail {
+
+  padding: 40px 0;
+
+}

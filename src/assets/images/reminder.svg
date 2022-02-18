@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_20" data-name="Rectangle 20" width="21.923" height="21.923" transform="matrix(0.742, 0.671, -0.671, 0.742, 26.112, 162.445)" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectangle_22" data-name="Rectangle 22" width="21.923" height="21.923" transform="matrix(-0.742, -0.671, 0.671, -0.742, 12.224, 210.602)" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-Artboard_10">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="Artboard_10" data-name="Artboard 10" clip-path="url(#clip-Artboard_10)">
+    <g id="Group_57" data-name="Group 57" transform="translate(-0.602 -168)">
+      <g id="Group_54" data-name="Group 54">
+        <g id="Group_53" data-name="Group 53" clip-path="url(#clip-path)">
+          <rect id="Rectangle_19" data-name="Rectangle 19" width="14.267" height="33.058" rx="7.134" transform="matrix(0.742, 0.671, -0.671, 0.742, 25.45, 168.884)" fill="#9dc224"/>
+        </g>
+      </g>
+      <g id="Group_56" data-name="Group 56">
+        <g id="Group_55" data-name="Group 55" clip-path="url(#clip-path-2)">
+          <rect id="Rectangle_21" data-name="Rectangle 21" width="14.267" height="33.058" rx="7.134" transform="matrix(-0.742, -0.671, 0.671, -0.742, 12.886, 204.163)" fill="#9dc224"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

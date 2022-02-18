@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-room_trays">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="room_trays" data-name="room trays" clip-path="url(#clip-room_trays)">
+    <g id="Group_1" data-name="Group 1" transform="translate(-56.602 -668)">
+      <circle id="Ellipse_1" data-name="Ellipse 1" cx="16" cy="16" r="16" transform="translate(58.6 670.442)" fill="#f87f0b" stroke="#f87f0b" stroke-miterlimit="10" stroke-width="1"/>
+      <circle id="Ellipse_2" data-name="Ellipse 2" cx="12.764" cy="12.764" r="12.764" transform="translate(61.836 673.677)" fill="#f87f0b" stroke="#fff" stroke-miterlimit="10" stroke-width="1"/>
+    </g>
+    <path id="Path_4" data-name="Path 4" d="M78.7,691.151l-2.468-.623a.561.561,0,0,1-.424-.517,2.2,2.2,0,0,0-1.6-2.032l-.022-.006-1.052-.3-5.072-1.444a.389.389,0,0,0-.481.268l0,.007a.389.389,0,0,0,.268.481l4.706,1.341a.379.379,0,0,1,.261.469l0,.008a.379.379,0,0,1-.47.261l-4.705-1.34a.389.389,0,0,0-.481.268l0,.007a.389.389,0,0,0,.268.481l4.706,1.341a.381.381,0,0,1,.262.47l0,.007a.38.38,0,0,1-.469.262l-4.706-1.341a.389.389,0,0,0-.481.268l0,.008a.39.39,0,0,0,.267.481l4.706,1.34a.381.381,0,0,1,.262.47l0,.007a.381.381,0,0,1-.47.262l-4.706-1.341a.389.389,0,0,0-.481.268l0,.008a.39.39,0,0,0,.267.481l5.072,1.444,1.053.3.021.006a2.2,2.2,0,0,0,2.429-.885.558.558,0,0,1,.632-.215l2.682.851,1.912.607,7.866,2.5a1.207,1.207,0,0,0,1.492-.83l.007-.024a1.207,1.207,0,0,0-.831-1.491l-8.387-2.12Z" transform="translate(-56.602 -668)" fill="#fff"/>
+  </g>
+</svg>

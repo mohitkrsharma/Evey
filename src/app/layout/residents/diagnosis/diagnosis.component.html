@@ -1,0 +1,174 @@
+<!-- single card with diseases and allergies -->
+
+	<!-- Disease allergy search -->
+	<mat-card-header>
+		<mat-card-subtitle class="w-100 mb-0">
+			<div class="d-flex justify-content-between align-center">
+			<!--	<div class="w-50 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" (keyup)="applyFilter($event)"
+                            id="searchInput" placeholder="Search by Disease / Allergy or ICD-10 Code" />-->
+                        <!-- <input matInput placeholder="Search"> -->
+                  <!--  </mat-form-field>
+                </div>-->
+				<div class="w-50 pr-15">	<!--[ngClass]="{showHide: 'showSelectOptionDisease'}" -->				
+					<mat-form-field class="w-80">
+						<mat-select [formControl]="bankServerSideCtrl" placeholder="Search by Disease / Allergy or ICD-10 Code"
+							(selectionChange)="selectDiagnosis($event)" (click)=searchValue()><!-- #matSelectDisease-->
+							<mat-option>
+								<ngx-mat-select-search [formControl]="bankServerSideFilteringCtrl"
+									[searching]="searching"  placeholderLabel="Search by Disease / Allergy or ICD-10 Code"
+									noEntriesFoundLabel="Not Found"></ngx-mat-select-search>
+							</mat-option>
+							<mat-option *ngFor="let ds of filteredDiseaseAllergy" [value]="ds">
+								({{ds.code}}) {{ds.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<!--<mat-icon mat-raised-button class="mat-icon diseaseicon material-icon basecolor cursor" role="img"
+						aria-hidden="true" (click)="openselectDisease()">
+							add_circle 
+					</mat-icon>-->
+				</div>
+			</div>
+		</mat-card-subtitle>
+	</mat-card-header>
+
+		<mat-card class="no_drop_shadow bdr_crd traking_nfc_resident">
+			<!-- Disease header delete button title row -->
+			<mat-card-header class="d-flex justify-content-between align-center w-100 border-bottom ">
+				<mat-card-title class="ann_heading mt-0">Diseases</mat-card-title>
+				<div class="w-70 pl-15" *ngIf="dataSourceDisease.data.length>0 || filteredDiseases">
+					<div class="example-button-row text-right w-100">
+						<button #deleteButton mat-stroked-button class="ml-3" (click)="deleteAllDisease()" type="button"
+							class="btn_Secondary">Delete</button>
+					</div>
+				</div>
+			</mat-card-header>
+	
+			<!-- Disease table -->
+			<mat-card-content class="view-height-center">
+				<div class="table-responsive listing" >
+					<mat-table [dataSource]="dataSourceDisease" class="custom_width" *ngIf="dataSourceDisease.data.length>0 || filteredDiseases">
+						<ng-container matColumnDef="checkbox">
+							<mat-header-cell *matHeaderCellDef>
+								<mat-checkbox color="primary" [(ngModel)]="checkedDisease" (click)="selectAllDisease()">
+								</mat-checkbox>
+							</mat-header-cell>
+							<mat-cell *matCellDef="let elements">
+								<mat-checkbox color="primary" [(ngModel)]="elements.checked"
+									(click)="selectElementDisease(elements.code,elements.checked)"> </mat-checkbox>
+							</mat-cell>
+						</ng-container>
+	
+						<ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNamesDiseases">
+							<mat-header-cell *matHeaderCellDef> {{column.value}} </mat-header-cell>
+							<mat-cell *matCellDef="let element">
+								<span *ngIf="column.id=='name'">{{element[column.id].name}} 
+									<img *ngIf="element[column.id].preCovid" src="./assets/images/positive.svg" width="28" height="28" class="ml-10 mt-5">
+								</span>
+									<span *ngIf="column.id!='name'">{{element[column.id]}}</span>
+								<!-- <p> <span [innerHTML]="element[column.id]"></span></p> -->
+							</mat-cell>
+						</ng-container>
+	
+						<ng-container matColumnDef="code">
+							<mat-header-cell *matHeaderCellDef>ICD-10 Code</mat-header-cell>
+							<mat-cell *matCellDef="let elements">
+								<span >{{elements.code}}</span>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="actions">
+							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+							<mat-cell *matCellDef="let elements">
+								<button mat-mini-fab color="primary" (click)="deleteDisease(elements)" type="button">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</mat-cell>
+						</ng-container>
+						<mat-header-row *matHeaderRowDef="displayedColumnsDiseases; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: displayedColumnsDiseases;"></mat-row>
+					</mat-table>
+					
+					<div *ngIf="noDataDiseases | async" class="no-records w-100 text-center">
+						<!-- <img class="no-content-icon" src="assets/images/no-content-icon.svg"> -->
+						<div class="no-content">No Diseases Found</div>
+					  </div>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	
+		<mat-card class="mt-20 no_drop_shadow bdr_crd traking_nfc_resident">
+			<!-- Allergies header delete button title row -->
+			<mat-card-header class="d-flex justify-content-between align-center w-100 border-bottom">
+				<mat-card-title class="ann_heading mt-0">Allergies</mat-card-title>
+				<div class="w-70 pl-15" *ngIf="dataSourceAllergy.data.length > 0 || filteredAllergy">
+					<div class="example-button-row text-right w-100">
+						<button #deleteButton mat-stroked-button class="ml-3" (click)="deleteAllAllergy()" type="button"
+							class="btn_Secondary">Delete</button>
+					</div>
+				</div>
+			</mat-card-header>
+	
+			<!-- Allergies table -->
+			<mat-card-content class="view-height-center">
+				<div class="table-responsive header-fixed-table-wrpper listing">
+					<mat-table [dataSource]="dataSourceAllergy" class="custom_width" *ngIf="dataSourceAllergy.data.length > 0 || filteredAllergy">
+						<ng-container matColumnDef="checkbox">
+							<mat-header-cell *matHeaderCellDef>
+								<mat-checkbox color="primary" [(ngModel)]="checkedAllergy" (click)="selectAllAllergy()">
+								</mat-checkbox>
+							</mat-header-cell>
+							<mat-cell *matCellDef="let elements">
+								<mat-checkbox color="primary" [(ngModel)]="elements.checked"
+									(click)="selectElementAllergy(elements.code,elements.checked)"> </mat-checkbox>
+							</mat-cell>
+						</ng-container>
+	
+						<ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNamesAllergy">
+							<mat-header-cell *matHeaderCellDef> {{column.value}} </mat-header-cell>
+							<mat-cell *matCellDef="let element">
+								<p> 
+									<span *ngIf="column.id=='name'">{{element[column.id].name}} 
+										<img *ngIf="element[column.id].preCovid" src="./assets/images/positive.svg" width="28" height="28" class="ml-10 mt-5">
+									</span>
+										<span *ngIf="column.id!='name'">{{element[column.id]}}</span>
+								</p>
+							</mat-cell>
+						</ng-container>
+	
+						<ng-container matColumnDef="active">
+							<mat-header-cell *matHeaderCellDef>
+								Active
+							</mat-header-cell>
+							<mat-cell *matCellDef="let elements">
+								<mat-slide-toggle  color="primary" [(ngModel)]="elements.active"
+								(change)="changeStatus(elements,'allergy')">
+								</mat-slide-toggle>
+							</mat-cell>
+						</ng-container>
+
+						<ng-container matColumnDef="actions">
+							<mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+							<mat-cell *matCellDef="let elements">
+								<button mat-mini-fab color="primary" (click)="deleteAllergy(elements)" type="button">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</mat-cell>
+						</ng-container>
+						<mat-header-row *matHeaderRowDef="displayedColumnsAllergy; sticky: true"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: displayedColumnsAllergy;"></mat-row>
+					</mat-table>
+					<div *ngIf="noDataAllergy | async" class="no-records w-100 text-center">
+						<!-- <img class="no-content-icon" src="assets/images/no-content-icon.svg"> -->
+						<div class="no-content">No Allergies Found</div>
+					</div>
+				</div>
+			</mat-card-content>
+		</mat-card>
+
+
+<!-- scroll window to top button -->
+<!-- <button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+	<mat-icon>keyboard_arrow_up</mat-icon>
+</button> -->

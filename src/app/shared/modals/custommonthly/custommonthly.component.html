@@ -1,0 +1,48 @@
+<div style="position: relative; height: 100%;">
+    <div class="pop_design">
+        <h3>Custom Monthly</h3>
+        <span>
+            <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+        </span>
+    </div>
+
+    <div class="d-flex mr-10 mt-20">
+        <div class="w-50 pr-15">
+            <mat-form-field class="w-100">
+                <mat-label>Every...</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_tenure']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="monthSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of monthList |stringFilterBy:monthSearch:'key'"
+                        [value]="option.value"> {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+            <mat-form-field class="w-100">
+                <mat-label>On the...</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['month_date']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="daySearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of monthDayList |stringFilterBy:daySearch:'name'"
+                        [value]="option.value"> {{option.name}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="d-flex mr-10 mt-20 repeat-text">
+        <span style="width: 100%;"
+            class="font-modal font-modal">{{getSchedulePerformingTimeString(selectedCareList[scheduleRepeat.index])}}</span>
+        <!-- <span>{{careString}}</span> -->
+    </div>
+
+    <div class="adtime custom-yearly-btn">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done"
+            (click)="saveRepeatDialog(this.selectedCareList[this.scheduleRepeat.index])">Done</button>
+    </div>
+</div>
+  

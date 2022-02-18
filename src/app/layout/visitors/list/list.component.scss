@@ -1,0 +1,110 @@
+.pop_heading {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 5px;
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 400;
+      //color: #1975b8;
+    }
+    span {
+      color: #908f8f;
+      cursor: pointer;
+    }
+  }
+  
+  .adtime {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-top: 15px;
+    mat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      background: #1975b8;
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    button {
+      background: #f6fafc;
+    }
+  }
+  
+  .newrule{
+    max-height: 600px;
+    overflow-y: auto;
+    mat-list-item{
+      min-height: 48px;
+      padding: 10px 0;
+      height: auto;
+    }
+  }
+  
+  label{
+      color: #646464;
+  }
+  
+  .radiobtn{
+      width: 25px;
+      min-width: 25px;
+      height: 25px;
+      display: flex;
+      border-radius: 50%;
+      border: 1px solid #707070;
+      margin-right: 10px;
+  }
+  .checkboxbtn{
+    width: 23px;
+    min-width: 23px;
+    height: 23px;
+    display: flex;
+    border-radius:4px;
+    border: 1px solid #707070;
+    margin-right: 10px;
+  }
+  
+  
+  
+  .addopt{
+    border-radius: 50%;
+    background: #1975B8;
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    color: #fff;
+    font-size: 22px;
+    border: none;
+    cursor: pointer;
+    margin:0 0 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 17px;
+    &:hover{
+      box-shadow: 0 0 1px 1px #000;
+    }
+    &:focus{
+      outline: none;
+    }
+  }
+  
+  .w-20{
+    flex: 0 0 20%;
+  }
+  
+  .w-40{
+    flex: 0 0 40%;
+  }
+  
+  .w-80{
+    flex: 0 0 80%;
+  }

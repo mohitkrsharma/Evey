@@ -1,0 +1,114 @@
+.border-bottom{
+	border-bottom: 1px solid #D9D9D9;
+}
+
+.personalhealthinfo table, .border{
+	border:1px solid #d9d9d9;
+}
+.cursor{ cursor: pointer;}
+.personalhealthinfo table tr{
+	border-bottom: 1px solid rgba(0,0,0,0.12);
+	display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.alerts span{
+	top:-4px;
+	left: 4px;
+}
+.basecolor{
+	color: #1975B8;
+}
+.badge a{color: #fff;}
+.alerts .badge{
+	width: 20px;
+	height: 20px;
+	background-color: #EF4036;
+	padding-top: 2px;
+	border:1px solid #fff;
+}
+.text-danger{  color: #EF4036}
+
+.personalhealthinfo table tr:last-child{
+	border-bottom: 0;
+}
+
+.diagnosis span{ 
+	font-size: 15px;
+    padding-left: 8px;
+}
+.contacts ul{
+	padding: 0;
+}
+.contacts ul li{
+	list-style-type: none;
+	padding-bottom: 15px;
+	font-size: 14px;
+    display: flex;
+	align-items: flex-start;
+}
+.contacts ul li:last-child{
+	padding-bottom: 0;
+}
+.contacts ul li span{
+	padding-left: 12px;
+}
+.diagnosis mat-icon{
+	position: relative;
+    top: 6px;
+	color: #b7b7b7;
+}
+.contacts span a{
+	color: #1975B8;
+	cursor: pointer;
+	font-weight: normal;
+	text-decoration: underline;
+}
+.headsection .rightside h1{
+	margin: 0;
+	padding: 0;
+}
+.headsection .rightside div:nth-child(2){
+	color: #1975B8;
+}
+.headsection h1{
+	font-size: 20px;
+}
+.contacts mat-card{
+	background: #FAFAFA;
+	border: 1px solid #EDEDED;
+	box-shadow: none;
+	min-height: 273px;
+}
+.profile_pic{
+	padding-right:15px;
+	position: relative;
+	margin-right: 10px;
+}
+.profile_pic span img{
+	position: absolute;
+    bottom: 23px;
+    right: 10px;
+}
+.opentasks{
+	padding-top: 3px;
+}
+span.badge.new {
+    font-weight: 300;
+    font-size: 0.8em;
+    color: #fff;
+    background-color: #1975B8;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 5px;
+    display: block;
+    align-items: center;
+    text-align: center;
+    padding-top: 5px;
+}
+.profile_pic > img{ border-radius: 50px;}

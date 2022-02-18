@@ -1,0 +1,244 @@
+<form autocomplete="off">
+	 <div class="pop_heading">
+    <h3>{{(isEdit?"Edit":"Add")}} Symptom</h3>
+  </div>
+  <div class="newrule">
+    <h3 class="ann_heading subHeaderClass">Symptoms</h3>
+    <ng-container>
+      <div class="d-flex justify-content-between align-center nfc_label form-row" *ngIf="showPop">
+        <mat-form-field class="w-100 pr-15" *ngIf="!isEdit">
+          <input matInput type="text" placeholder="Symptom Name" [(ngModel)]="addSymptomInput.name" [ngModelOptions]="{ standalone:true }" required>
+        </mat-form-field>
+
+        <mat-form-field class="w-100 pl-15" *ngIf="!isEdit">
+          <input matInput type="text" placeholder="Isolation Days" mask="999"
+            [(ngModel)]="addSymptomInput.isolation_days" [ngModelOptions]="{ standalone:true }">
+        </mat-form-field>
+
+        <mat-form-field class="w-100 pr-15" *ngIf="isEdit">
+          <input matInput type="text" placeholder="Symptom Name" [(ngModel)]="addSymptomInput.name" [ngModelOptions]="{ standalone:true }" required>
+        </mat-form-field>
+
+        <mat-form-field class="w-100" *ngIf="isEdit">
+          <input matInput type="text" placeholder="Isolation Days" mask="999"
+            [(ngModel)]="addSymptomInput.isolation_days" [ngModelOptions]="{ standalone:true }">
+        </mat-form-field>
+
+        <div class="d-flex justify-content-start  w-100">
+          Covid
+          <mat-slide-toggle color="primary" [checked]="addSymptomInput?.isCovid" (change)="changeCovidToggle($event)"
+            class="pl-15">
+          </mat-slide-toggle>
+        </div>
+
+        <div class="pl-15 ic_plus" *ngIf="!isEdit">
+          <!-- <mat-icon  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" (click)="removeOption(i)" *ngIf="addSymptomList && addSymptomList.length>0">remove_circle </mat-icon> -->
+          <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+            class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+            mat-raised-button="" role="img" (click)="addOption(addSymptomInput)">add_circle </mat-icon>
+        </div>
+
+      </div>
+      <div class="d-flex justify-content-between align-center nfc_label form-row"
+        *ngFor="let item of addSymptomList; let i=index">
+        <mat-form-field class="w-100 pr-15" *ngIf="!isEdit">
+          <input matInput type="text" #name="ngModel" [(ngModel)]="item.name" placeholder="Symptom Name" required
+            maxlength="50" [ngModelOptions]="{standalone: true}" readonly>
+        </mat-form-field>
+
+        <mat-form-field class="w-100 pl-15" *ngIf="!isEdit">
+          <input matInput type="text" #isolation_days="ngModel" placeholder="Isolation Days"
+            [(ngModel)]="item.isolation_days" (keypress)="checkAlphanumSpace($event)" maxlength="50"
+            [ngModelOptions]="{standalone: true}" readonly>
+        </mat-form-field>
+
+        <div class="d-flex justify-content-start w-100">
+          Covid
+          <mat-slide-toggle color="primary" [checked]="item?.isCovid"
+            class="pl-15">
+          </mat-slide-toggle>
+        </div>
+
+        <div class="act pl-15">
+          <!-- <mat-icon *ngIf="i==0" _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                      mat-raised-button="" role="img" (click)="addOption(addSymptomInput)">add_circle </mat-icon> -->
+          <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+            class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+            mat-raised-button="" role="img" (click)="removeOption(i)">remove_circle </mat-icon>
+        </div>
+
+      </div>
+
+
+
+    </ng-container>
+  </div>
+  <div class="block_facility no_drop_shadow ann_assign_fac">
+    <h3 class="ann_heading subHeaderClass">Assigned Facilities</h3>
+    <div class="newrule">
+
+      <!-- Add new Row  -->
+      <ng-container *ngIf="showNew">
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100 pr-15">
+            <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Organization</mat-label>
+                <mat-select #organization="ngModel" [(ngModel)]="symptoms.organization"
+                  (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                  name="organization" required [disabled]="orgDisable">
+                  <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                    noEntriesFoundLabel="Not Found" name="orgSearch"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                    (focus)="select(item.org_name,'',1)">
+                    {{item.org_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+            <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Organization</mat-label>
+                <mat-select #organization="ngModel" [(ngModel)]="symptoms.organization"
+                  (selectionChange)="changeOrg($event.value)" (selectionChange)="select($event,'',0)"
+                  name="organization" required [disabled]="orgDisable">
+                  <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization"
+                    noEntriesFoundLabel="Not Found" name="orgSearch"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id"
+                    (focus)="select(item.org_name,'',1)">
+                    {{item.org_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          </div>
+          <div class="w-100 pl-15">
+            <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Building</mat-label>
+                <mat-select #facility="ngModel" [(ngModel)]="symptoms.fac"
+                  (selectionChange)="changeFac($event.value,symptoms)" (selectionChange)="select('',$event,0)"
+                  name="facility" required [disabled]="facDisable">
+                  <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Building"
+                    noEntriesFoundLabel="Not Found" name="facSearch"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'" [value]="item._id"
+                    (focus)="select('',item,1)">
+                    {{item.fac_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+            <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+              <mat-form-field class="w-100">
+                <mat-label>Building</mat-label>
+                <mat-select #facility="ngModel" [(ngModel)]="symptoms.fac"
+                  (selectionChange)="changeFac($event.value,symptoms)" (selectionChange)="select('',$event,0)"
+                  name="facility" required [disabled]="facDisable">
+                  <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Building"
+                    noEntriesFoundLabel="Not Found" name="facSearch"></ngx-mat-select-search>
+                  <mat-option *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'" [value]="item._id"
+                    (focus)="select('',item,1)">
+                    {{item.fac_name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </span>
+          </div>
+          <div class="ic_plus pl-15">
+            <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="userFacilityList && userFacilityList.length>0"
+                      class="mat-icon-remove material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                      mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon> -->
+            <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+              class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+              mat-raised-button="" role="img" (click)="addFacilityList(symptoms)">add_circle
+            </mat-icon>
+          </div>
+        </div>
+      </ng-container>
+
+      <div *ngFor="let item of userFacilityList;let i=index;">
+        <ng-container>
+          <div class="d-flex justify-content-between form-row">
+            <div class="w-100 pr-15">
+              <mat-form-field class="w-100">
+                <input class="added_field" matInput placeholder="Organization" name="orgg" [value]="item.org_name"
+                  [disabled]=true>
+              </mat-form-field>
+
+            </div>
+
+            <div class="w-100 pl-15 pr-15">
+              <mat-form-field class="w-100">
+                <input class="added_field" matInput placeholder="Facility" name="faccc" [value]="item.fac_name"
+                  [disabled]=true>
+              </mat-form-field>
+            </div>
+            <!-- <div class="w-100 pr-15">
+                      <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Organization</mat-label>
+                          <mat-select [(value)]="item.org_id" name="organization">
+                            <mat-option *ngFor="let item of organiz" [value]="item._id"
+                              (focus)="select(item.org_name,'',1)" disabled>
+                              {{item.org_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                      <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Organization</mat-label>
+                          <mat-select [(value)]="item.org_id" name="organization">
+                            <mat-option *ngFor="let item of organiz " [value]="item._id"
+                              (focus)="select(item.org_name,'',1)" disabled>
+                              {{item.org_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                    </div>
+                    <div class="w-100 pl-15">
+                      <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Facility</mat-label>
+                          <mat-select [(value)]="item.fac_id" name="facility">
+                            <mat-option [value]="item.fac_id" (focus)="select('',item,1)" disabled>
+                              {{item.fac_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                      <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                        <mat-form-field class="w-100">
+                          <mat-label>Facility</mat-label>
+                          <mat-select [(value)]="item.fac_id" name="facility">
+                            <mat-option [value]="item.fac_id" (focus)="select('',item,1)" disabled>
+                              {{item.fac_name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </span>
+                    </div> -->
+            <div class="act pl-15">
+              <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+                      class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                      mat-raised-button="" role="img" (click)="addFacilityList(symptoms)">add_circle
+                    </mat-icon> -->
+              <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle </mat-icon>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="adtime">
+    <button mat-button color="basic" (click)="closeSymptomDialog()" class="btn_window_cancle">Cancel</button>
+    <button mat-button *ngIf="commonService.checkPrivilegeModule('symptoms',privilege)" color="primary"
+      (click)="saveSymptomDialog(symptoms)" class="btn_window_done">Done</button>
+  </div>
+</form>

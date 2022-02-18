@@ -1,0 +1,182 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title>Technical Support
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form #supportForm="ngForm">
+            <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <mat-form-field class="w-100">
+                        <mat-label>
+                            Select Priority</mat-label>
+                        <mat-select [(ngModel)]="data.priority" name="priority" required>
+                            <!-- <mat-option value="High">
+                <mat-icon>priority_high</mat-icon> High
+              </mat-option>
+              <mat-option value="Medium">
+                <mat-icon>title</mat-icon> Medium
+              </mat-option>
+              <mat-option [value]="Low">
+                <mat-icon>low_priority</mat-icon> Low
+              </mat-option> -->
+ 
+                            <mat-option *ngFor="let item of list_priority" [value]="item.value">
+                                <!-- <mat-icon aria-hidden="false">{{item.icon}}</mat-icon>
+                                {{item.label}} -->
+                                {{item.label}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- <mat-form-field>
+                        <mat-select placeholder="Contact *" formControlName="contact">
+                          <mat-select-trigger>
+                            <mat-icon>home</mat-icon>&nbsp;{{contact.institution}}
+                          </mat-select-trigger>
+                          <mat-option *ngFor="let contact of contacts" [value]="contact">
+                            <mat-icon [ngStyle]="{'color': contact.color}">home</mat-icon>{{contact.institution}} 
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                </div>
+                <div class="w-100 pl-15">
+                    <mat-form-field class="w-100">
+                        <input matInput placeholder="Subject" [(ngModel)]="data.subject" name="subject" required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex mb-10">
+                <!-- <mat-button-toggle-group name="fontStyle" aria-label="Font Style" multiple>
+        <mat-button-toggle value="bold"><i class="material-icons">format_bold</i></mat-button-toggle>
+        <mat-button-toggle value="italic"><i class="material-icons">format_italic</i></mat-button-toggle>
+        <mat-button-toggle value="underline"><i class="material-icons">format_underlined</i></mat-button-toggle>
+        <mat-button-toggle value="attach_file"><i class="material-icons">attach_file</i></mat-button-toggle>
+      </mat-button-toggle-group> -->
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <div class="w-100">
+                    <p-editor [(ngModel)]="data.message" (onTextChange)="removeTags($event)" [style]="{'height':'120px'}" name="message" required>
+                        <p-header>
+                            <span class="ql-formats">
+                                <button class="ql-bold" aria-label="Bold"></button>
+                                <button class="ql-italic" aria-label="Italic"></button>
+                                <button class="ql-underline" aria-label="Underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                                <button class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                                <select class="ql-align">
+                                    <option selected></option>
+                                    <option value="center"></option>
+                                    <option value="right"></option>
+                                    <option value="justify"></option>
+                                </select>
+                            </span>
+                            <span class="ql-formats">
+                                <button aria-label="Link" class="ql-link"></button>
+                                <!-- <button aria-label="Image" class="ql-image"></button> -->
+                            </span>
+                        </p-header>
+                    </p-editor>
+                    <!-- <mat-form-field class="w-100">
+          <textarea matInput placeholder="Leave a comment"></textarea>
+        </mat-form-field> -->
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div class="w-100">
+                        <!-- application/x-gzip,application/zip -->
+                        <div class="drop-zone" *ngIf="uploader!=undefined &&  uploader.queue.length<5">
+                        
+                        <div class="addfile">
+                                <!-- application/doc,application/msword,application/pdf,application/rss+xml,application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.oasis.opendocument.presentation,application/vnd.oasis.opendocument.spreadsheet,application/vnd.oasis.opendocument.text,
+                                application/vnd.sun.xml.calc,application/vnd.sun.xml.writer,audio/basic,audio/flac,audio/mid
+                                ,audio/mp3,audio/mpeg,audio/ogg,audio/x-aiff,audio/x-wav,image/gif,image/jpeg,image/png,image/tiff,image/x-ms-bmp,text/calendar,
+                                text/comma-separated-values,text/csv,text/css,text/html,text/plain,text/x-vcard,video/mp4,video/mpeg,video/ogg,video/quicktime,video/x-msvideo -->
+                            <span> <mat-icon>attach_file</mat-icon>Attach Files</span>
+                            <input name="document"  type="file" ng2FileSelect
+                             accept=".doc,.docx,.pdf,.ppt,.pptx,.txt,audio/*,image/*,video/*,.xlsx,.xls,.csv," [uploader]="uploader"  multiple  (change)="uploadQueue()">
+                            
+                        </div>    
+
+                       
+                        
+                            <small>
+                                Max 5 files allow to upload.
+                            </small>
+                            
+                        </div>
+                        
+                        <div class="files" *ngIf="uploader?.queue!=undefined && uploader?.queue.length>0">
+                            <ng-template ngFor let-item [ngForOf]="uploader.queue" let-i="index">
+                                   <div class="file">
+                                    <div class="icon" *ngIf="item">
+                                        <!-- <i class="fa fa-file-image-o" aria-hidden="true"></i> -->
+                                        <i [ngClass]="fileExtention(item.file.name)" class="fa" aria-hidden="true"></i>
+                                        <!-- <p>{{fileExtention(item.file.name)}}</p> -->
+                                    </div>
+                                    <div class="info" *ngIf="item">
+                                        <div class="infoname">
+                                            <p>{{item.file.name}}</p>
+                                            <p><span>{{(item?.file?.size/1024/1024).toFixed(2)}} MB</span></p>
+                                            <mat-progress-bar mode="determinate" [value]="item.progress"></mat-progress-bar>
+                                        </div>
+                                      
+                                            <div class="close">
+                                                <mat-icon (click)="item.remove()" *ngIf="item.hasOwnProperty('progress') && item?.progress==0">close</mat-icon>
+                                                <mat-icon (click)="removeFile(item.newName);item.remove()" *ngIf="item.hasOwnProperty('progress') && item?.progress==100">close</mat-icon>
+                                            </div>
+                                       
+                                    </div>
+                                   </div>
+                            </ng-template>
+                        </div>
+
+                        <!--table *ngIf="uploader?.queue!=undefined && uploader?.queue.length>0">
+
+                            <tbody>
+                                    <ng-template ngFor let-item [ngForOf]="uploader.queue" let-i="index">
+                                <tr >
+                                        <th width="10%" *ngIf="item">
+                                                {{i+1}}
+                                            </th>
+                                            <th width="10%" *ngIf="item">
+                                                <span >{{fileExtention(item.file.name)}}</span>
+                                            </th>
+                                    <td width="50%" class="text-left" *ngIf="item">
+                                        {{ item.file.name}}({{(item?.file?.size/1024/1024).toFixed(2)}} MB)
+                                    </td>
+                                    <td width="40%" *ngIf="item && uploader.options.isHTML5" >
+
+                                        <mat-progress-bar mode="determinate" [value]="item.progress"></mat-progress-bar>
+                                    </td>
+                                    <td class="text-center" width="10%" *ngIf="item">
+                                        <mat-icon (click)="item.remove()" *ngIf="item.hasOwnProperty('progress') && item?.progress==0" class="point">delete</mat-icon>
+                                        <mat-icon (click)="removeFile(item.newName);item.remove()" *ngIf="item.hasOwnProperty('progress') && item?.progress==100" class="point"> delete</mat-icon>
+                                    </td>
+                                </tr>
+                                </ng-template>
+                            </tbody>
+                        </table-->
+                        <!-- <br>
+                        <button mat-raised-button color="accent" type="submit" (click)="uploadQueue()">Upload Data</button>
+                     -->
+                                      
+                </div>
+            </div>
+            <div class="progress">
+                <div class="determinate" style="width: 70%"></div>
+            </div>
+            <!-- <div class="d-flex justify-content-between form-row">
+                <div class="w-100 pr-15">
+                    <input type="file" placeholder="floorplan" formControlName="floorplan" [(ngModel)]="floorsector.floorplan" (change)="uploadImage($event)">
+                </div>
+            </div> -->
+
+            <div class="d-flex justify-content-end mt-20">
+                <button mat-flat-button color="primary" (click)="send(supportForm,data)" [disabled]="buttonDisabled">Send Mail</button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

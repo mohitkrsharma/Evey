@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-Laundry">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="Laundry" clip-path="url(#clip-Laundry)">
+    <g id="Group_45" data-name="Group 45" transform="translate(-112.602 -224)">
+      <path id="Path_47" data-name="Path 47" d="M142.751,238.461l-11.707-5.443a.623.623,0,0,0-.07-.075v-1.415a.519.519,0,0,0-.463-.463H130.4a2.026,2.026,0,1,1,2.037-2.027.559.559,0,1,0,1.118,0,3.145,3.145,0,1,0-3.7,3.1v.954l-9.684,4.444a3.766,3.766,0,0,0-2.848,3.428,2.8,2.8,0,0,0,2.9,2.83h21.567l.106-.044a3.272,3.272,0,0,0,1.981-2.786A2.6,2.6,0,0,0,142.751,238.461Zm-1.2,4.212H120.234a1.724,1.724,0,0,1-1.792-1.713c0-1.772,1.984-2.337,2.066-2.361l.045-.011,9.972-4.577,11.726,5.45c.076.053.51.409.51,1.5A2.076,2.076,0,0,1,141.552,242.673Z" fill="#9dc224"/>
+      <rect id="Rectangle_18" data-name="Rectangle 18" width="17.961" height="16.143" rx="1.108" transform="translate(121.527 241.353)" fill="#9dc224"/>
+    </g>
+  </g>
+</svg>

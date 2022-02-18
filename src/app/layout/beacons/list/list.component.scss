@@ -1,0 +1,77 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+::ng-deep {
+    .custom-dropdown-1.mat-menu-panel {
+        width: 100%;
+        max-width: 420px;
+        .mat-menu-content:not(:empty) {
+            padding: 8px;
+        }
+    }
+    .choose-field {
+        opacity: 0;
+        visibility: hidden;
+        overflow: visible;
+        position: absolute;
+        z-index: -9999;
+    }
+    .choose-btn {
+        box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+        background-color: #1975B8;
+        color: white;
+        box-sizing: border-box;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        outline: 0;
+        border: none;
+        -webkit-tap-highlight-color: transparent;
+        display: inline-block;
+        white-space: nowrap;
+        text-decoration: none;
+        vertical-align: baseline;
+        text-align: center;
+        margin: 0;
+        min-width: 64px;
+        line-height: 36px;
+        padding: 0 16px;
+        border-radius: 5px;
+        overflow: visible;
+        font-size: 14px;
+        font-weight: 500;
+        &:hover {
+            background-color: #28A5DE;
+        }
+    }
+    .mat-column-org_name,
+    .mat-column-fac_name,.mat-column-sector,.mat-column-room {
+        text-transform: capitalize;
+    }
+    @media screen and (max-width: 767px) {
+        .custom-dropdown-1.mat-menu-panel {
+            max-width: 260px;
+            .d-flex {
+                flex-wrap: wrap;
+                .pl-15 {
+                    padding: 0px;
+                }
+                .pr-15 {
+                    padding: 0px;
+                }
+            }
+        }
+    }
+}
+
+
+.btn_Secondary{
+    margin:0 0 0 5px !important;
+    @include btn-main;
+}
+
+span.iconalign a {
+    cursor: pointer;
+  }

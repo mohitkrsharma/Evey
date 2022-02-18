@@ -1,0 +1,963 @@
+<header class="main-header" (window:beforeunload)="doBeforeUnload()" (window:unload)="doUnload()">
+  <div class="heading">Facility Status</div>
+  <div class="nav-brand d-flex align-center"><img src="assets/logo/dashboard_logo.svg">
+  </div>
+  <!-- <div class="current-time">
+    Monday, July 19<sup>th</sup> 13:35
+  </div> -->
+  <div class="current-time">
+    <!-- {{ _dateTime | date:'MMM d, y, h:mm a' }} -->
+    <div class="datetime">
+      {{ _date }}
+      <span></span>
+      <mat-icon>access_time</mat-icon>{{ _time }}
+    </div>
+    <span> {{ facility }} </span>
+    <!-- Monday, July 19<sup>th</sup> 13:35 -->
+  </div>
+</header>
+
+<div class="content-wrapper statusdashboard">
+
+  <!-- <div class="report-grid">
+    <div class="grid border-top blue">
+      <div class="count">
+        {{announcements && announcements.length ? announcements.length : 0}}
+      </div>
+      <div class="title">
+        Total announcement
+      </div>
+    </div>
+    <div class="grid border-top blue">
+      <div class="count">
+        {{outoffac && outoffac.length ? outoffac.length : 0}}
+      </div>
+      <div class="title">
+        Quick Out-of-Facility
+      </div>
+    </div>
+    <div class="grid border-top blue">
+      <div class="count">
+        {{skilled_nursing && skilled_nursing.length ? skilled_nursing.length : 0}}
+      </div>
+      <div class="title">
+        Skilled Nursing
+      </div>
+    </div>
+    <div class="grid border-top blue">
+      <div class="count">
+        {{hospitalized && hospitalized.length ? hospitalized.length : 0}}
+      </div>
+      <div class="title">
+        Hospital
+      </div>
+    </div>
+    <div class="grid border-top blue">
+      <div class="count">
+        {{hospice && hospice.length ? hospice.length : 0}}
+        <div class="title">
+          Hospice
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="top-side">
+
+    <!-- <div class="graph"> -->
+    <!--  <div class="table-grid donut">
+        <div class="grid-heading">
+          <div class="d-flex align-items-center">Census</div>
+        </div>
+        <div class="chart-warpper">
+          <div class="chart-container">
+            <canvas id="doughnutChart"></canvas>
+            <div class="count">
+              <span class="light-blue-color">{{extendoutoffac}}</span>/<span class="dark-blue-color">{{infac}}</span>
+            </div>
+          </div>
+          <div class="label">
+            <div>
+              <span class="box Out"></span> Quick Out-of-Facility
+            </div>
+            <div>
+              <span class="box In"></span> In Facility
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+    <!-- <div class="table-grid">
+        <div class="grid-heading">
+          <div class="d-flex align-items-center">Open Rooms</div>
+        </div>
+        <div class="chart-warpper">
+          <div class="chart-container openrooms">
+            <canvas id="doughnutChart2"></canvas>
+
+            <div class="count">
+              <span class="light-blue-color">{{ready}}</span>/<span class="dark-blue-color">{{not_ready}}</span>
+            </div>
+          </div>
+          <div class="label">
+            <div>
+              <span class="box Out"></span> Not Ready
+            </div>
+            <div>
+              <span class="box In"></span> Ready
+            </div>
+          </div>
+
+        </div>
+
+        <div class="table-wrapper rmno data-rooms">
+          <label>Rm no.</label>
+          <div class="scroller allrooms">
+           <span>{{rooms}}</span>
+          </div>
+        </div>
+      </div> -->
+    <!--  </div> -->
+
+
+    <div class="report-detail">
+
+      <div class="report_gridmain">
+
+        <div class="report-grid">
+
+          <div class="resident">
+            <h3>{{totalResident}}</h3>
+            <span>Total Residents</span>
+          </div>
+
+        </div>
+
+        <div class="report-grid">
+
+          <div class="resident">
+            <h3>{{extendoutoffac}}</h3>
+            <span>Out of Building</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="open_units">
+
+
+
+        <div class="unit_detail">
+
+          <div class="unit_graph">
+            <h3>Open Units</h3>
+            <div class="chart-warpper">
+              <div class="chart-container openrooms">
+                <canvas id="doughnutChart2"></canvas>
+
+                <div class="count">
+                  <span class="black-color">{{ready}}</span>/<span class="black-color">{{not_ready}}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="unit_content">
+
+            <div class="available">
+
+              <div class="text">
+                <h3>{{not_ready}}</h3>
+                <span>Total Available</span>
+              </div>
+
+              <div class="auto-scroll-container">
+                <div class="auto-scroll-card">
+                  <p>{{not_ready_rooms}}</p>
+                </div>
+              </div>
+
+              <!--<div class="numbers">
+      <p>{{not_ready_rooms}}</p>
+    </div>-->
+            </div>
+
+            <div class="available move-in-ready">
+
+              <div class="text">
+                <h3>{{ready}}</h3>
+                <span>Move-In Ready</span>
+              </div>
+
+              <div class="numbers">
+                <p>{{rooms}}</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="block-main">
+      <div class="table-grid level two-blocks lighblue">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Out-of-Unit
+            <span class="lengthcount" *ngIf="outofroom && outofroom.length">({{ outofroom.length }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-outroom">
+
+          <table class="scroller" mat-table [dataSource]="outofroom">
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+        </div>
+
+
+      </div>
+      <!-- <div class="table-grid level two-blocks lighblue">
+            <div class="grid-heading d-flex justify-content-between">
+              <div class="d-flex align-items-center">Isolation
+                <span class="lengthcount" *ngIf="isolated_residents && isolated_residents.length">({{ isolated_residents.length }})</span>
+            </div>
+          </div>
+            <div class="table-wrapper table-level-isolation">
+
+              <table class="scroller" mat-table [dataSource]="dataSource">
+                <ng-container matColumnDef="resident">
+                  <th mat-header-cell *matHeaderCellDef>Resident</th>
+                  <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="isolation_end_date">
+                  <th mat-header-cell *matHeaderCellDef>Remaining</th>
+                  <td mat-cell *matCellDef="let element">
+
+                   <span *ngIf="element.isolation_end_date!=''"><timer [days]="element.isolation_days" [displayValue]="true" [startDate]="element.isolation_start_date" [endDate]="element.isolation_end_date" [id]="element._id"  (onComplete)="timerCompleted($event)"></timer></span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="room">
+                  <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+                  <td mat-cell *matCellDef="let element">  {{element.room && element.room!="" ?element.room : '-'}}
+
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsIsolation; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsIsolation;"></tr>
+              </table>
+
+            </div>
+
+
+        </div>   -->
+      <div class="table-grid level two-blocks">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Skilled Nursing
+            <span class="lengthcount" *ngIf="skilled_nursing && skilled_nursing.length">({{ skilled_nursing.length
+              }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-skilled_nursing">
+          <table class="scroller" mat-table [dataSource]="skilled_nursing">
+            <!-- Position Column -->
+            <!-- Position Column -->
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}} <span *ngIf="element.facility">{{" " + '(' + element.facility + ')'}}</span>
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+      <!--  <div class="table-grid level two-blocks">
+            <div class="grid-heading d-flex justify-content-between">
+              <div class="d-flex align-items-center">Level 1
+                <span class="lengthcount" *ngIf="level_one && level_one.length">({{ level_one.length }})</span>
+              </div>
+            </div>
+            <div class="table-wrapper table-level-one">
+              <table class="scroller" mat-table [dataSource]="level_one">
+                <ng-container matColumnDef="resident">
+                  <th mat-header-cell *matHeaderCellDef>Resident</th>
+                  <td mat-cell *matCellDef="let element"> {{element.last_name}},{{element.first_name}}
+                    <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                      <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                      <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+                     <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                    </span>
+
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="room">
+                  <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+                  <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+          </div> -->
+    </div>
+
+
+    <div class="block-main">
+
+      <!-- testing status -->
+      <div class="table-grid level two-blocks lighblue">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Out-of-Facility
+            <span class="lengthcount" *ngIf="outoffac && outoffac.length">({{ outoffac.length }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-outfac">
+
+          <table class="scroller" mat-table [dataSource]="outoffac">
+            <!-- Position Column -->
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+      </div>
+      <!-- testing status -->
+      <div class="table-grid level two-blocks">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Hospital
+            <span class="lengthcount" *ngIf="hospitalized && hospitalized.length">({{ hospitalized.length }})</span>
+
+          </div>
+        </div>
+        <div class="table-wrapper table-level-hospitalized">
+          <table class="scroller" mat-table [dataSource]="hospitalized">
+            <!-- Position Column -->
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+      <!--   <div class="table-grid level two-blocks">
+            <div class="grid-heading d-flex justify-content-between">
+              <div class="d-flex align-items-center">Level 2
+                <span class="lengthcount" *ngIf="level_two && level_two.length">({{ level_two.length }})</span>
+              </div>
+            </div>
+            <div class="table-wrapper table-level-two">
+
+              <table class="scroller" mat-table [dataSource]="level_two">
+
+                <ng-container matColumnDef="resident">
+                  <th mat-header-cell *matHeaderCellDef>Resident</th>
+                  <td mat-cell *matCellDef="let element">{{element.last_name}}, {{element.first_name}}
+
+                    <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                      <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                      <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+                     <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                    </span>
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="room">
+                  <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+                  <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+            </div>
+          </div> -->
+    </div>
+    <div class="block-main">
+
+      <!-- high risk -->
+      <div class="table-grid level two-blocks lighblue">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Vacation
+            <span class="lengthcount" *ngIf="vacation && vacation.length">({{ vacation.length }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-vacation">
+          <table class="scroller" mat-table [dataSource]="vacation">
+            <!-- Position Column -->
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+      </div>
+      <!-- high risk -->
+
+
+      <div class="table-grid level two-blocks">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Hospice
+            <span class="lengthcount" *ngIf="hospice && hospice.length">({{ hospice.length }})</span>
+
+          </div>
+        </div>
+        <div class="table-wrapper table-level-hospice">
+          <table class="scroller" mat-table [dataSource]="hospice">
+
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          </table>
+        </div>
+      </div>
+      <!--  <div class="table-grid level two-blocks">
+            <div class="grid-heading d-flex justify-content-between">
+              <div class="d-flex align-items-center">Level 3
+                <span class="lengthcount" *ngIf="level_three && level_three.length">({{ level_three.length }})</span>
+              </div>
+            </div>
+            <div class="table-wrapper table-level-three">
+
+              <table class="scroller" mat-table [dataSource]="level_three">
+
+                <ng-container matColumnDef="resident">
+                  <th mat-header-cell *matHeaderCellDef>Resident</th>
+                  <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                    <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                      <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                      <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+                     <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                    </span>
+                  </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="room">
+                  <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+                  <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+            </div>
+          </div> -->
+    </div>
+
+
+
+
+    <!--  <div class="table-grid announcement">
+      <div class="grid-heading d-flex justify-content-between">
+        <div class="d-flex align-items-center">Announcements
+          <span class="lengthcount" *ngIf="announcements && announcements.length">({{ announcements.length }})</span>
+        </div>
+      </div>
+      <div class="table-wrapper announcement-scroll">
+        <div *ngIf="announcements && announcements.length">
+        <div  class="scroller allrooms" *ngFor="let announce of announcements">
+          <mat-card class="alert-box" *ngIf="!show && announce && announce.isactive == true"
+            [ngStyle]="{'background-color':announce.background_color,'border-color':announce.border_color,'color':announce.font_color,'font-size':announce.font_size+'px'}">
+            <mat-card-content class="m-0" [ngStyle]="{'font-size':announce.font_size+'px'}">
+              <p class="inner" [innerHTML]=" announce.message | sanitizeText "></p>
+
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+        </div>
+      </div>
+
+    </div> -->
+
+  </div>
+
+  <div class="bottom-side">
+
+    <div class="left_table">
+      <div class="table-grid graph" style="width: 48.5%;">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Level 1
+            <span class="lengthcount" *ngIf="level_one && level_one.length">({{ level_one.length }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-one">
+          <table class="scroller" mat-table [dataSource]="level_one">
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+      <!-- <div class="table-grid graph" style="width: 48%;">
+      <div class="grid-heading">
+        <div class="d-flex align-items-center">Quick Out-of-Facility
+          <span class="lengthcount" *ngIf="outoffac && outoffac.length">({{ outoffac.length }})</span>
+
+        </div>
+      </div>
+      <div class="table-wrapper table-level-outfac">
+        <table class="scroller" mat-table [dataSource]="outoffac">
+
+          <ng-container matColumnDef="resident">
+            <th mat-header-cell *matHeaderCellDef>Resident</th>
+            <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+              <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+               <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+              </span>
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+            <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div> -->
+      <div class="table-grid level" style="width: 48.5%;">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Level 2
+            <span class="lengthcount" *ngIf="level_two && level_two.length">({{ level_two.length }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-two">
+
+          <table class="scroller" mat-table [dataSource]="level_two">
+
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element">{{element.last_name}}, {{element.first_name}}
+
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+                <!-- <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28"  > -->
+
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+        </div>
+      </div>
+      <!--  <div class="table-grid level" style="width: 48%;">
+      <div class="grid-heading d-flex justify-content-between">
+        <div class="d-flex align-items-center">Vacation
+          <span class="lengthcount" *ngIf="vacation && vacation.length">({{ vacation.length }})</span>
+
+        </div>
+      </div>
+      <div class="table-wrapper table-level-vacation">
+        <table class="scroller" mat-table [dataSource]="vacation">
+
+          <ng-container matColumnDef="resident">
+            <th mat-header-cell *matHeaderCellDef>Resident</th>
+            <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+              <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+               <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+              </span>
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+            <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div> -->
+
+    </div>
+
+    <div class="right_table">
+      <div class="table-grid level" style="width: 32%;">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Level 3
+            <span class="lengthcount" *ngIf="level_three && level_three.length">({{ level_three.length }})</span>
+          </div>
+        </div>
+        <div class="table-wrapper table-level-three">
+
+          <table class="scroller" mat-table [dataSource]="level_three">
+
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+        </div>
+      </div>
+      <!-- <div class="table-grid level" style="width: 32%;">
+      <div class="grid-heading d-flex justify-content-between">
+        <div class="d-flex align-items-center">Skilled Nursing
+          <span class="lengthcount" *ngIf="skilled_nursing && skilled_nursing.length">({{ skilled_nursing.length }})</span>
+
+        </div>
+      </div>
+      <div class="table-wrapper table-level-skilled_nursing">
+        <table class="scroller" mat-table [dataSource]="skilled_nursing">
+
+          <ng-container matColumnDef="resident">
+            <th mat-header-cell *matHeaderCellDef>Resident</th>
+            <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+              <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+               <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+              </span>
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+            <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}} </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div> -->
+
+      <div class="table-grid level" style="width: 32%;">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Safety and Supervision
+            <span class="lengthcount" *ngIf="safety_supervision && safety_supervision.length">({{
+              safety_supervision.length }})</span>
+
+          </div>
+        </div>
+        <div class="table-wrapper table-safety_supervision">
+          <table class="scroller" mat-table [dataSource]="safety_supervision">
+            <!-- Position Column -->
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="table-grid level" style="width: 32%;">
+        <div class="grid-heading d-flex justify-content-between">
+          <div class="d-flex align-items-center">Supervision
+            <span class="lengthcount" *ngIf="supervision && supervision.length">({{ supervision.length }})</span>
+
+          </div>
+        </div>
+        <div class="table-wrapper table-supervision">
+          <table class="scroller" mat-table [dataSource]="supervision">
+            <!-- Position Column -->
+            <ng-container matColumnDef="resident">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                  <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                    height="22">
+                  <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22"
+                    height="22">
+                  <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+                </span>
+                <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                  <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="room">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+      <!-- <div class="table-grid announcement" style="width: 32%;">
+      <div class="grid-heading d-flex justify-content-between">
+        <div class="d-flex align-items-center">Hospice
+          <span class="lengthcount" *ngIf="hospice && hospice.length">({{ hospice.length }})</span>
+
+        </div>
+      </div>
+      <div class="table-wrapper table-level-hospice">
+        <table class="scroller" mat-table [dataSource]="hospice">
+
+          <ng-container matColumnDef="resident">
+            <th mat-header-cell *matHeaderCellDef>Resident</th>
+            <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+              <span  *ngIf="checkIsolation(element._id); let data" class="relative">
+                <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22" height="22" >
+                <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg" width="22" height="22" >
+               <span *ngIf="data.isolation_end_date!='Indefinite'" class="badgenumber">{{data.isolation_days}}</span>
+              </span>
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="room">
+            <th mat-header-cell *matHeaderCellDef>Rm no.</th>
+            <td mat-cell *matCellDef="let element"> {{element.room && element.room.room ?element.room.room : '-'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </div>
+    </div> -->
+    </div>
+
+
+  </div>
+</div>
+<ng-template #connectionModal>
+  <p>Internet is not their</p>
+</ng-template>
+
+
+
+<!-- <div class="table-wrapper announcement-scroll" *ngIf="announcements && announcements.length">
+        <div  class="scroller allrooms" *ngFor="let announce of announcements">
+          <mat-card class="alert-box" *ngIf="!show && announce && announce.isactive == true"
+            [ngStyle]="{'background-color':announce.background_color,'border-color':announce.border_color,'color':announce.font_color,'font-size':announce.font_size+'px'}">
+            <mat-card-content class="m-0" [ngStyle]="{'font-size':announce.font_size+'px'}">
+              <p class="inner" [innerHTML]=" announce.message | sanitizeText "></p>
+
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+
+
+      </div> -->

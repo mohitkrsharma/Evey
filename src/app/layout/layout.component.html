@@ -1,0 +1,26 @@
+<ng-container *ngIf="!this.authState['isLoggedin']">
+    <app-loader></app-loader>
+    <router-outlet></router-outlet> 
+</ng-container>
+<ng-container *ngIf="this.authState['isLoggedin']" >
+    <app-loader></app-loader>
+    <app-topnav></app-topnav>
+    <div class="main-container">
+        <app-sidebar></app-sidebar>
+        <div class="breadcrumb-container {{ this.breadcrumbDisplay }} d-flex justify-content-between form-row">
+            <div class="w-70 pr-15">
+                <app-breadcrumb></app-breadcrumb>
+            </div>
+            <div class="w-30 pl-15 moreoption">
+                <app-moreoption></app-moreoption>
+            </div>
+        </div>
+        <div class="content-container">
+            <router-outlet>
+                <div class="spinner-wrapper" *ngIf="loader" >
+                    <mat-spinner class="spinner__container" mode="indeterminate"></mat-spinner>
+                </div>
+            </router-outlet>
+        </div>
+    </div>
+</ng-container>

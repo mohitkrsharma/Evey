@@ -1,0 +1,302 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center mb-3">
+        <mat-card-title>Today's Activities</mat-card-title>
+    </mat-card-header>
+    <div class="d-flex justify-content-between align-center mb-40">
+        <div class="example-button-row d-flex align-center">
+            <button *ngIf="scheduleDate && minDate" mat-stroked-button color="primary"
+                [class.disabled_btn]="checkPrevious(scheduleDate,minDate)"
+                [disabled]="checkPrevious(scheduleDate,minDate)" class="main_btn mr-10 ml-0"
+                (click)="gotoPreviousDate()">Previous</button>
+            <button mat-stroked-button color="primary" class="main_btn mr-10 ml-0" (click)="goToToday()">Today</button>
+            <button mat-stroked-button color="primary" class="main_btn mr-10 ml-0"
+                (click)="gotoNextDate()">Next</button>
+        </div>
+        <div class="selecteddate mb-0"> {{ scheduleDate | date:'EEEE, MMMM d, y' }} <span (click)="picker.open()">
+                <mat-form-field class="none">
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="calendarDate" placeholder="Choose a date"
+                        [min]="minDate" (dateChange)="dateChangeEvent($event)">
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-icon>calendar_today</mat-icon>
+            </span>
+        </div>
+        <div class="w-80 pl-15">
+            <div class="example-button-row text-right w-100">
+                <button mat-stroked-button color="primary" *ngIf="_commonService.checkPrivilegeModule('Activity Schedule','add')" class="main_btn mr-10" (click)="moveToAddNew()">Add
+                    New</button>
+                <!-- <button mat-stroked-button color="primary" class="main_btn mr-10" (click)="moveToSchedCare()">Schedule Care</button> -->
+                <!-- <button mat-stroked-button color="primary" class="main_btn mr-10" (click)="filter()">Filter</button> -->
+                <button mat-stroked-button color="primary" class="main_btn" (click)="moveToCalendar()">Calendar</button>
+            </div>
+        </div>
+    </div>
+    <mat-card-content>
+
+        <div class="alltask" cdkDropListGroup>
+
+            <div class="todrop">
+                <ng-container>
+                    <div [ngSwitch]="view" class="calendar">
+                        <div class="calendar-day-view">
+                            <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [events]="events" [refresh]="refresh"
+                                [viewDate]="viewDate" (eventClicked)="handleEvent('Clicked', $event.event)"
+                                (eventTimesChanged)="eventTimesChanged($event)">
+                            </mwl-calendar-day-view>
+                        </div>
+
+                    </div>
+
+                    <div class="assigned vscroll-fix" *ngIf="selectedEvent">
+                        <div class="float-r" *ngIf="!isEdit">
+                            <button *ngIf="_commonService.checkPrivilegeModule('Activity Schedule','edit')" mat-mini-fab color="primary" class="mr-10" (click)="showEditDialog()">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button *ngIf="_commonService.checkPrivilegeModule('Activity Schedule','delete')" mat-mini-fab color="primary" (click)="showDeleteDialog()">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                       
+
+                        <div *ngIf="!isEdit">
+                            <h3>{{(selectedEvent ? selectedEvent.category : '') | titlecase}}</h3>
+
+
+                            <div class="lbl">
+
+                                <h2>{{selectedEvent ? selectedEvent.title : ''}}</h2>
+                                <!-- <span>{{ ruleTaskCount() }}</span> -->
+                            </div>
+
+                            <div class="description">
+                                <p class="tile-data" [innerHTML]="selectedEvent ? selectedEvent.description : ''">
+                            </div>
+
+                            <div class="date-label">
+                                {{ selectedEvent.start | date:'EEEE, MMMM d' }} at {{ selectedEvent.start | date:'h:mm a' }}  - {{ tConvert(selectedEvent.end_time) }}
+                            </div>
+
+                            <div class="address">
+                                <p class="fontfix-map">
+                                    <span class="adress-span"><mat-icon class="location"> location_on</mat-icon>{{selectedEvent ? selectedEvent.location.name : ''}}</span>
+                                </p>
+                                <span class="detail-span">{{selectedEvent ? selectedEvent.location.line1 : ''}} {{selectedEvent ? selectedEvent.location.line2 : ''}}</span>
+                                <span class="detail-span">{{selectedEvent ? selectedEvent.location.city : ''}} {{selectedEvent ? selectedEvent.location.state : ''}}</span>
+                                <span class="detail-span">{{selectedEvent ? selectedEvent.location.country : ''}}</span>
+                                <span class="detail-span">{{selectedEvent ? selectedEvent.location.phone : ''}}</span>
+
+                            </div>
+                        </div>
+
+
+                        <div *ngIf="isEdit">
+                            <form #eventForm="ngForm" (ngSubmit)="onSubmitEvent()">
+                                <div class="float-r">
+                                    <button mat-flat-button (click)=" cancel()"
+                                        class="mr-10 cancel-btn btn_window_cancle">Cancel</button>
+    
+                                    <button mat-flat-button color="primary" class="btn_window_done ml-3" type="submit">
+                                        Save
+                                    </button>
+                                </div>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Select Category</mat-label>
+                                    <mat-select [(ngModel)]="selectedEvent.category_id"
+                                        [ngModelOptions]="{standalone: true}" required>
+                                        <mat-option *ngFor="let category of categoriesList" [value]="category._id">
+                                            {{category.name | titlecase}} </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+    
+                                <mat-form-field class="w-100">
+                                    <mat-label>Title *</mat-label>
+                                    <input type="text" matInput name="title" [(ngModel)]="selectedEvent.title">
+                                </mat-form-field>
+                                <div
+                                    class="w-100 pb-20 justify-content-between align-center form-row nfc_label note_textarea">
+                                    <p-editor [(ngModel)]="selectedEvent.description" placeholder="Enter Description *"
+                                        name="description" [style]="{'height':'120px'}" required>
+                                        <p-header>
+                                            <span class="ql-formats">
+                                                <button class="ql-bold" aria-label="Bold"></button>
+                                                <button class="ql-italic" aria-label="Italic"></button>
+                                                <button class="ql-underline" aria-label="Underline"></button>
+                                                <button class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                                            </span>
+                                        </p-header>
+                                    </p-editor>
+    
+                                </div>
+                                <!-- Start Date and End Date edit -->
+                                <mat-form-field class="w-100">
+                                    <mat-label>Start Date</mat-label>
+                                    <input matInput [matDatepicker]="start_date" name="start_date"
+                                        [(ngModel)]="selectedEvent.start" [min]="minDate" required>
+                                    <mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
+                                    <mat-datepicker #start_date></mat-datepicker>
+                                </mat-form-field>
+                                <mat-form-field class="w-100">
+                                    <mat-label>End Date</mat-label>
+                                    <input matInput [matDatepicker]="end_date" name="end_date"
+                                        [(ngModel)]="selectedEvent.end" [min]="selectedEvent.start">
+                                    <mat-datepicker-toggle matSuffix [for]="end_date"></mat-datepicker-toggle>
+                                    <mat-datepicker #end_date></mat-datepicker>
+                                </mat-form-field>
+    
+                                <mat-slide-toggle [(ngModel)]="selectedEvent.location.onGround"
+                                    [ngModelOptions]="{standalone: true}" (change)="changeOnGround(onGround, $event )">On
+                                    Grounds</mat-slide-toggle>
+                                <mat-form-field class="w-50">
+                                    <mat-label>Location</mat-label>
+                                    <mat-select *ngIf="selectedEvent.location.onGround"
+                                        [(ngModel)]="selectedEvent.location._id" [ngModelOptions]="{standalone: true}"
+                                        required>
+                                        <ngx-mat-select-search [(ngModel)]="locationSearch"
+                                            placeholderLabel="Search Location" noEntriesFoundLabel="Not Found"
+                                            name="search"></ngx-mat-select-search>
+    
+    
+                                        <span
+                                            *ngFor="let group of locationListOnGround | stringFilterBy:locationSearch:'name'; let i = index ;">
+    
+                                            <mat-optgroup [label]="group.name"
+                                                *ngIf="group?.room && group?.room?.length > 0"
+                                                (click)="activeToggler(i,$event)">
+                                                <mat-icon
+                                                    class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                                                    mat-raised-button="" role="img"
+                                                    *ngIf="group?.room && group?.room?.length && i != activeClassIndex">
+                                                    expand_more</mat-icon>
+                                                <mat-icon aria-hidden="true"
+                                                    class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                                                    mat-raised-button="" role="img"
+                                                    *ngIf="group?.room && group?.room?.length && i === activeClassIndex">
+                                                    expand_less</mat-icon>
+                                                <mat-option [class.active]="i === activeClassIndex"
+                                                    *ngFor="let r of group?.room" [value]="r">
+                                                    <span class="pl-5">{{r}}</span>
+                                                </mat-option>
+                                            </mat-optgroup>
+    
+                                            <mat-option *ngIf="!group?.room?.length && group.name"
+                                                [class.active]="i === activeClassIndex" [value]="group._id">
+    
+                                                <span class="pl-5">
+                                                    {{group.name}}
+                                                </span>
+                                            </mat-option>
+    
+                                        </span>
+                                    </mat-select>
+                                    <mat-select *ngIf="!selectedEvent.location.onGround"
+                                        [(ngModel)]="selectedEvent.location._id" [ngModelOptions]="{standalone: true}"
+                                        required>
+                                        <ngx-mat-select-search [(ngModel)]="locationSearch"
+                                            placeholderLabel="Search Location" noEntriesFoundLabel="Not Found"
+                                            name="search"></ngx-mat-select-search>
+    
+                                        <span
+                                            *ngFor="let group of locationList | stringFilterBy:locationSearch:'name'; let i = index ;">
+    
+                                            <mat-optgroup [label]="group.name"
+                                                *ngIf="group?.room && group?.room?.length > 0"
+                                                (click)="activeToggler(i,$event)">
+                                                <mat-icon
+                                                    class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                                                    mat-raised-button="" role="img"
+                                                    *ngIf="group?.room && group?.room?.length && i != activeClassIndex">
+                                                    expand_more</mat-icon>
+                                                <mat-icon aria-hidden="true"
+                                                    class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                                                    mat-raised-button="" role="img"
+                                                    *ngIf="group?.room && group?.room?.length && i === activeClassIndex">
+                                                    expand_less</mat-icon>
+                                                <mat-option [class.active]="i === activeClassIndex"
+                                                    *ngFor="let r of group?.room" [value]="r">
+                                                    <span class="pl-5">{{r}}</span>
+                                                </mat-option>
+                                            </mat-optgroup>
+    
+                                            <mat-option *ngIf="!group?.room?.length && group.name" [class.active]="i === activeClassIndex" [value]="group._id">
+    
+                                                <span class="pl-5">
+                                                    {{group.name}}
+                                                </span>
+                                            </mat-option>                                        </span>
+                                    </mat-select>
+                                </mat-form-field>
+
+
+                                <div class="d-flex">
+                                    <div class="start mr-10 ">
+                                        <label class="w-100 time-label">Start Time</label>
+                                        <ejs-timepicker [(ngModel)]="selectedEvent.start_time" [ngModelOptions]="{standalone: true}" (change)="updateLocationTimeChanged(selectedEvent, $event)" [class]="'pickerBorder' " [format]='formatString' [value]="selectedEvent.start_time" [required]="true" [min]="addPopupStartMin"
+                                            [showClearButton]=false></ejs-timepicker>
+                                    </div>
+                                    <div class="end mr-10  float-r">
+                                        <label class="w-100 time-label ">End Time</label>
+    
+                                        <ejs-timepicker [(ngModel)]="selectedEvent.end_time" [value]="selectedEvent.end_time" [ngModelOptions]="{standalone: true}" [class]="'pickerBorder' " [format]='formatString' [required]="true" [step]='15' [showClearButton]=false [min]="selectedEvent.start_time"></ejs-timepicker>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                        </div>
+
+
+                    </div>
+
+                    <div class="assigned" *ngIf="!selectedEvent">
+                        <h3 class="no-event">There are no scheduled activities.</h3>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #deleteDialog style="max-width: 450px;">
+    <div mat-dialog-content class="pop_txt">
+        <span class="mt-0">Are you sure you want delete this event?</span>
+        <!-- <p class="text-center mt-0">Deleting this event will permanently delete all care in the series.</p> -->
+    </div>
+    <div mat-dialog-actions class="text-center cus_height modal_btn_pad">
+        <div class="btn_top activity-action">
+            <button class="mt-10 btn" mat-stroked-button color="primary" style="border: 1px solid #1975b8;  float: left;"
+            [ngClass]="{'selected-btn': editDeleteType == 'single' }" (click)="editDeleteActivity('single')" class="btn_modual btn-re-modal">Only this activity</button>
+            <button class="mt-10 btn" mat-stroked-button color="primary" style="border: 1px solid #1975b8; margin-left: 2px; float: right;"
+            [ngClass]="{'selected-btn': editDeleteType == 'all' }"  (click)="editDeleteActivity('all')" class="btn_modual btn-re-modal">All future activity</button>
+        </div>
+        <!-- <div class="btn_btm" style="text-align: center; margin-left: 2px;">
+            <button mat-stroked-button color="warn" style="border: 1px solid#ef4036;" (click)="onNoClick()" class="btn_modual">Cancel</button>
+        </div> -->
+
+        <div class="adtime mt-0">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="onNoClick()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done" (click)="editDeleteSelected('delete')" [disabled]="!editDeleteType">Done</button>
+        </div>
+    </div>
+</ng-template>
+<ng-template #editDialog style="max-width: 450px;">
+    <div mat-dialog-content class="pop_txt">
+        <span class="mt-0">Do you want to edit this activity?</span>
+        <!-- <p class="text-center mt-0">Deleting this event will permanently delete all care in the series.</p> -->
+    </div>
+    <div mat-dialog-actions class="text-center cus_height modal_btn_pad">
+        <div class="btn_top activity-action">
+            <button class="mt-10 btn" mat-stroked-button color="primary" style="border: 1px solid #1975b8; float: left;" (click)="editDeleteActivity('single')"
+            [ngClass]="{'selected-btn': editDeleteType == 'single' }"
+            class="btn_modual btn-re-modal">Only this activity</button>
+            <button class="mt-10 btn" mat-stroked-button color="primary" style="border: 1px solid #1975b8; margin-left: 2px; float: right;" (click)="editDeleteActivity('all')"
+            [ngClass]="{'selected-btn': editDeleteType == 'all' }" class="btn_modual btn-re-modal">All future activity</button>
+        </div>
+        <!-- <div class="btn_btm" style="text-align: center; margin-left: 2px;">
+            <button mat-stroked-button color="warn" (click)="onNoClick()" style="border: 1px solid#ef4036;" class="btn_modual">Cancel</button>
+        </div> -->
+
+        <div class="adtime mt-0">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="onNoClick()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done" (click)="editDeleteSelected('edit')" [disabled]="!editDeleteType">Done</button>
+        </div>
+    </div>
+</ng-template>

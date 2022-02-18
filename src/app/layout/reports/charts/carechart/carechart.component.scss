@@ -1,0 +1,181 @@
+@import '../../../../../../node_modules/@syncfusion/ej2-base/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-buttons/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-inputs/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-popups/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-lists/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-splitbuttons/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-calendars/styles/material.css';
+@import '../../../../../../node_modules/@syncfusion/ej2-angular-calendars/styles/material.css';
+
+@import "../../../../../styles/_cstm-variable.scss";
+
+.btn_main_done {
+	margin: 0 0 0 5px !important;
+
+	&.w_auto {
+		min-width: auto !important;
+	}
+}
+
+.reponlytime {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    padding-bottom: 20px;
+
+    .start,
+    .end {
+      flex: 0 0 41%;
+    }
+
+    .cl {
+      width: 7%;
+
+      mat-icon {
+        width: 20px;
+        height: 20px;
+        color: #EE4035;
+        /* font-size: 15px;*/
+        cursor: pointer;
+      }
+    }
+  }
+
+.custom_font {
+	label {
+		@include text-small;
+	}
+
+	.mat-form-field-appearance-legacy {
+		.mat-form-field-label {
+			@include text-small;
+		}
+	}
+
+	.mat-form-field-label-wrapper {
+		@include text-small;
+
+		.mat-form-field-label {
+			@include text-small;
+		}
+	}
+
+	.mat-select {
+		@include regular-text;
+	}
+
+	.mat-input-element {
+		@include regular-text;
+	}
+
+	.ui-calendar {
+		width: 100%;
+	}
+}
+
+.listing {
+	.mat-header-cell {
+		@include title-text;
+		color: #000 !important;
+	}
+
+	.mat-cell {
+		@include regular-text;
+	}
+}
+
+.btn_Secondary {
+	@include btn-main;
+}
+
+.shifttimencreated {
+	display: flex;
+	justify-content: space-between;
+	background: #1975B8;
+	padding: 10px 15px;
+	color: #BFE7F6;
+	border-radius: 5px;
+	margin-top: 40px !important;
+	.shifttime,
+	.created {
+		h4 {
+			margin: 0 0 5px 0;
+			color: #fff;
+			font-weight: 400;
+		}
+
+		span {
+			color: #BFE7F6;
+		}
+	}
+}
+
+.shifttimencreated {
+	align-items: center;
+
+	.shifttime {
+		@include second-heading;
+
+		h4 {
+			margin: 0;
+		}
+	}
+
+	.created {
+		h4 {
+			@include title-text;
+		}
+
+		span {
+			@include title-text;
+		}
+	}
+}
+
+.no {
+	margin: 50px 0;
+	background: #fafafa;
+	padding: 30px 0;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+
+	p {
+		color: #ccc;
+	}
+}
+
+
+.pop_heading {
+	margin-bottom: 25px;
+
+	h3 {
+		margin: 0;
+	}
+
+	.font_style {
+		@include secondary-text-regular;
+	}
+}
+
+.btn_report_pop {
+	margin-top: 20px;
+
+	button {
+		background: transparent !important;
+	}
+}
+
+::ng-deep .custom_font .pickerBorder .e-input-group  #ej2_timepicker_1_input{
+	padding: 10px 0px 13px !important;
+}
+
+.custom_font .time-label{
+	font-size: 10px !important;
+}
+
+.export_imagepdf {
+	height: 43px;
+	cursor: pointer;
+	margin-left: 2px;
+}

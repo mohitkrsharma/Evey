@@ -1,0 +1,104 @@
+<mat-card *ngIf="unit">
+  <mat-card-header class="d-flex justify-content-between align-center w-100">
+    <mat-card-title>View Unit</mat-card-title>
+    <div class="d-flex align-center w-100 justify-content-end pr-15">
+      <span class="pl-15">Ready to move</span>
+      <mat-slide-toggle [disabled]="((unit.residents_id && unit.residents_id.length != 0) || unit.type != 'room')" [checked]="unit.ready_to_move" color="primary"
+                        class="pl-15" (change)="onChangeReady(unit._id,$event)">
+      </mat-slide-toggle>
+    </div>
+    <!-- (change)="onChangeHospice($event)" -->
+    <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="editUnit(unit._id)">Edit</button>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Unit <span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.room}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Unit Type<span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.type}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Organization<span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.org && unit.org.org_name ? unit.org.org_name:'-'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Facility<span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.fac && unit.fac.fac_name ?unit.fac.fac_name :'-'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Floor<span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.floor && (unit.floor.floor || unit.floor.floor == 0 ) ?unit.floor.floor : '-'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Sector<span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.sector ? unit.sector:'-'}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Total Residents<span>:</span>
+          </div>
+          <div class="w-70 pl-15">
+            {{unit.total_residents}}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+
+    </mat-list>
+  </mat-card-content>
+</mat-card>

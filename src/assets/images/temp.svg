@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-temp">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="temp" clip-path="url(#clip-temp)">
+    <g id="_808602" data-name="808602" transform="translate(10 2)">
+      <g id="Group_105" data-name="Group 105">
+        <g id="Group_104" data-name="Group 104">
+          <path id="Path_122" data-name="Path 122" d="M141.333,18.037V5.333a5.333,5.333,0,1,0-10.667,0v12.7a8,8,0,1,0,10.667,0ZM136,29.333a5.333,5.333,0,0,1-3.555-9.309l.888-.8V5.333a2.667,2.667,0,1,1,5.333,0v13.9l.888.8A5.333,5.333,0,0,1,136,29.333Z" transform="translate(-128)" fill="#f87f0b"/>
+        </g>
+      </g>
+      <g id="Group_107" data-name="Group 107" transform="translate(6.612 10.233)">
+        <g id="Group_106" data-name="Group 106">
+          <rect id="Rectangle_26" data-name="Rectangle 26" width="2.775" height="16.651" fill="#f87f0b"/>
+        </g>
+      </g>
+      <g id="Group_109" data-name="Group 109" transform="translate(4.003 19.349)">
+        <g id="Group_108" data-name="Group 108" transform="translate(0 0)">
+          <circle id="Ellipse_29" data-name="Ellipse 29" cx="4" cy="4" r="4" fill="#f87f0b"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

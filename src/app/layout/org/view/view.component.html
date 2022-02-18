@@ -1,0 +1,132 @@
+<mat-card *ngIf="organization">
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View Organizations</mat-card-title>
+        <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="editOrganization(organization._id)">Edit</button>
+
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Name <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_name}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Website <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15" *ngIf="organization.org_website">
+                        {{organization.org_website?organization.org_website:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Phone 1 <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_phone1?organization.org_phone1:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Phone 2<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_phone2?organization.org_phone2:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        City<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_city?organization.org_city:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        State<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_state?organization.org_state:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Address<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_address1?organization.org_address1:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Address 2<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{organization.org_address2?organization.org_address2:'-'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zip Code 1<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{ (organization.org_zip1 && organization.org_zip1 != '') ?organization.org_zip1 : '-' }}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zip Code 2<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{ (organization.org_zip2 && organization.org_zip2 != '') ? organization.org_zip2 : '-' }}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        UUID<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{ organization.uuid  ? organization.uuid : '-' }}
+                    </div>
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

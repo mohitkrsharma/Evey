@@ -1,0 +1,86 @@
+
+@import "./../../../../styles/_cstm-variable.scss";
+
+
+ .table td,
+ .table th {
+	border:1px solid #eee;
+	padding: .75rem 12px;
+}
+ .table tr td:first-child {
+	font-weight: 600;
+}
+hr{ border: 1px solid #ddd;
+	margin-left:-16px;
+	margin-right:-16px;
+}
+ol{
+	padding: 0 16px;
+}
+table{
+	font-size: 14px;
+}
+.addional_notes {
+	font-size: 14px;
+}
+.datareport span{
+	display: block;
+}
+.datareport span strong{
+	min-width: 210px;
+    display: inline-block;
+}
+
+.rescustom{
+	margin-top:40px !important;
+}
+
+.virusreport .md-drppicker, .vitalreport .md-drppicker {
+    left: auto !important;
+    right: 0 !important; 
+}
+
+.btn_main_cancle{
+    @include btn-primary-cancle;
+}
+
+.btn_main_done{
+    margin: 0 0 0 5px !important;
+    @include btn-primary-done;
+
+    &.w_auto{
+    	min-width:auto !important;
+    }
+}
+
+.custom_font{
+
+	.mat-form-field-label-wrapper{
+		@include text-small;
+		.mat-form-field-label {
+			@include text-small;
+		}
+	}
+	.mat-select{
+		@include regular-text;
+	}
+
+	.mat-input-element{
+		@include regular-text;
+	}
+}
+
+.calender_icon{
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translateY(-50%);
+	font-size: 14px;
+	color: #A7A9AC;
+	height: 14px;
+	width: 14px;
+
+	&.active_icon{
+		color: #1975b8;
+	}
+}

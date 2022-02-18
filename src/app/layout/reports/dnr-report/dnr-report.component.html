@@ -1,0 +1,36 @@
+<ng-container class="view-height">
+
+    <ng-container>
+        
+            <form class="custom_font" (ngSubmit)="DNRSubmit(picker)" [formGroup]="reportForm">
+              <div class="d-flex justify-content-between form-row pop_heading">
+                <h3>DNR Report</h3>
+              </div>
+                <div class="d-flex justify-content-between form-row font_style">
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <input matInput name="date" (click)="picker.open()" [matDatepicker]="picker" placeholder="Choose a date"
+                              [(ngModel)]="dnrreport.date" [ngModelOptions]="{standalone: true}" onPaste="return false" (keypress)="checkAllwoNum($event)" required
+                              [max]="maxDate">
+                            <mat-datepicker-toggle matSuffix [for]="picker" #picker>
+                              <mat-icon matDatepickerToggleIcon>
+                                <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+                                  height="20.321">
+                              </mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                          </mat-form-field>
+                    </div>
+                </div>
+  
+                <div class="d-flex justify-content-between btn_report_pop">
+                    <button mat-flat-button class="mr-10" color="warn" type="button" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+                    <div>
+                        <button mat-flat-button color="primary"
+                            type="submit" class="btn_main_done">Run</button>
+                    </div>
+                </div>
+            </form>
+        
+    </ng-container>
+  </ng-container>

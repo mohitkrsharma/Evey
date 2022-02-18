@@ -1,0 +1,245 @@
+<mat-card id="doc">
+    <mat-card-header>
+      <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+        <mat-card-title class="mb-0">Time on Levels Report</mat-card-title>
+          <div class="report_export_btn d-flex align-center">
+            <button mat-stroked-button color="primary" (click)="openontimelevelReport()" class="btn_Secondary"style="margin-right: 10px;">
+                Run Another
+            </button>
+            <img *ngIf="!resultcount && commonService.checkPrivilegeModule('reports','export')" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+            <img *ngIf="resultcount && commonService.checkPrivilegeModule('reports','export')" (click)="onExportAsPDF()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+          </div>
+      </mat-card-subtitle>
+  </mat-card-header>
+    <mat-card-content *ngIf="selectShift" class="head-page">
+        <div class="shifttimencreated d-flex align-items-center mb-20">
+            <div class="shifttime">
+                <h4 class="m-0">{{ selectedCarelevelName }} - {{selectShift}}</h4>
+                <!-- <span class="m-0">{{selectedCarelevelName}}</span> -->
+            </div>
+            <div class="created usernameAlign">
+                <h4>Created by: {{userName}}</h4>
+                <span>{{selected_start_date | timezoneWiseMomentDate:timezone}}-{{selected_end_date
+                    |timezoneWiseMomentDate:timezone}}</span>
+            </div>
+        </div>
+        <mat-card-content *ngIf="!resultcount">
+            <p style="text-align: center; color: #969393" class="message_text">No Data Found</p>
+        </mat-card-content>
+        <div class="census-grids mb-20">
+            <div class="censusgrid">
+                <div class="d-flex">
+                    <div class="w-50 countab text-left">
+                        {{ dailyPerResident != 'NaN' ? dailyPerResident : 0 }}
+                    </div>
+                    <div class="w-50 count2 text-right"
+                        [ngClass]="careLvlGoalDiff < careLevelGoalHr ? 'text-red' : 'text-green'">
+                        {{ careLvlGoalDiff }} (hr)
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="w-60 totalresi text-left">
+                        Daily per Resident
+                    </div>
+                    <div class="w-40 text-right goalresi text-red">
+                        {{ careLvlGoalAvg }}% of goal
+                    </div>
+                </div>
+            </div>
+
+            <div class="censusgrid">
+                <div class="d-flex">
+                    <div class="w-50 countab text-left">
+                        {{ totalHours ? getTimeInHours(totalHours) : 0 }}
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="w-60 totalresi text-left">
+                        Total Hours
+                    </div>
+                </div>
+            </div>
+            <div class="censusgrid">
+                <div class="d-flex">
+                    <div class="w-50 countab text-left">
+                        {{ totalActiveDays ? totalActiveDays : 0 }}
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="w-60 totalresi text-left">
+                        Total Active Days
+                    </div>
+                </div>
+            </div>
+            <div class="censusgrid">
+                <div class="d-flex">
+                    <div class="w-50 countab text-left">
+                        {{ totalResident ? totalResident : 0 }}
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="w-60 totalresi text-left">
+                        Total Residents
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- <mat-accordion> -->
+            <!-- <mat-expansion-panel class="mb-10" (opened)="onPanelOpen(careLevel.careLevelId)" (closed)="onPanelClose()" -->
+                <!-- *ngFor="let careLevel of selectedCareLevels"> -->
+                <!-- <mat-expansion-panel-header class="align-items-center custom_font"> -->
+                    <!-- <mat-panel-title> -->
+                        <!-- {{ careLevel.careLevelName}} -->
+                    <!-- </mat-panel-title> -->
+                <!-- </mat-expansion-panel-header> -->
+                <!-- <ng-template matExpansionPanelContent class="d-flex justify-content-between"> -->
+                  <div class="d-flex justify-content-between">
+                    <div class="w-100 pr-10">
+                        <!-- <mat-card class="no_drop_shadow bdr_crd"> -->
+                            <!-- <mat-card-header class="w-100 border-bottom">
+                      <mat-card-title class="ann_heading mt-0">Resident Levels</mat-card-title>
+                    </mat-card-header> -->
+
+                            <!-- <mat-card-content class="view-height-center"> -->
+                                <div class="table-responsives listing">
+                                    <table class="table table-striped table-hover" style="width: 100%;">
+                                        <thead>
+                                            <tr style="text-align: center;">
+                                                <th>Resident</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>Days</th>
+                                                <th>Total (hr)</th>
+                                                <th>Daily Ave (hr)</th>
+                                                <th>% of Goal</th>
+                                            </tr>
+                                        </thead>
+                                        <tr *ngFor="let element of timeOnCareLevelData">
+                                            <td>{{ element.residentName }}</td>
+                                            <td class="value">{{ getDate(element.startDate) }}</td>
+                                            <td class="value">{{ getDate(element.endDate) }}</td>
+                                            <td class="value">{{ element.days }}</td>
+                                            <td class="value">{{ getTimeInHours(element.totalMinutes) }}</td>
+                                            <td class="value">{{ getDailyAverage(element.days, element.totalMinutes) }}
+                                            </td>
+                                            <td class="value"
+                                                [ngClass]="getGoalLevelWise(element.totalMinutes, element.days).includes('-') ? 'text-red' : 'text-green'">
+                                                {{ getGoalLevelWise(element.totalMinutes, element.days) }}
+                                            </td>
+                                        </tr>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            <!-- </mat-card-content> -->
+                        <!-- </mat-card> -->
+
+                        <!-- <p *ngIf="timeOnCareLevelData.length == 0" style="text-align: center; color: #969393"
+                            class="message_text">No Data Found</p> -->
+                    </div>
+                  </div>
+                <!-- </ng-template> -->
+            <!-- </mat-expansion-panel> -->
+        <!-- </mat-accordion> -->
+
+
+    </mat-card-content>
+</mat-card>
+
+<ng-template #openTimeonLevelsReport>
+    <div>
+      <form #f="ngForm" (ngSubmit)="timeOnLevelsReportSubmit(mdltimeOnLevelReport,timeOnLevelReportForm.valid)"
+        [formGroup]="timeOnLevelReportForm" class="example-form custom_font">
+        <div class="d-flex justify-content-between form-row pop_heading">
+          <h3>Time on Levels Report</h3>
+          <div class="suspendUsers">
+            <div class="switch_ann_header font_style">
+              <p class="m-0">Include Archived Residents</p>
+              <span class="activ">
+                <mat-slide-toggle color="primary" [(ngModel)]="mdltimeOnLevelReport.isresident"
+                  [ngModelOptions]="{standalone: true}"
+                  (change)="isArchiveResi($event.checked,'timeOnlevel');mdltimeOnLevelReport.isresident=$event.checked">
+                </mat-slide-toggle>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-50 pr-15">
+            <mat-form-field class="w-100">
+              <mat-label>Care Level</mat-label>
+              <mat-select  [(ngModel)]="mdltimeOnLevelReport.residentLevel" formControlName="residentLevel" required>
+                   <!-- <mat-select-trigger *ngIf="mdltimeOnLevelReport.residentLevel && mdltimeOnLevelReport.residentLevel.length">
+                      {{alllevel ? mdltimeOnLevelReport.residentLevel.length : mdltimeOnLevelReport.residentLevel.length -1 }} items
+                      selected
+                  </mat-select-trigger> -->
+                  <ngx-mat-select-search formControlName="carSearch" [(ngModel)]="carSearch" placeholderLabel="Care Level" noEntriesFoundLabel="Not Found"
+                  name="search"></ngx-mat-select-search>
+                 <!-- <mat-option *ngIf="carelevelData && carelevelData.length" #selectedLevel
+                      (click)="selectAllLevel()" [value]="0">All
+                  </mat-option> -->
+                  <mat-option *ngFor="let item of carelevels |stringFilterBy:carSearch:'label'" [value]="item.value" (click)="selectLevel(item.label,item.value)" >
+                  {{item.label}}
+                 </mat-option>
+              </mat-select>           
+          </mat-form-field>
+          </div>
+          <div class="w-50 pl-15">
+            <mat-form-field class="w-100">
+              <mat-label>Select Shift</mat-label>
+              <mat-select [(ngModel)]="mdltimeOnLevelReport.shift" (selectionChange)="changeShiftForVitals($event.value)"
+                formControlName="shiftype" required>
+                <ngx-mat-select-search formControlName="shiSearch" [(ngModel)]="shiSearch" placeholderLabel="Select shift"
+                  noEntriesFoundLabel="Not Found" name="search">
+                </ngx-mat-select-search>
+                <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                  {{item.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-50 pr-15">
+            <mat-form-field class="w-100">
+              <mat-label>Resident</mat-label>
+              <mat-select [(ngModel)]="mdltimeOnLevelReport.resident" formControlName="resident" [multiple]="true" #multiSelect
+                required>
+                <mat-select-trigger *ngIf="mdltimeOnLevelReport.resident && mdltimeOnLevelReport.resident.length">
+                  {{allresident ? mdltimeOnLevelReport.resident.length : mdltimeOnLevelReport.resident.length - 1}} items
+                  selected
+                </mat-select-trigger>
+                <ngx-mat-select-search formControlName="resSearch" [(ngModel)]="resSearch" placeholderLabel="Resident"
+                  noEntriesFoundLabel="Not Found" name="search">
+                </ngx-mat-select-search>
+                <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                  (click)="selectAllresidents('timeOnlevel')" [value]="0">All
+                </mat-option>
+                <mat-option *ngFor="let filters of residentslist |stringFilterBy:resSearch:'value'" [value]="filters.key"
+                  (click)="selectResident(selectedResident.viewValue,filters.key,'timeOnlevel')">
+                  {{filters.value | titlecase}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="w-50 pl-15">          
+            <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)"
+              (keypress)="checkAllwoNum($event)" placeholder="Select date range" 
+              [options]="options"></ngx-mat-drp>
+            <img class="custom-calendarsvg" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22"
+              height="20.321">
+            <!-- </mat-form-field> -->
+          </div>
+        </div>
+  
+        <div class="d-flex justify-content-between btn_report_pop">
+          <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelTimeOnLevelReport()"
+            type="button">Cancel</button>
+          <button mat-flat-button color="primary" type="submit" class="btn_main_done">Run</button>  
+        </div>
+      </form>
+    </div>
+</ng-template>

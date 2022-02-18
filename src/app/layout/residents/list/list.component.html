@@ -1,0 +1,321 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title *ngIf="!isArcheive">Residents
+        </mat-card-title>
+        <mat-card-title *ngIf="isArcheive">Resident Archive
+        </mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search by resident name" />
+                        <!-- <input matInput placeholder="Search"> -->
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+                        <ng-container *ngIf="listType == 'residents'">
+
+                            <button *ngIf="userAccess.isAdd" mat-stroked-button class="resident_btn main_btn ml-3" (click)="addForm()">Add New</button>
+                            <button mat-stroked-button class="resident_btn main_btn ml-3" (click)="filter()">Filter</button>
+                            <button *ngIf="userAccess.isExport" mat-stroked-button class="resident_btn main_btn ml-3" (click)="exportResident()">Export</button>
+                            <!-- <button *ngIf="userAccess.isAdd"
+                            mat-stroked-button class=" resident_btn" (click)="toggle()" class="main_btn ml-3">Bulk
+                            Upload</button> -->
+
+                            <button *ngIf="userAccess.isAdd && !isArcheive" mat-stroked-button class="resident_btn main_btn ml-3"
+                                (click)="achieve()">Archive</button>
+                            <!--  <button *ngIf="isArcheive" #restoreButton mat-stroked-button class="resident_btn" (click)="deleteRestore()" class="main_btn ml-3">Restore</button> -->
+                            <button *ngIf="isArcheive" mat-stroked-button class="resident_btn main_btn ml-3" (click)="defArchieve()">Active</button>
+                            <button *ngIf="userAccess.isDelete" #deleteButton mat-stroked-button class="resident_btn main_btn ml-3"
+                                (click)="delete()">Delete</button>
+                        </ng-container>
+                        <ng-container *ngIf="listType == 'removed'">
+                            <button mat-stroked-button class="ml-3" (click)="filter()">Filter</button>
+                            <button *ngIf="userAccess.isAdd" mat-stroked-button class="ml-3" (click)="addForm()">Add
+                                New</button>
+                            <button *ngIf="userAccess.isDelete" mat-stroked-button class="ml-3"
+                                (click)="delete()">Delete</button>
+                        </ng-container>
+                        <ng-container *ngIf="listType == 'deleted'">
+                            <button mat-stroked-button class="ml-3" (click)="filter()">Filter</button>
+                            <button *ngIf="userAccess.isDelete" mat-stroked-button class="ml-3"
+                                (click)="deletePermanent()">Delete</button>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <!-- bulk upload form -->
+            <ng-container *ngIf="show">
+
+                <div class="d-flex justify-content-end form-row">
+                    <div>
+                        <label for="choose-field" class="choose-btn upload-btn secondary_btn">Upload</label>
+                        <input id="choose-field" [(ngModel)]="filedata" class="choose-field" type="file"
+                            name="useravatar" (change)="onFileChange($event)">
+                        <a href="assets/excel/Add_Resident.xlsx" mat-flat-button class="ml-10 upload-btn secondary_btn"
+                            color="primary" download>Download
+                            Sample</a>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- filter resident data -->
+            <ng-container *ngIf="filtershow">
+                <div class="d-flex justify-content-between align-items-center form-row">
+                    <div class="d-flex justify-content-between form-row" [ngClass]="isArcheive ? 'w-30' : 'w-80'">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Level </mat-label>
+                                <mat-select [(ngModel)]="residentlevel"
+                                    (selectionChange)="changeLevel($event.value,'filter')">
+                                    <ngx-mat-select-search [(ngModel)]="careSearch" placeholderLabel="Select Care Level"
+                                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of carelevelData   |stringFilterBy:careSearch:'label'"
+                                        [value]="item">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-select [(ngModel)]="residentlevel" (selectionChange)="changeLevel(residentlevel,'filter')">
+                                    <mat-option *ngFor="let item of carelevelData" [value]="item">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pr-15" *ngIf="!isArcheive">
+
+                            <mat-form-field class="w-100">
+                                <mat-label>Status </mat-label>
+                                <mat-select [(ngModel)]="resident_status"
+                                    (selectionChange)="changeStatus($event.value,'filter')">
+                                    <ngx-mat-select-search [(ngModel)]="statusSearch" placeholderLabel="Select Status"
+                                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of statusData |stringFilterBy:statusSearch:'label'"
+                                        [value]="item">
+                                        {{item.label}} </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pr-15" *ngIf="isArcheive">
+
+                            <mat-form-field class="w-100">
+                                <mat-label>Status </mat-label>
+                                <mat-select [(ngModel)]="resident_status"
+                                    (selectionChange)="changeStatus($event.value,'filter')">
+                                    <ngx-mat-select-search [(ngModel)]="statusSearch" placeholderLabel="Select Status"
+                                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option
+                                        *ngFor="let item of archiveStatusData |stringFilterBy:statusSearch:'label'"
+                                        [value]="item">
+                                        {{item.label}} </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Location Dropdown -->
+                        <div class="w-100 pr-15" *ngIf="!isArcheive">
+                            <mat-form-field class="w-100">
+                                <mat-label>Location</mat-label>
+                                <mat-select [(ngModel)]="residentLocation"
+                                    (selectionChange)="changeLocation($event.value,'filter')">
+                                    <mat-option *ngFor="let item of out_of_fac_options" [value]="item">
+                                        {{item.label}} </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Isolation Dropdown -->
+                        <div class="w-100 pr-15" *ngIf="!isArcheive">
+                            <mat-form-field class="w-100">
+                                <mat-label>Isolation</mat-label>
+                                <mat-select [(ngModel)]="residentIsolation"
+                                    (selectionChange)="changeIsolation($event.value,'filter')">
+                                    <mat-option *ngFor="let item of isolationArr" [value]="item">
+                                        {{item.label}} </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <button mat-flat-button class="mr-10" color="primary" (click)="resetFilter()"
+                        class="main_btn">Reset</button>
+
+
+                </div>
+                <!-- <div class="d-flex justify-content-end form-row">
+
+                </div> -->
+            </ng-container>
+
+
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="view-height-center">
+
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" matSortActive="{{pagiPayload.sort?.active}}"
+                matSortDirection="{{pagiPayload.sort?.direction}}">
+                
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()"></mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+
+                    <th mat-header-cell *matHeaderCellDef
+                        [mat-sort-header]=" column.sort?column.id:null" [disabled]="column.sort?false: true">
+                        {{column.value}} </th>
+
+                    <td mat-cell *matCellDef="let element">
+                        <div style="display: flex;align-items:center">
+                            <span *ngIf="column.id=='name' && (element.isOrderfile && element.isOrderfile > 0)" class="badge pending"></span>
+                            <span class="iconalign" *ngIf="userAccess.isEdit && column.id=='name'"
+                                (click)="editResident(element._id)"><a>{{element[column.id]}}</a></span>
+                            <span class="iconalign"
+                                *ngIf="!userAccess.isEdit && column.id=='name'">{{element[column.id]}}</span>
+                            <span class="iconalign" *ngIf="column.id!='name'">{{element[column.id]}}</span>
+                            <div class="d-inline-block relative daycount-prnt" style="margin-left: 5px;"
+                                *ngIf="column.id=='name' &&  element['isolation_end_date']!=''">
+                                <timer class="daycount-chld" [days]="element.isolation_days" [id]="element['_id']"
+                                    [startDate]="element['isolation_start_date']"
+                                    [endDate]="element['isolation_end_date']" (onComplete)="timerCompleted($event)">
+                                </timer>
+                            </div>
+                        </div>
+                    </td>
+                    
+                </ng-container>
+
+                <ng-container matColumnDef="outofFac">
+                    <th mat-header-cell [hidden]="isArcheive" *matHeaderCellDef> Location </th>
+                    <td mat-cell [hidden]="isArcheive" *matCellDef="let elements">
+                        <!-- <mat-slide-toggle color="primary" [checked]="elements.outofFac" (change)="onChangefacility($event,elements._id)"></mat-slide-toggle> -->
+                        <mat-form-field class="w-100">
+                            <mat-select name="out_of_fac" [(value)]="elements.outofFac" [disabled]="!userAccess.isEdit"
+                                (selectionChange)="confirmChangeFacility($event,elements._id)">
+                                <mat-option *ngFor="let item of out_of_fac_options" [value]="item.value">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="isolation">
+                    <th mat-header-cell [hidden]="isArcheive" *matHeaderCellDef>Isolation</th>
+                    <td mat-cell [hidden]="isArcheive" *matCellDef="let elements">
+                        <mat-form-field class="w-100" *ngIf="!elements.outofFac">
+                            <mat-select name="out_of_fac" [(ngModel)]="elements.isolation_days"
+                                [disabled]="!userAccess.isEdit"
+                                (selectionChange)="confirmIsolation($event, elements._id)">
+                                <ng-template ngFor let-item [ngForOf]="covid_isolation_array">
+                                    <mat-option
+                                        *ngIf="((item.value=='stop' && elements.isolation_end_date!='') || (item.value!='stop'))  && (!(elements.isolation_days != '' && item.value == '')) "
+                                        [value]="item.value"> {{item.label}} </mat-option>
+                                </ng-template>
+                                <!-- <mat-option *ngFor="let isolation of covid_isolation_array" [value]="isolation.value">
+                                    {{ isolation.label }}
+                                </mat-option> -->
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-100" *ngIf="elements.outofFac">
+                            <mat-select name="out_of_fac" [(ngModel)]="elements.isolation_apply_come_to_fac"
+                                [disabled]="!userAccess.isEdit" (selectionChange)="setIsolation($event,elements._id)">
+                                <mat-optgroup *ngFor="let group of ground_options" [label]="group.label">
+                                    <mat-option *ngFor="let item of group.values" [value]="item.value">
+                                        {{item.label}}
+                                    </mat-option>
+                                </mat-optgroup>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </ng-container>
+                <!--  <ng-container matColumnDef="archivedate">
+                    <th mat-header-cell *matHeaderCellDef>Archive Date</th>
+                    <td mat-cell *matCellDef="let elements">
+                        {{elements.archive_date}}
+                    </td>
+                </ng-container> -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button *ngIf="userAccess.isEdit" mat-mini-fab color="primary"
+                            (click)="editResident(element._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button *ngIf="userAccess.isDelete" mat-mini-fab color="primary"
+                            (click)="deleteResident(element._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <!--  <button *ngIf="_commonService.checkPrivilegeModule('residents','add') && isArcheive" mat-mini-fab color="primary" (click)="restoreResident(element._id)">
+                        <mat-icon>restore</mat-icon>
+                      </button> -->
+                        <!-- <button mat-mini-fab color="primary" (click)="viewZone(elements._id)">
+                        <mat-icon>remove_red_eye</mat-icon>
+                      </button> -->
+                    </td>
+                </ng-container>
+                <!-- <ng-container matColumnDef="isVirusCheck">
+                    <th mat-header-cell *matHeaderCellDef>Virus check</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-slide-toggle color="primary" [checked]="elements.isVirusCheck" (change)="onChangeVirusCheck($event,elements._id)"></mat-slide-toggle>
+                    </td>
+                </ng-container> -->
+
+                <!-- <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <ng-container *ngIf="listType !== 'deleted'" >
+                            <button mat-mini-fab color="primary" matTooltip="Edit Resident" (click)="editResident(elements._id)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-mini-fab color="primary" matTooltip="Delete Resident" (click)="deleteResident(elements._id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <button mat-mini-fab color="primary" matTooltip="View Resident" (click)="viewResident(elements._id)">
+                                <mat-icon>remove_red_eye</mat-icon>
+                            </button>
+                        </ng-container>
+                        <ng-container *ngIf="listType == 'deleted'" >
+                            <button mat-mini-fab color="primary" matTooltip="Restore Resident" (click)="deleteResident(elements._id)">
+                                <mat-icon>refresh</mat-icon>
+                            </button>
+                            <button mat-mini-fab color="primary" matTooltip="Permanent Delete Resident" (click)="deleteResident(elements._id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </ng-container>
+                    </td>
+                </ng-container> -->
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    [ngClass]="{'highlight': row['isolation_end_date']!=''}"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <div class="w-100 totalCount">
+        <div class="w-90">
+            <mat-card-actions>
+                <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+                    [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+            </mat-card-actions>
+        </div>
+        <div class="w-10 tcText">
+            <span class="span-pos" (click)="getTotalCount()">Total Count:</span>
+            <mat-spinner *ngIf="isLoading" class="countPos" [diameter]="20"></mat-spinner>
+            <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+        </div>
+    </div>
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

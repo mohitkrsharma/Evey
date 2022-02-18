@@ -1,0 +1,120 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+.mat-cell{
+    // text-transform: capitalize;
+}
+
+.btn_Secondary{
+    margin:0 7px 0 5px !important;
+    @include btn-main;
+}
+
+.login-label{
+    font-family: 'SFProText-Regular' !important;
+}
+
+.togl-space{
+    margin-left: 10px;
+}
+
+img.custom-calendarsvg {
+    position: absolute;
+    width: 1em;
+    margin-top: -50px;
+    margin-left: 14rem;
+}
+
+.totalCount{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tcText{
+    font-family: 'SFProText-Regular';
+    font-size: 80%;
+    display: inherit;
+}
+
+.span-pos{
+    color: #1975B8;
+    cursor: pointer;
+    padding-top: 2px !important;
+    margin-bottom: 15px !important;
+}
+
+.countPos{
+    padding-top: 2px !important;
+    padding-left: 5px !important;
+}
+
+.export_image {
+  height: 36px;
+  cursor: pointer;
+}
+
+.example-button-row {
+    display: flex;
+    justify-content: flex-end;
+
+    .btn_Secondary {
+        @include btn-main;
+    }
+}
+
+.shifttimencreated {
+    .shifttime {
+        font-size: 20px !important;
+        font-family: "SFProDisplay-Bold" !important;
+        h4 {
+            margin: 0;
+        }
+    }
+}
+.shifttimencreated {
+    display: flex;
+    justify-content: space-between;
+    background: #1975B8;
+    padding: 15px;
+    color: #BFE7F6;
+    border-radius: 5px;
+    margin-top: 40px !important;
+    .shifttime {
+        h4 {
+            margin: 0 0 5px 0;
+            color: #fff;
+            font-weight: 400;
+        }
+
+        span {
+            color: #BFE7F6;
+        }
+    }
+
+    .repname {
+        display: flex;
+        align-items: center;
+
+        h3 {
+            margin: 0;
+            font-weight: 400;
+            color: #fff;
+        }
+    }
+}
+
+.export_image {
+    height: 36px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.export_imagepdf {
+    height: 43px;
+    cursor: pointer;
+    margin-left: 2px;
+}
+.export_imagepdf_unselect{
+    height: 43px;
+    margin-left: 2px;
+}

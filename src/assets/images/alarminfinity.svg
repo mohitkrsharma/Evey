@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" viewBox="0 0 25 25">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_252" data-name="Rectangle 252" width="25" height="25" transform="translate(41 143)" fill="#fff" stroke="#707070" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="alarminfinity" transform="translate(-41 -143)" clip-path="url(#clip-path)">
+    <g id="alarm" transform="translate(43 145)">
+      <g id="access-alarms" transform="translate(0)">
+        <path id="Path_200" data-name="Path 200" d="M23.342,4.054,18.56,0,17.209,1.559l4.782,4.054ZM8.684,1.663,7.332.1,2.55,4.054,3.9,5.614Zm4.262.624a9.356,9.356,0,1,0,0,18.713,9.524,9.524,0,0,0,6.334-2.448A9.16,9.16,0,0,0,22.3,11.644,9.318,9.318,0,0,0,12.946,2.287Z" transform="translate(-2.55)" fill="#1975b8"/>
+      </g>
+      <g id="endless" transform="translate(5.116 -133.333)">
+        <g id="Group_164" data-name="Group 164" transform="translate(-1.116 142.333)">
+          <path id="Path_201" data-name="Path 201" d="M9.792,141.333a2.809,2.809,0,0,0-1.987.808l-1.487,1.316,0,0-.8.7.005.005L4.1,145.421a1.781,1.781,0,1,1-1.261-3.035,1.8,1.8,0,0,1,1.284.542l.6.529.795-.7-.666-.59a2.828,2.828,0,1,0-.024,4.022l1.487-1.319,0,0,.795-.705,0,0,1.419-1.256a1.78,1.78,0,1,1,1.261,3.032,1.807,1.807,0,0,1-1.284-.54l-.6-.529-.795.705.666.59a2.837,2.837,0,1,0,2.011-4.833Z" transform="translate(0 -141.333)" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

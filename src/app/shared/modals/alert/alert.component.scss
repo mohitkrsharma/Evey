@@ -1,0 +1,80 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+::ng-deep{
+.DeleteAlert{
+	.mat-dialog-container{
+        border-radius: 5px;
+		padding: 20px !important;
+		
+
+		/*.ng-star-inserted{
+			width: 100%;
+			display: flex;
+			flex-flow: column;
+			justify-content: space-between;
+		}*/
+    }
+
+    .mat-dialog-actions{
+    	min-height: auto !important;
+    	padding: 0 0 25px !important;
+    }
+}
+    
+}
+.justify-content-center{
+	justify-content: center;
+}
+
+.modal_txt{
+	@include regular-text;
+	margin: 0;
+	padding: 0 30px;
+	margin: 0 0 30px;
+
+	p{
+		margin: 0;
+	}
+	span{
+		@include second-heading;
+		margin: 0 0 20px;
+		display: block;
+	}
+}
+.confirm {
+	color: #1975B8 !important;
+}
+
+.btn_window_cancle{
+  background: transparent !important;
+  @include window_cancel;
+  width: auto;
+
+  span{
+  	&.mat-button-wrapper{
+  		background: transparent !important;
+  	}
+  }
+}
+.btn_window_done{
+  @include window_done;
+  width: auto;
+}
+.DeleteAlert {
+	.mat-dialog-actions{
+
+		.mat-button-focus-overlay{
+			background: transparent !important;
+			position: relative !important;
+		}
+	}
+}
+
+.cancel_btn { 
+    @include window_cancel;
+        background-color: transparent !important;
+    }
+     .done_btn {
+        @include window_done;
+         background-color: #fff !important;
+}

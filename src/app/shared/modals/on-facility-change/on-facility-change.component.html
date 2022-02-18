@@ -1,0 +1,19 @@
+
+  <mat-form-field class="w-100">
+    <mat-label> Status</mat-label>
+    <mat-select #resident_status="ngModel" [(ngModel)]="status"
+      (onChange)="changeStatus($event.value)"
+      name="status" required>
+      <ngx-mat-select-search [(ngModel)]="staSearch" placeholderLabel="Select Status"
+        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+      <mat-option *ngFor="let item of statusData |stringFilterBy:staSearch:'label'" [value]="item.value">
+        {{item.label}} </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+<div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+  <button mat-button color="basic" (click)="cancelStatusFacility()"
+      class="mr-10 cancel_btn p-0">Cancel</button>
+  <button mat-button color="primary" class="done_btn p-0" cdkFocusInitial
+      (click)="setStatus()">Done</button>
+</div>

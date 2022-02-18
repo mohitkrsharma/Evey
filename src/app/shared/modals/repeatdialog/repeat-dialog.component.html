@@ -1,0 +1,97 @@
+<div mat-dialog-content>
+    <div class="pop_design ">
+        <h3>
+            <span *ngIf="getRepeatValue(this.selectedCareList[this.scheduleRepeat.index]['repeat']) != 'Never Repeat'">Repeat </span> 
+            {{getRepeatValue(this.selectedCareList[this.scheduleRepeat.index]['repeat'])}}</h3> 
+            <span class=""></span>
+    </div>
+    <div class="form cstm_radio_new">
+        <div class="">
+
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat == 'never'">
+                <p class="care_detail">This scheduled care will never repeat.</p>
+            </div>
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_day'">
+                <p class="care_detail">{{ this.selectedCareList[this.scheduleRepeat.index].care.value }} Occur(s) everyday</p>
+            </div>
+
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_week'">
+                <p class="care_detail">{{ this.selectedCareList[this.scheduleRepeat.index].care.value }} Occur(s) every {{ weekDayTextInForm(this.selectedCareList[this.scheduleRepeat.index].repeat_on) }}</p>
+            </div>
+
+            <div class="timeset timeset_desc list_option_radio" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_month'">
+                <p>Would you like to repeat care on the {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                    <span *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">, the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} </span>
+                    <span *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4"> or the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}</span>  of every month?
+                </p>
+            </div>
+
+            <div class="timeset timeset_desc list_option_radio" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_year'">
+                <p>Would you like to repeat care on the {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                <span *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">, the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} </span>
+                <span *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4"> or the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>
+                 annually?</p>
+            </div>
+
+
+            <!-- <div class="timeset timeset_desc" *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month' || this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'">
+                <p *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat_option'] == 'on_day'">Occurs <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'">every {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'MMMM' }}</span><span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month'">on day</span> {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'dd'}} </p>
+                <p *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat_option'] == 'on_week_number'">Occurs <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'"> every year on the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} of {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'MMMM' }}</span> <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month'"> on the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}</span> </p>
+                <p *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat_option'] == 'on_last_week'">Occurs <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'"> every year on the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} of {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'MMMM' }}</span> <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month'"> on the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}</span> </p>
+            </div>   -->
+
+            <div class="timeset" *ngIf="this.scheduleRepeat.repeat == 'every_month' || this.scheduleRepeat.repeat == 'every_year'">
+                <mat-radio-group class="selyear radio-group" aria-label="Select an option" [ngModel]="this.scheduleRepeat.repeat_option" [ngModelOptions]="{standalone: true}">
+                    <ng-container>
+
+                        <mat-radio-button value="on_day" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">{{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                                <span *ngIf="this.scheduleRepeat.repeat == 'every_month'"></span>
+                                {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                            <!-- </button>   -->
+                        </mat-radio-button>
+
+                    </ng-container>
+
+                    <ng-container *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">
+                        <mat-radio-button value="on_week_number" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ dayNamesShort(this.scheduleRepeat.startDate) }}<span *ngIf="this.scheduleRepeat.repeat == 'every_year'"> of {{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                            <!-- </button> -->
+                        </mat-radio-button>
+                    </ng-container>
+
+                    <ng-container *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4">
+                        <mat-radio-button value="on_last_week" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                Last {{ dayNamesShort(this.scheduleRepeat.startDate) }}<span *ngIf="this.scheduleRepeat.repeat == 'every_year'"> of {{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                            <!-- </button> -->
+                        </mat-radio-button>
+                    </ng-container>
+                </mat-radio-group>
+            </div>
+
+            <div class="timeset care-schedule" *ngIf="this.scheduleRepeat.repeat == 'every_month' || this.scheduleRepeat.repeat == 'every_year'">
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_day'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class=" font-modal"><!-- {{ this.selectedCareList[this.scheduleRepeat.index].care.value }} --> Care will occur
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on {{ this.scheduleRepeat.startDate | date: 'MMM' }} {{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on </span> {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}
+                </p>
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_week_number'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class=" font-modal"><!-- {{ this.selectedCareList[this.scheduleRepeat.index].care.value }} --> Care will occur
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on  {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ this.scheduleRepeat.startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ this.scheduleRepeat.startDate | date: 'EEEE' }}</span>
+                </p>
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_last_week'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class=" font-modal"><!-- {{ this.selectedCareList[this.scheduleRepeat.index].care.value }} --> Care will occur
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on the last {{ this.scheduleRepeat.startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on the last {{ this.scheduleRepeat.startDate | date: 'EEEE' }}</span>
+                </p>
+            </div>
+
+        </div>
+    </div>
+    <div class="adtime mt-0">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done" (click)="saveRepeatDialog()">Done</button>
+    </div>
+  
+</div>

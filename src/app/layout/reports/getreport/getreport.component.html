@@ -1,0 +1,427 @@
+<mat-card class="view-height">
+
+    <ng-container *ngIf="organiz && organiz.length">
+        <mat-card-header class="d-flex justify-content-between align-center">
+            <mat-card-title class="mb-0">Build Custom Report
+            </mat-card-title>
+            <mat-card-subtitle class="w-100 mb-0">
+                <div class="d-flex justify-content-end pad_r15">
+                    <div>
+                        <span>Show Suspended Care</span> <mat-slide-toggle color="primary" [(ngModel)]="isShowSuspended" class="pl-10 mr-10"></mat-slide-toggle>
+                    </div>
+                    <div>
+                        <span>Include Suspended Users</span> <mat-slide-toggle color="primary" [checked]="active"
+                            (change)="changeActive($event)" class="pl-10"></mat-slide-toggle>
+                    </div>
+                </div>
+
+                <div class="d-flex">
+                    <!-- IO-1400 -->
+                    <!-- <div class="example-button-row text-right w-100">
+                        <button mat-flat-button color="primary" class="ml-3 btn_modual" (click)="viewReports()">View Custom
+                            Reports</button>
+                    </div> -->
+                </div>
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <!-- <div class="shifttimencreated d-flex align-items-center mb-20">
+                <div class="shifttime">
+                  <h4>Build Custom Report</h4>
+                </div>
+              </div> -->
+            <form class="example-form custom_font" [formGroup]="reportForm">
+
+                <div class="d-flex justify-content-between form-row">
+                    <!-- date selector -->
+                    <div class="w-100 pr-15 datepicker">
+
+                        <!-- <mat-form-field class="w-100"> -->
+<!--                             <input matInput type="text" ngxDaterangepickerMd [(ngModel)]="selected"
+                                [showCustomRangeLabel]="true" [alwaysShowCalendars]="true" [ranges]="ranges"
+                                [showDropdowns]="true" [linkedCalendars]="true" [keepCalendarOpeningWithRange]="true"
+                                [showCancel]="true" [lockStartDate]="false" [ngModelOptions]="{standalone: true}"
+                                (change)="updateRange($event)" [customRangeDirection]="true" drops="up" opens="left"
+                                placeholder="Select date range" onPaste="return false" (keypress)="checkAllwoNum($event)"/> -->
+                                <ngx-mat-drp (selectedDateRangeChanged)="updateRange($event)" (keypress)="checkAllwoNum($event)" placeholder="Select date range" [options]="options"></ngx-mat-drp>
+
+                                <!-- <mat-icon class="calender_icon">
+                                today
+                            </mat-icon>
+                        </mat-form-field> -->
+
+                    </div>
+
+                    <!-- Shift dropdown -->
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                        <mat-label>Shift</mat-label>
+                            <mat-select  [(ngModel)]="report.shift" formControlName="shift" (selectionChange)="changeShift($event.value)" required>
+                                <ngx-mat-select-search 
+                                    formControlName="shiSearch" 
+                                    [(ngModel)]="shiSearch" 
+                                    placeholderLabel="Shift" 
+                                    noEntriesFoundLabel="Not Found"
+                                    name="search">
+                                </ngx-mat-select-search>
+                                <mat-option *ngFor="let item of shiftArr |stringFilterBy:shiSearch:'name'" [value]="item.no">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between form-row">
+                    <!-- Org dl -->
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100" *ngIf="organiz && organiz.length === 1">
+                            <input matInput placeholder="Organization" value={{organiz[0].value}} disabled>
+                        </mat-form-field>
+                        <mat-form-field class="w-100" *ngIf="organiz && organiz.length != 1">
+                        <mat-label>Organization</mat-label>
+                            <mat-select  [(ngModel)]="report.organization" formControlName="organization" [multiple]="true" #multiSelect required>
+                                 <mat-select-trigger>
+                                            {{this.organiz.length ===1 ? '1' : report.organization.length}} items selected
+                                 </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="searchCtrl" [(ngModel)]="searchCtrl" placeholderLabel="Organization" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="organiz" #allSelected (click)="selectAllOrg()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of organiz |stringFilterBy:searchCtrl:'value'" [value]="filters.key" (click)="selectOrg(allSelected.viewValue,filters.key)" >
+                                {{filters.value}}
+                               </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Facility dl -->
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100"
+                            *ngIf="(organiz && organiz.length && organiz.length ==1 && facilityDropdown && facilityDropdown.length === 1 && facilityDropdown[0].fac && facilityDropdown[0].fac.length === 1 && report.facility && report.facility.length == 1)">
+                            <input matInput placeholder="Facility" value={{facilityDropdown[0].fac[0].value}} disabled>
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100"
+                            *ngIf="(organiz && organiz.length && organiz.length !=1)||( facilityDropdown && facilityDropdown[0].fac && facilityDropdown[0].fac.length != 1)">
+                            <mat-label>Building</mat-label>
+                            <mat-select  [(ngModel)]="report.facility" formControlName="facility" [multiple]="true" #multiSelect required>
+                                 <mat-select-trigger *ngIf="report.facility && report.facility.length">
+                                    {{allfac ? report.facility.length : singlefac ? report.facility.length-1 : report.facility.length}}
+                                    items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="facSearch" [(ngModel)]="facSearch" placeholderLabel="Facility" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="facilityDropdown && facilityDropdown.length" #selectedFacility
+                                    (click)="selectAllFac()" [value]="0">All
+                                </mat-option>
+                                 <mat-optgroup *ngFor="let group of facilityDropdown" [label]="group.name">
+                                <mat-option *ngFor="let item of group.fac |stringFilterBy:facSearch:'value'" [value]="item.key" (click)="selectFac(item.key)" >
+                                {{item.value}}
+                               </mat-option>
+                               </mat-optgroup>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between form-row">
+                    <!-- Floor dl -->
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>Floor</mat-label>
+                             <mat-select  [(ngModel)]="report.floor" formControlName="floor" [multiple]="true" #multiSelect required>
+                                 <mat-select-trigger *ngIf="report.floor && report.floor.length">
+                                    {{allfloor ? report.floor.length : report.floor.length -1 }} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="floSearch" [(ngModel)]="floSearch" placeholderLabel="Floor" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="floorDropdown && floorDropdown.length" #selectedFloor
+                                    (click)="selectAllFloor()" [value]="0">All</mat-option>
+                                <mat-optgroup *ngFor="let group of floorDropdown" [label]="group.name">
+                                <mat-option *ngFor="let item of group.floor |stringFilterBy:floSearch:'value'" [value]="item.key" (click)="selectFloor(item.key)" >
+                                {{item.value}}
+                               </mat-option>
+                               </mat-optgroup>
+                            </mat-select>
+                            <!-- <mat-select formControlName="floor" multiple [(ngModel)]="report.floor">
+                                <mat-select-trigger *ngIf="report.floor && report.floor.length">
+                                    {{allfloor ? report.floor.length : report.floor.length -1 }} items selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="floorDropdown && floorDropdown.length" #selectedFloor
+                                    (click)="selectAllFloor()" [value]="0">All</mat-option>
+                                <mat-optgroup *ngFor="let group of floorDropdown" [label]="group.name">
+                                    <mat-option *ngFor="let item of group.floor" [value]="item.key"
+                                        (click)="selectFloor(item.key)">
+                                        {{item.value}}
+                                    </mat-option>
+                                </mat-optgroup>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Sector dl -->
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>Sector</mat-label>
+                            <mat-select  [(ngModel)]="report.sector" formControlName="sector" [multiple]="true" #multiSelect required>
+                                <mat-select-trigger *ngIf="report.sector && report.sector.length">
+                                    {{allsector ? report.sector.length :report.sector.length - 1}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="secSearch" [(ngModel)]="secSearch" placeholderLabel="Sector" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="sectorDropdown && sectorDropdown.length" #selectedSector
+                                    (click)="selectAllSector()" [value]="0">All
+                                </mat-option>
+                                 <mat-optgroup *ngFor="let group of sectorDropdown" [label]="group.name">
+                                <mat-option *ngFor="let item of group.sector |stringFilterBy:secSearch:'name'" [value]="item._id" (click)="selectSector(item._id)" >
+                                {{item.name}}
+                               </mat-option>
+                               </mat-optgroup>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between form-row">
+                    <!-- User dl -->
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>User</mat-label>
+                            <mat-select  [(ngModel)]="report.user" formControlName="user" [multiple]="true" #multiSelect required>
+                                <mat-select-trigger *ngIf="report.user && report.user.length">
+                                    {{report.user.length}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="usrSearch" [(ngModel)]="usrSearch" placeholderLabel="Users" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngIf="userslist && userslist.length" #selectedUser
+                                    (click)="selectAllusers()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of userslist |stringFilterBy:usrSearch:'value'" [value]="filters.key" (click)="selectUser(selectedUser.viewValue,filters.key)" >
+                                {{filters.value| titlecase}}
+                               </mat-option>
+                            </mat-select>
+                            <!-- <mat-select placeholder="Users" formControlName="user" [(ngModel)]="report.user" multiple>
+
+                                <mat-select-trigger *ngIf="report.user && report.user.length">
+                                    {{report.user.length}} items selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="userslist && userslist.length" #selectedUser
+                                    (click)="selectAllusers()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of userslist" [value]="filters.key"
+                                    (click)="selectUser(selectedUser.viewValue,filters.key)">
+                                    {{filters.value| titlecase}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+
+                    <!-- resident status dl -->
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>Resident Status</mat-label>
+                            <mat-select  [(ngModel)]="report.residentStatus" formControlName="residentStatus" [multiple]="true" #multiSelect required>
+                                <mat-select-trigger *ngIf="report.residentStatus && report.residentStatus.length">
+                                    {{allstatus ? report.residentStatus.length : report.residentStatus.length - 1}}
+                                    items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="resSearch" [(ngModel)]="resSearch" placeholderLabel="Resident Status" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                               <mat-option *ngIf="statusData && statusData.length" #selectedStatus
+                                    (click)="selectAllstatus()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let item of statusData |stringFilterBy:resSearch:'label'" [value]="item.value" (click)="selectStatus(selectedStatus.viewValue,item.value)" >
+                                {{item.label}}
+                               </mat-option>
+                            </mat-select>
+                           <!--  <mat-select placeholder="Resident Status" formControlName="residentStatus"
+                                [(ngModel)]="report.residentStatus" multiple>
+                                <mat-select-trigger *ngIf="report.residentStatus && report.residentStatus.length">
+                                    {{allstatus ? report.residentStatus.length : report.residentStatus.length - 1}}
+                                    items selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="statusData && statusData.length" #selectedStatus
+                                    (click)="selectAllstatus()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let item of statusData" [value]="item.value"
+                                    (click)="selectStatus(selectedStatus.viewValue,item.value)">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+
+
+                    </div>
+                
+                </div>
+                <div class="d-flex justify-content-between form-row">
+                    <!-- care level dl -->
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>Care Level</mat-label>
+                            <mat-select  [(ngModel)]="report.residentLevel" formControlName="residentLevel" [multiple]="true" #multiSelect required>
+                                 <mat-select-trigger *ngIf="report.residentLevel && report.residentLevel.length">
+                                    {{alllevel ? report.residentLevel.length : report.residentLevel.length -1 }} items
+                                    selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="carSearch" [(ngModel)]="carSearch" placeholderLabel="Care Level" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                               <mat-option *ngIf="carelevelData && carelevelData.length" #selectedLevel
+                                    (click)="selectAllLevel()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let item of carelevelData |stringFilterBy:resSearch:'label'" [value]="item.value" (click)="selectLevel(selectedLevel.viewValue,item.value)" >
+                                {{item.label}}
+                               </mat-option>
+                            </mat-select>
+                            <!-- <mat-select placeholder="Care Level" formControlName="residentLevel"
+                                [(ngModel)]="report.residentLevel" multiple>
+                                <mat-select-trigger *ngIf="report.residentLevel && report.residentLevel.length">
+                                    {{alllevel ? report.residentLevel.length : report.residentLevel.length -1 }} items
+                                    selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="carelevelData && carelevelData.length" #selectedLevel
+                                    (click)="selectAllLevel()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let item of carelevelData" [value]="item.value"
+                                    (click)="selectLevel(selectedLevel.viewValue,item.value)">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+
+                    <!-- residents dl -->
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>Residents</mat-label>
+                            <mat-select  [(ngModel)]="report.resident" formControlName="resident" [multiple]="true" #multiSelect required>
+                                 <mat-select-trigger *ngIf="report.resident && report.resident.length">
+                                    {{allresident ? report.resident.length : report.resident.length - 1}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="rSearch" [(ngModel)]="rSearch" placeholderLabel="Residents" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                               <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                                    (click)="selectAllresidents()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of residentslist |stringFilterBy:rSearch:'value'" [value]="filters.key" (click)="selectResident(selectedResident.viewValue,filters.key)" >
+                                {{filters.value | titlecase}}
+                               </mat-option>
+                            </mat-select>
+                            <!-- <mat-select placeholder="Residents" formControlName="resident" [(ngModel)]="report.resident"
+                                multiple>
+                                <mat-select-trigger *ngIf="report.resident && report.resident.length">
+                                    {{allresident ? report.resident.length : report.resident.length - 1}} items selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="residentslist && residentslist.length" #selectedResident
+                                    (click)="selectAllresidents()" [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of residentslist" [value]="filters.key"
+                                    (click)="selectResident(selectedResident.viewValue,filters.key)">
+                                    {{filters.value | titlecase}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+                    
+                </div>
+
+                <div class="d-flex justify-content-between form-row">
+                    <!-- cares dl -->
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>Cares</mat-label>
+                            <mat-select  [(ngModel)]="report.care" formControlName="care" [multiple]="true" #multiSelect>
+                                <mat-select-trigger *ngIf="report.care && report.care.length">
+                                    {{ allCares ? report.care.length-1 : report.care.length}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="cSearch" [(ngModel)]="cSearch" placeholderLabel="Cares" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                               <mat-option *ngIf="carelist && carelist.length" #selectedCare (click)="selectAllcares()"
+                                    [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of carelist |stringFilterBy:cSearch:'value'" [value]="filters.key" (click)="selectCare(selectedCare.viewValue,filters.value)" >
+                                {{filters.value}}
+                               </mat-option>
+                            </mat-select>
+                            <!-- <mat-select placeholder="Cares" formControlName="care" [(ngModel)]="report.care" multiple>
+                                <mat-select-trigger *ngIf="report.care && report.care.length">
+                                    {{ allCares ? report.care.length-1 : report.care.length}} items selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="carelist && carelist.length" #selectedCare (click)="selectAllcares()"
+                                    [value]="0">All
+                                </mat-option>
+                                <mat-option *ngFor="let filters of carelist" [value]="filters.key"
+                                    (click)="selectCare(selectedCare.viewValue,filters.value)">
+                                    {{filters.value}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+
+                    <!-- outcomes dl -->
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                             <mat-label>Outcomes</mat-label>
+                            <mat-select  [(ngModel)]="report.outcome" formControlName="outcome" [multiple]="true" #multiSelect>
+                                <mat-select-trigger *ngIf="report.outcome && report.outcome.length">
+                                    {{alloutcome ? report.outcome.length : report.outcome.length - 1}} items selected
+                                </mat-select-trigger>
+                                <ngx-mat-select-search formControlName="oSearch" [(ngModel)]="oSearch" placeholderLabel="Outcomes" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                               <mat-option *ngIf="outcomes && outcomes.length" #selectedOutcome
+                                    (click)="selectAlloutcomes()" [value]="0">All</mat-option>
+                                <mat-option *ngFor="let filters of outcomes |stringFilterBy:oSearch:'value'" [value]="filters.key" (click)="selectOutcome(selectedOutcome.viewValue,filters.key)" >
+                                {{filters.value}}
+                               </mat-option>
+                            </mat-select>
+                            <!-- <mat-select placeholder="Outcomes" formControlName="outcome" [(ngModel)]="report.outcome"
+                                multiple>
+                                <mat-select-trigger *ngIf="report.outcome && report.outcome.length">
+                                    {{alloutcome ? report.outcome.length : report.outcome.length - 1}} items selected
+                                </mat-select-trigger>
+                                <mat-option *ngIf="outcomes && outcomes.length" #selectedOutcome
+                                    (click)="selectAlloutcomes()" [value]="0">All</mat-option>
+                                <mat-option *ngFor="let filters of outcomes" [value]="filters.key"
+                                    (click)="selectOutcome(selectedOutcome.viewValue,filters.key)">
+                                    {{filters.value}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+
+                    </div>
+
+                </div>
+
+                <!-- <div class="d-flex justify-content-between mt-30">
+                    <button mat-flat-button class="mr-10" color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+                    <div>
+                        <button mat-flat-button color="primary" class="mr-10 btn_main_done"
+                            (click)="reportsSave(report,reportForm.valid,true)">Save
+                            &
+                            View
+                        </button>
+                        <button mat-flat-button color="primary"
+                            (click)="reportsSave(report,reportForm.valid,false)" class="btn_main_done">Run</button>
+                    </div>
+                </div> -->
+
+                <div class="d-flex justify-content-between btn_report_pop">
+                    <button mat-flat-button class="mr-10" color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+                    <div>
+                        <!-- <button mat-flat-button color="primary" class="mr-10 btn_main_done"
+                            (click)="reportsSave(report,reportForm.valid,true)">Save
+                            &
+                            View</button> -->
+                        <button mat-flat-button color="primary"
+                            (click)="reportsSave(report,reportForm.valid,false)" class="btn_main_done">Run</button>
+                    </div>
+                </div>
+
+                
+            </form>
+        </mat-card-content>
+    </ng-container>
+</mat-card>

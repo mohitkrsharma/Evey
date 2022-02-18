@@ -1,0 +1,552 @@
+<form #physicianForm=ngForm autocomplete="off">
+
+  <h3 mat-dialog-title>{{isEdit?'Edit Physician':'Add Physician'}}</h3>
+
+  <div class="d-flex justify-content-between form-row nfc_label">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <input matInput placeholder="First Name" name="first_name" [(ngModel)]="physician.first_name"
+          (keypress)="checkAlpha($event)" required onPaste="return false">
+      </mat-form-field>
+    </div>
+    <div class="w-100 pl-15">
+      <mat-form-field class="w-100">
+        <input matInput placeholder="Last Name" name="last_name" [(ngModel)]="physician.last_name"
+          (keypress)="checkAlpha($event)" required onPaste="return false">
+      </mat-form-field>
+    </div>
+  </div>
+
+
+
+
+  <!-- title medical profession -->
+  <div class="d-flex justify-content-between form-row mt-24">
+
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <input matInput placeholder="Practice Name" name="practice_name" [(ngModel)]="physician.practice_name"
+          (keypress)="checkAlpha($event)" onPaste="return false">
+      </mat-form-field>
+    </div>
+
+    <div class="w-100 pl-15">
+      <mat-form-field class="w-100">
+        <mat-label>Medical Profession</mat-label>
+        <mat-select class="medical__popup" #medical_profession_type="ngModel"
+          [(ngModel)]="physician.medical_profession_type" name="medical_profession_type" required>
+          <ngx-mat-select-search [(ngModel)]="professionSearch" placeholderLabel="Select Medical Profession"
+            noEntriesFoundLabel="Not Found" name="search">
+          </ngx-mat-select-search>
+          <mat-option *ngFor="let item of sortedmedical_profession() |stringFilterBy:professionSearch:'name'"
+            [value]="item.name">
+            {{item.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- //multiple phone numbers  -->
+  <!-- <div class="d-flex justify-content-between form-row mt-24"
+			*ngFor="let item of physician.phone_numbers;let i = index">
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+						<ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Phone"
+							noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+						<mat-option *ngFor="let i of type_of_contact |stringFilterBy:PhoneNumberTypeSearch:'name'"
+							[value]="i.name">
+							{{i.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+			<div class="d-flex w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>{{item.name}} contact</mat-label>
+					<input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+						[(ngModel)]="item.value" maxlength="14" mask="(000) 000-0000" [required]=true
+						[checkDuplicatefield]="[physician.phone_numbers,i]">
+				</mat-form-field>
+				<mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+					class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+					mat-raised-button="" role="img" (click)="addPhysicianPhone(physicianForm)">
+					add_circle
+				</mat-icon>
+				<mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+					class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removePhysicianField(i)">remove_circle
+				</mat-icon>
+			</div>
+		</div> -->
+  <!-- National Provider ID medical profession -->
+  <div class="d-flex justify-content-between form-row mt-24">
+
+    <!-- <div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<input matInput placeholder="Practice Name" name="practice_name"
+						[(ngModel)]="physician.practice_name" (keypress)="checkAlpha($event)" required
+						onPaste="return false">
+				</mat-form-field>
+			</div> -->
+    <!-- <div class="helper-div w-100"> -->
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100 pt-5">
+        <mat-label>National Provider ID</mat-label>
+        <input matInput placeholder="National Provider ID" name="national_provider_id" #national_provider_id="ngModel"
+          [(ngModel)]="physician.national_provider_id" required>
+      </mat-form-field>
+    </div>
+
+    <div class="w-100 pl-15">
+      <mat-form-field class="w-100">
+        <mat-label>Title</mat-label>
+        <mat-select class="medical__popup" #title="ngModel" [(ngModel)]="physician.title" name="title" required>
+          <ngx-mat-select-search [(ngModel)]="titleSearch" placeholderLabel="Select title"
+            noEntriesFoundLabel="Not Found" name="search">
+          </ngx-mat-select-search>
+          <mat-option *ngFor="let item of titlesList |stringFilterBy:titleSearch:'name'" [value]="item.name">
+            {{item.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- </div> -->
+  </div>
+
+  <!-- //multiple phone numbers  -->
+  <div class="d-flex justify-content-between form-row mt-24" *ngFor="let item of phoneArr;let i = index">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+          <ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Phone"
+            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+          <mat-option *ngFor="let i of type_of_contact |stringFilterBy:PhoneNumberTypeSearch:'name'" [value]="i.name">
+            {{i.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="helper-div w-100">
+      <div class="d-flex w-100 pl-15">
+        <mat-form-field class="w-100">
+          <mat-label>{{item.name}} contact</mat-label>
+          <input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+            [(ngModel)]="item.value" maxlength="14" [checkDuplicatefield]="[physician.phone_numbers,i]"
+            mask="(000) 000-0000" *ngIf="item.name!=='Pager'">
+          <!-- input box for pager -->
+          <input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+            [(ngModel)]="item.value" maxlength="14" [checkDuplicatefield]="[physician.phone_numbers,i]"
+            *ngIf="item.name==='Pager'">
+
+        </mat-form-field>
+      </div>
+      <div class="act add-mate-icon pl-15">
+        <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+          class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+          mat-raised-button="" role="img" (click)="addPhysicianPhone(physicianForm, item)">
+          add_circle
+        </mat-icon>
+      </div>
+    </div>
+
+    <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+					class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+					mat-raised-button="" role="img" (click)="removeAddedPhoneField(i)">remove_circle
+				</mat-icon> -->
+
+  </div>
+
+  <div class="d-flex justify-content-between form-row mt-24" *ngFor="let item of physician.phone_numbers;let i = index">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+          <ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Phone"
+            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+          <mat-option *ngFor="let i of type_of_contact |stringFilterBy:PhoneNumberTypeSearch:'name'" [value]="i.name">
+            {{i.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="d-flex w-100 pl-15">
+      <mat-form-field class="w-100">
+        <mat-label>{{item.name}} contact</mat-label>
+        <input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+          [(ngModel)]="item.value" maxlength="14" mask="(000) 000-0000" [required]=true
+          [checkDuplicatefield]="[physician.phone_numbers,i]">
+      </mat-form-field>
+
+      <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+					class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+					mat-raised-button="" role="img" (click)="addPhysicianPhone(physicianForm, item)">
+					add_circle
+				</mat-icon> -->
+
+    </div>
+    <div class="act pl-15">
+      <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+        class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+        mat-raised-button="" role="img" (click)="removePhysicianField(i)">remove_circle
+      </mat-icon>
+    </div>
+  </div>
+
+
+
+  <!-- <div class="d-flex-column justify-content-between form-row mt-10">
+				<div class="d-flex justify-content-between form-row mt-10">
+					<div class="w-100 pr-15 mt-10">
+						<mat-label>Mobile</mat-label>
+					</div>
+					<div class="d-flex w-100 pl-15">
+						<mat-form-field class="w-100">
+							<input matInput placeholder="Mobile" name='physician_mobile' [(ngModel)]="physician.mobile"
+								maxlength="14" mask="(000) 000-0000" required>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between form-row mt-10">
+					<div class="w-100 pr-15 mt-10"
+						[ngStyle]="home_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-label [ngStyle]="home_physician==true?{'display':'block'}:{'display':'none'}">Home
+						</mat-label>
+					</div>
+					<div class="d-flex w-100 pl-15"
+						[ngStyle]="home_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-form-field class="w-100"
+							[ngStyle]="home_physician==true?{'display':'block'}:{'display':'none'}">
+							<input matInput placeholder="Home" name='physician_home' [(ngModel)]="physician.home"
+								maxlength="14" mask="(000) 000-0000">
+						</mat-form-field>
+						<mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+							[ngStyle]="home_physician==true?{'display':'block'}:{'display':'none'}"
+							class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+							mat-raised-button="" role="img" (click)="removePhysicianPhone('Home')">remove_circle
+						</mat-icon>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between form-row mt-10">
+					<div class="w-100 pr-15 mt-10"
+						[ngStyle]="office_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-label [ngStyle]="office_physician==true?{'display':'block'}:{'display':'none'}">Office
+						</mat-label>
+					</div>
+					<div class="d-flex w-100 pl-15"
+						[ngStyle]="office_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-form-field class="w-100"
+							[ngStyle]="office_physician==true?{'display':'block'}:{'display':'none'}">
+							<input matInput placeholder="Office" name='physician_office' [(ngModel)]="physician.office"
+								maxlength="14" mask="(000) 000-0000">
+						</mat-form-field>
+						<mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+							[ngStyle]="office_physician==true?{'display':'block'}:{'display':'none'}"
+							class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+							mat-raised-button="" role="img" (click)="removePhysicianPhone('Office')">remove_circle
+						</mat-icon>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between form-row mt-10">
+					<div class="w-100 pr-15 mt-10"
+						[ngStyle]="fax_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-label [ngStyle]="fax_physician==true?{'display':'block'}:{'display':'none'}">Fax
+						</mat-label>
+					</div>
+					<div class="d-flex w-100 pl-15"
+						[ngStyle]="fax_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-form-field class="w-100"
+							[ngStyle]="fax_physician==true?{'display':'block'}:{'display':'none'}">
+							<input matInput placeholder="Fax" name='fax' [(ngModel)]="physician.fax" maxlength="14"
+								mask="(000) 000-0000">
+						</mat-form-field>
+						<mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+							[ngStyle]="fax_physician==true?{'display':'block'}:{'display':'none'}"
+							class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+							mat-raised-button="" role="img" (click)="removePhysicianPhone('Fax')">remove_circle
+						</mat-icon>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between form-row mt-10">
+					<div class="w-100 pr-15 mt-10"
+						[ngStyle]="other_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-label [ngStyle]="other_physician==true?{'display':'block'}:{'display':'none'}">Other
+						</mat-label>
+					</div>
+					<div class="d-flex w-100 pl-15"
+						[ngStyle]="other_physician==true?{'display':'block'}:{'display':'none'}">
+						<mat-form-field class="w-100"
+							[ngStyle]="other_physician==true?{'display':'block'}:{'display':'none'}">
+							<input matInput placeholder="Other" name='physician_other' [(ngModel)]="physician.other"
+								maxlength="14" mask="(000) 000-0000">
+						</mat-form-field>
+						<mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+							[ngStyle]="other_physician==true?{'display':'block'}:{'display':'none'}"
+							class="w-100 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+							mat-raised-button="" role="img" (click)="removePhysicianPhone('Other')">remove_circle
+						</mat-icon>
+					</div>
+				</div>
+			</div>
+
+			<div class=" d-flex form-row mt-10 ">
+				<div class="pr-15">
+					<mat-label>Add Phone</mat-label>
+				</div>
+				<div>
+					<mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor" role="img"
+						aria-hidden="true" [matMenuTriggerFor]="menuPhysician">add_circle </mat-icon>
+				</div>
+			</div>
+			<mat-menu #menuPhysician="matMenu">
+				<button (click)="changePhysicianPhone(item.name)" *ngFor="let item of contact_type_physician"
+					mat-menu-item>
+					{{item.name}}
+				</button>
+			</mat-menu> -->
+
+  <!-- National Provider ID -->
+  <!-- <div class="d-flex justify-content-between form-row mt-24">
+			<div class="w-50 pr-15">
+				<mat-form-field class="w-100">
+					<mat-label>National Provider ID</mat-label>
+					<input matInput placeholder="National Provider ID" name="national_provider_id" #national_provider_id="ngModel"
+						[(ngModel)]="physician.national_provider_id" required>
+				</mat-form-field>
+			</div>
+		</div> -->
+
+  <!-- address1 -->
+  <div class="d-flex justify-content-between form-row mt-24">
+    <div class="w-100">
+      <mat-form-field class="w-100">
+        <input matInput placeholder="Address 1" name="address1" [(ngModel)]="physician.address1" required>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- address2 -->
+  <div class="d-flex justify-content-between form-row mt-24">
+    <div class="w-100">
+      <mat-form-field class="w-100">
+        <input matInput placeholder="Address 2" name="address2" [(ngModel)]="physician.address2">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- city state -->
+  <div class="d-flex justify-content-between form-row mt-24">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <mat-label>
+          State</mat-label>
+        <mat-select class="medical__popup" #state="ngModel" [(ngModel)]="physician.state" name="state"
+          (selectionChange)="changeState($event.value)" required>
+          <ngx-mat-select-search [(ngModel)]="staSearch" placeholderLabel="Select State" noEntriesFoundLabel="Not Found"
+            name="search"></ngx-mat-select-search>
+          <mat-option *ngFor="let item of statelist |stringFilterBy:staSearch:'name'" [value]="item.name">
+            {{item.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="w-100 pl-15">
+      <mat-form-field class="w-100">
+        <mat-label>
+          City</mat-label>
+        <mat-select #city="ngModel" [(ngModel)]="physician.city" name="city" required>
+          <ngx-mat-select-search [(ngModel)]="citSearch" placeholderLabel="Select City" noEntriesFoundLabel="Not Found"
+            name="search"></ngx-mat-select-search>
+          <mat-option *ngFor="let item of Citielist |stringFilterBy:citSearch:'name'" [value]="item.name">
+            {{item.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- zip medical_profession_type-->
+  <div class="d-flex justify-content-between form-row mt-24">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <input matInput type="text" placeholder="Zip" name="zip" [(ngModel)]="physician.zip" mask="00000" maxlength="5"
+          minlength="5" required onPaste="return false">
+      </mat-form-field>
+    </div>
+
+    <!-- <div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>Medical Profession</mat-label>
+					<mat-select class="medical__popup" #medical_profession_type="ngModel"
+						[(ngModel)]="physician.medical_profession_type" name="medical_profession_type" required>
+						<ngx-mat-select-search [(ngModel)]="professionSearch"
+							placeholderLabel="Select Medical Profession" noEntriesFoundLabel="Not Found" name="search">
+						</ngx-mat-select-search>
+						<mat-option *ngFor="let item of medical_profession |stringFilterBy:professionSearch:'name'"
+							[value]="item.name">
+							{{item.name}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div> -->
+
+  </div>
+
+  <!-- practice_name -->
+  <!-- <div class="d-flex justify-content-between form-row mt-24">
+			<div class="w-50 pr-15">
+				<mat-form-field class="w-100">
+					<input matInput placeholder="Practice Name" name="practice_name"
+						[(ngModel)]="physician.practice_name" (keypress)="checkAlpha($event)" onPaste="return false">
+				</mat-form-field>
+			</div>
+		</div> -->
+
+  <div class="d-flex justify-content-between  align-items-center form-row mt-24">
+    <div class="w-100 note_textarea">
+      <!-- <mat-form-field class="w-100">
+					<textarea matInput placeholder="Enter notes" name="notes" [(ngModel)]="physician.notes"></textarea>
+				</mat-form-field> -->
+
+      <p-editor [(ngModel)]="physician.notes" placeholder="Enter notes" name="note" [style]="{'height':'120px'}">
+        <p-header>
+          <span class="ql-formats">
+            <button class="ql-bold" aria-label="Bold"></button>
+            <button class="ql-italic" aria-label="Italic"></button>
+            <button class="ql-underline" aria-label="Underline"></button>
+          </span>
+        </p-header>
+      </p-editor>
+
+    </div>
+
+  </div>
+
+  <div class="d-flex justify-content-between  align-items-center form-row mt-20 mb-20">
+    <div class="w-100 text-right">
+      <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+					class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+					mat-raised-button="" role="img" (click)="openOtherDeatils = !openOtherDeatils">
+					add_circle
+				</mat-icon>  -->
+      <button mat-stroked-button class="ml-3" (click)="openOtherDeatils = !openOtherDeatils"
+        class="btn_Secondary">More</button>
+      <!-- <span class="more-btn basecolor cursor" (click)="openOtherDeatils = !openOtherDeatils"> More </span> -->
+      <!-- <span class="more-btn basecolor cursor" (click)="openOtherDeatils = !openOtherDeatils"> More </span> -->
+    </div>
+  </div>
+
+  <ng-container *ngIf="openOtherDeatils">
+
+    <!-- email website address-->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <input matInput type="text" placeholder="Website Address" name="website_address" #website_address="ngModel"
+            [(ngModel)]="physician.website_address" onPaste="return false">
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="  example@domain.com" name="email" [(ngModel)]="physician.email"
+            pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$" #email="ngModel"
+            (keyup)="physician.email = $event.target?.value?.toLowerCase()">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- medicare_provider_number medicaid_provider_number-->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <mat-label>Medicare Provider Number</mat-label>
+          <input matInput placeholder="  (989) 989-9898" name="medicare_provider_number"
+            #medicare_provider_number="ngModel" [(ngModel)]="physician.medicare_provider_number" maxlength="14"
+            mask="(000) 000-0000">
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+          <mat-label>Medicaid Provider Number</mat-label>
+          <input matInput placeholder="  (989) 989-9898" name="medicaid_provider_number"
+            #medicaid_provider_number="ngModel" [(ngModel)]="physician.medicaid_provider_number" maxlength="14"
+            mask="(000) 000-0000">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- registration_code group_national_provider_id-->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <mat-label>Registration Code</mat-label>
+          <input matInput placeholder="Registration Code" name="registration_code" #registration_code="ngModel"
+            [(ngModel)]="physician.registration_code">
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+          <mat-label>Group National Provider ID</mat-label>
+          <input matInput placeholder="Group National Provider ID" name="group_national_provider_id"
+            #group_national_provider_id="ngModel" [(ngModel)]="physician.group_national_provider_id">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- registration_code taxonomy_code-->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <mat-label>State Licence Number</mat-label>
+          <input matInput placeholder="State Licence Number" name="state_license_number" #state_license_number="ngModel"
+            [(ngModel)]="physician.state_license_number">
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+          <mat-label>DEA Number</mat-label>
+          <input matInput placeholder="DEA Number" name="dea_number" [(ngModel)]="physician.dea_number"
+            #dea_number="ngModel">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- state_license_number isCredentialeChecked isSanctionedChecked-->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <mat-label>Taxonomy Code</mat-label>
+          <input matInput placeholder="Taxonomy Code" name="taxonomy_code" #taxonomy_code="ngModel"
+            [(ngModel)]="physician.taxonomy_code">
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <div class="d-flex align-center w-100 justify-content-end pr-15">
+          Credentialed
+          <mat-slide-toggle color="primary" class="pl-15 pr-15" [(ngModel)]="credentialToggle" name="isactive"
+            (change)="onChangeActive($event)">
+          </mat-slide-toggle>
+          Sanctioned
+        </div>
+        <!-- <div class="w-100 credential-checkbox">
+						<input type="radio" name="credential" [(ngModel)]="physician.credential"
+							#isCredentialeChecked="ngModel" value="Credentialed"> Credentialed
+						<input type="radio" name="credential" [(ngModel)]="physician.credential"
+							#isSanctionedChecked="ngModel" value="Sanctioned"> Sanctioned
+					</div> -->
+      </div>
+    </div>
+
+  </ng-container>
+
+
+  <div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+    <button mat-button color="basic" (click)="cancelPhysician(physicianForm)"
+      class="mr-10 cancel_btn p-0">Cancel</button>
+    <button mat-button color="primary" class="done_btn p-0" cdkFocusInitial
+      (click)="addPhysician(physicianForm,physician)">Done</button>
+  </div>
+
+</form>

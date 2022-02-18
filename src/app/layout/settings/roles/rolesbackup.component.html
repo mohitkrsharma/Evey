@@ -1,0 +1,1447 @@
+<mat-card>
+
+  <mat-card-header class="d-flex justify-content-between align-items-center">
+    <mat-card-title>Roles & Permission</mat-card-title>
+    <div class="d-flex justify-content-between align-center">
+      <!-- <div class="w-30 pr-15">
+                 <mat-form-field class="w-100">
+                    <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                        id="searchInput" placeholder="Search by Role" />
+                    <!-- <input matInput placeholder="Search"> --
+                </mat-form-field> 
+            </div>-->
+      <div class="w-70 pl-15">
+        <div class="example-button-row text-right w-100">
+          <button mat-stroked-button color="primary" class="ml-3 btn_Secondary" *ngIf="!editRole"
+            (click)="editRole = !editRole">Edit</button>
+          <button mat-stroked-button color="primary" class="ml-3 btn_Secondary" *ngIf="editRole" (click)="addRole()">Add
+            New Role</button>
+        </div>
+      </div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="view-height-center">
+    <mat-form-field class="w-20">
+      <mat-select (selectionChange)="changeRole($event)" name="roleType" [(value)]="roleType">
+        <ngx-mat-select-search [(ngModel)]="rolSearch" placeholderLabel="Select Role" noEntriesFoundLabel="Not Found"
+          name="search"></ngx-mat-select-search>
+        <mat-option *ngFor="let item of roleData |stringFilterBy:rolSearch:'role_name'" [value]="item._id">
+          {{item.role_name}}
+        </mat-option>
+      </mat-select>
+      <!--  <mat-select name="roleType"[(value)]="roleType"   (selectionChange)="changeRole($event)">
+               <mat-option *ngFor="let item of roleData" [value]="item._id" >
+                  {{item.role_name}}
+                </mat-option>
+            </mat-select> -->
+    </mat-form-field>
+    <!-- {{roleEdit |json}} -->
+    <h3 class="app_detail">App Permission</h3>
+    <ng-container *ngIf="roleData.length > 0 && roleEdit.length>0">
+      <ng-template ngFor let-item [ngForOf]="roleData" let-i="index">
+        <!-- <h3>{{item?.role_name}}</h3> -->
+        <ng-container *ngIf="item._id == roleType">
+          <div class="table-responsive mt-20 listing">
+            <table cellspacing="0" class="rolestable" style="width:100%;" border="1">
+              <thead>
+                <tr class="headd">
+                  <th rowspan="2" width="10%">Position</th>
+                  <th colspan="1">Access</th>
+                  <th colspan="4">App Notification</th>
+                  <th colspan="1">Email</th>
+
+                </tr>
+
+                <tr>
+
+                  <td>App</td>
+                  <td>Open Care</td>
+                  <td>Nofify Care</td>
+                  <td>Emergency</td>
+                  <td>Scheduled</td>
+                  <td>Email Notification</td>
+
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="positionsz.length > 0">
+                  <tr *ngFor="let role of positionsz; let positionIndex = index">
+                    <td>{{ role.position_name }}</td>
+
+                    <td>
+                      <ng-container *ngIf="!editRole">
+                        <mat-icon class="mat-icon-rtl-mirror" color="accent" *ngIf="roleEdit[positionIndex].app">
+                          check_circle</mat-icon>
+                        <mat-icon class="mat-icon-rtl-mirror" color="warn" *ngIf="!roleEdit[positionIndex].app">cancel
+                        </mat-icon>
+                      </ng-container>
+                      <ng-container *ngIf="editRole">
+                        <mat-checkbox color="primary" name="app_{{i}}_{{positionIndex}}"
+                          [(ngModel)]="roleEdit[positionIndex].app" [checked]="roleEdit[positionIndex].app"
+                          (change)="onChangeApp(role._id);selectAllModule(positionIndex,'app',$event)"></mat-checkbox>
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].app">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].app_rule.notification.open_care">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].app_rule.notification.open_care">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="open_care_{{i}}_{{positionIndex}}"
+                            [(ngModel)]="roleEdit[positionIndex].app_rule.notification.open_care"
+                            [checked]="roleEdit[positionIndex].app_rule.notification.open_care"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].app">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].app">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].app_rule.notification.notify_care">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].app_rule.notification.notify_care">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="notify_care_{{i}}_{{positionIndex}}"
+                            [(ngModel)]="roleEdit[positionIndex].app_rule.notification.notify_care"
+                            [checked]="roleEdit[positionIndex].app_rule.notification.notify_care"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].app">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].app">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].app_rule.notification.emergency">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].app_rule.notification.emergency">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="emergency_{{i}}_{{positionIndex}}"
+                            [(ngModel)]="roleEdit[positionIndex].app_rule.notification.emergency"
+                            [checked]="roleEdit[positionIndex].app_rule.notification.emergency"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].app">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].app">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].app_rule.notification.scheduled">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].app_rule.notification.scheduled">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="scheduled_{{i}}_{{positionIndex}}"
+                            [(ngModel)]="roleEdit[positionIndex].app_rule.notification.scheduled"
+                            [checked]="roleEdit[positionIndex].app_rule.notification.scheduled"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].app">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].app">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].app_rule.notification.email_notifications">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].app_rule.notification.email_notifications">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="email_notifications_{{i}}_{{positionIndex}}"
+                            [(ngModel)]="roleEdit[positionIndex].app_rule.notification.email_notifications"
+                            [checked]="roleEdit[positionIndex].app_rule.notification.email_notifications">
+                          </mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].app">
+                        NA
+                      </ng-container>
+                    </td>
+
+                    <!-- <td> 
+                                            <button mat-mini-fab color="primary" (click)="editRule(elements._id)">
+                                                <mat-icon >check_circle</mat-icon>
+                                            </button>
+                                        </td> -->
+
+
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+
+
+      </ng-template>
+    </ng-container>
+    <h3 class="app_detail">Web Permission</h3>
+    <ng-container *ngIf="roleData.length > 0 && roleEdit.length>0">
+      <ng-template ngFor let-item [ngForOf]="roleData" let-i="index">
+        <!-- <h3>{{item?.role_name}}</h3> -->
+        <ng-container *ngIf="item._id == roleType">
+          <div class="table-responsive mt-20 listing">
+            <table cellspacing="0" class="rolestable" style="width:100%;" border="1">
+
+              <thead>
+                <tr class="headd">
+                  <th colspan="4"></th>
+                  <th colspan="16">Reports</th>
+                  <th colspan="4">Scheduling</th>
+                  <th colspan="6">People</th>
+                  <th colspan="4">Tracking</th>
+                  <th colspan="18"></th>
+                </tr>
+                <tr class="headd">
+                  <th rowspan="2" width="10%">Position</th>
+                  <th colspan="1">Access</th>
+                  <th colspan="2">Announcement</th>
+
+
+
+                  <th colspan="2">Build Custom Report</th>
+                  <th colspan="2">Shift Performance Report</th>
+                  <th colspan="2">Care Within 24 Hours or Shift</th>
+                  <th colspan="2">Activity</th>
+                  <th colspan="2">Missed Level 1 Check-in Report by Shift</th>
+                  <th colspan="2">Room clean report</th>
+                  <th colspan="2">Vital report</th>
+                  <th colspan="2">Virus Care report</th>
+
+                  <th colspan="2">Schedule Care</th>
+                  <th colspan="2">Rule care</th>
+
+
+                  <th colspan="2">Users</th>
+                  <th colspan="2">Residents</th>
+                  <th colspan="1">Visitors</th>
+                  <th colspan="1">Technical Support</th>
+
+                  <th colspan="2">Beacons</th>
+                  <th colspan="2">NFC</th>
+
+                  <th colspan="2">Organization</th>
+                  <th colspan="2">Facility</th>
+                  <th colspan="2">Floors/Sectors</th>
+                  <th colspan="2">Zones</th>
+                  <th colspan="2">Cares</th>
+                  <th colspan="2">Create a Questionnaire</th>
+                  <th colspan="2">Symptoms</th>
+                  <th colspan="2">Diseases</th>
+                  <th colspan="2">Assets</th>
+                </tr>
+
+                <tr>
+                  <td>Web</td>
+                  <!-- Announcement -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Reports -->
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <td>View</td>
+                  <td>Export</td>
+
+
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <td>View</td>
+                  <td>Export</td>
+
+                  <!-- Scheduling -->
+                  <td>Add</td>
+                  <td>Delete</td>
+
+                  <td>Add</td>
+                  <td>Delete</td>
+
+                  <!-- Users -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Residents -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Visitors -->
+                  <!-- <td>Add</td> -->
+                  <td>View</td>
+                  <!-- Technical Support -->
+                  <td>Add</td>
+                  <!-- <td>View</td> -->
+                  <!-- Beacons -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- NFC -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Organization -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Facility -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Floors/Sectors -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Zones -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Cares -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Create a Questionnaire -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Symptoms -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Diseases -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                  <!-- Assets -->
+                  <td>Add</td>
+                  <td>Delete</td>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="positionsz.length > 0">
+                  <tr *ngFor="let role of positionsz; let positionIndex = index">
+                    <td>{{ role.position_name }}
+                      <!-- {{roleEdit[positionIndex].role_id}} {{roleEdit[positionIndex].position_id}} -->
+                    </td>
+                    <td>
+                      <ng-container *ngIf="!editRole">
+                        <mat-icon class="mat-icon-rtl-mirror" color="accent" *ngIf="roleEdit[positionIndex].web">
+                          check_circle</mat-icon>
+                        <mat-icon class="mat-icon-rtl-mirror" color="warn" *ngIf="!roleEdit[positionIndex].web">cancel
+                        </mat-icon>
+                      </ng-container>
+                      <ng-container *ngIf="editRole">
+                        <mat-checkbox color="primary" name="web_{{i}}_{{positionIndex}}"
+                          [(ngModel)]="roleEdit[positionIndex].web" [checked]="roleEdit[positionIndex].web"
+                          (change)="selectAllModule(positionIndex,'web',$event)"></mat-checkbox>
+                      </ng-container>
+                    </td>
+
+
+                    <!-- Announcement -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.announcement.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.announcement.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="announcement_add_{{i}}_{{positionIndex}}"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.announcement.add"
+                            [checked]="roleEdit[positionIndex].web_rule.announcement.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.announcement.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.announcement.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="announcement_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.announcement.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.announcement.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Build Custom Report -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.build_custom_report.view">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.build_custom_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="build_custom_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.build_custom_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.build_custom_report.view"
+                            (change)="changeModuleAction(positionIndex,'build_custom_report',$event)"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.build_custom_report.export">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.build_custom_report.export">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.build_custom_report.view"
+                            name="build_custom_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.build_custom_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.build_custom_report.export"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Shift Performance Report => -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.shift_performance_report.view">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.shift_performance_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="shift_performance_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.shift_performance_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.shift_performance_report.view"
+                            (change)="changeModuleAction(positionIndex,'shift_performance_report',$event)">
+                          </mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.shift_performance_report.export">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.shift_performance_report.export">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.shift_performance_report.view"
+                            name="shift_performance_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.shift_performance_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.shift_performance_report.export"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+
+                    <!-- Care Within 24 Hours or Shift -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.care_within_24_hours_report.view">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.care_within_24_hours_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="care_within_24_hours_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.care_within_24_hours_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.care_within_24_hours_report.view"
+                            (change)="changeModuleAction(positionIndex,'care_within_24_hours_report',$event)">
+                          </mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.care_within_24_hours_report.export">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.care_within_24_hours_report.export">cancel
+                          </mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.care_within_24_hours_report.view"
+                            name="care_within_24_hours_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.care_within_24_hours_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.care_within_24_hours_report.export">
+                          </mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Activity Report -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.activity_report.view">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.activity_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="activity_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.activity_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.activity_report.view"
+                            (change)="changeModuleAction(positionIndex,'activity_report',$event)"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.activity_report.export">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.activity_report.export">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.activity_report.view"
+                            name="activity_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.activity_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.activity_report.export"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Missed Level 1 Check-in Report by Shift -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.view">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.view">cancel
+                          </mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="missed_level_1_checkin_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.view"
+                            (change)="changeModuleAction(positionIndex,'missed_level_1_checkin_report',$event)">
+                          </mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.export">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.export">cancel
+                          </mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.view"
+                            name="missed_level_1_checkin_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.missed_level_1_checkin_report.export">
+                          </mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!--  Room clean report -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.room_clean_report.view">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.room_clean_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="room_clean_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.room_clean_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.room_clean_report.view"
+                            (change)="changeModuleAction(positionIndex,'room_clean_report',$event)"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.room_clean_report.export">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.room_clean_report.export">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.room_clean_report.view"
+                            name="room_clean_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.room_clean_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.room_clean_report.export"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!--   Vital report -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.vital_report.view">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.vital_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="vital_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.vital_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.vital_report.view"
+                            (change)="changeModuleAction(positionIndex,'vital_report',$event)"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.vital_report.export">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.vital_report.export">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" [disabled]="!roleEdit[positionIndex].web_rule.vital_report.view"
+                            name="vital_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.vital_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.vital_report.export"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!--    Virus Care report  -->
+
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.virus_care_report.view">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.virus_care_report.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="virus_care_report_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.virus_care_report.view"
+                            [checked]="roleEdit[positionIndex].web_rule.virus_care_report.view"
+                            (change)="changeModuleAction(positionIndex,'virus_care_report',$event)"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.virus_care_report.export">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.virus_care_report.export">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary"
+                            [disabled]="!roleEdit[positionIndex].web_rule.virus_care_report.view"
+                            name="virus_care_report_export"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.virus_care_report.export"
+                            [checked]="roleEdit[positionIndex].web_rule.virus_care_report.export"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Scheduling -->
+                    <!-- Schedule Care   -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.schedule_care.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.schedule_care.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="schedule_care_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.schedule_care.add"
+                            [checked]="roleEdit[positionIndex].web_rule.schedule_care.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.schedule_care.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.schedule_care.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="schedule_care_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.schedule_care.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.schedule_care.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Rule Care   -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.rule_care.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.rule_care.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="rule_care_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.rule_care.add"
+                            [checked]="roleEdit[positionIndex].web_rule.rule_care.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.rule_care.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.rule_care.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="rule_care_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.rule_care.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.rule_care.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- People -->
+                    <!-- Users -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.users.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.users.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="users_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.users.add"
+                            [checked]="roleEdit[positionIndex].web_rule.users.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.users.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.users.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="users_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.users.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.users.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Residents -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.residents.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.residents.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="residents_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.residents.add"
+                            [checked]="roleEdit[positionIndex].web_rule.residents.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.residents.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.residents.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="residents_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.residents.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.residents.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Visitors -->
+                    <!-- <td> 
+                                        <ng-container *ngIf="roleEdit[positionIndex].web" >
+                                            <ng-container *ngIf="!editRole" >
+                                                <mat-icon class="mat-icon-rtl-mirror" color="accent" *ngIf="roleEdit[positionIndex].web_rule.visitors.add" >check_circle</mat-icon>
+                                                <mat-icon class="mat-icon-rtl-mirror" color="warn" *ngIf="!roleEdit[positionIndex].web_rule.visitors.add" >cancel</mat-icon>
+                                            </ng-container>
+                                            <ng-container *ngIf="editRole" >
+                                                <mat-checkbox color="primary" name="visitors_add" [(ngModel)]="roleEdit[positionIndex].web_rule.visitors.add" [checked]="roleEdit[positionIndex].web_rule.visitors.add"  ></mat-checkbox> 
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container  *ngIf="!roleEdit[positionIndex].web">
+                                            NA
+                                        </ng-container>
+                                    </td> -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.visitors.view">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.visitors.view">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="visitors_view"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.visitors.view"
+                            [checked]="roleEdit[positionIndex].web_rule.visitors.view"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Technical Support -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.technical_support.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.technical_support.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="technical_support_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.technical_support.add"
+                            [checked]="roleEdit[positionIndex].web_rule.technical_support.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- <td> 
+                                        <ng-container *ngIf="roleEdit[positionIndex].web" >
+                                            <ng-container *ngIf="!editRole" >
+                                                <mat-icon class="mat-icon-rtl-mirror" color="accent" *ngIf="roleEdit[positionIndex].web_rule.technical_support.view" >check_circle</mat-icon>
+                                                <mat-icon class="mat-icon-rtl-mirror" color="warn" *ngIf="!roleEdit[positionIndex].web_rule.technical_support.view" >cancel</mat-icon>
+                                            </ng-container>
+                                            <ng-container *ngIf="editRole" >
+                                                <mat-checkbox color="primary" name="technical_support_view" [(ngModel)]="roleEdit[positionIndex].web_rule.technical_support.view" [checked]="roleEdit[positionIndex].web_rule.technical_support.view"  ></mat-checkbox> 
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container *ngIf="!roleEdit[positionIndex].web" >
+                                            NA
+                                        </ng-container>
+                                    </td> -->
+                    <!-- Beacons -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.beacons.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.beacons.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="beacons_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.beacons.add"
+                            [checked]="roleEdit[positionIndex].web_rule.beacons.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.beacons.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.beacons.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="beacons_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.beacons.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.beacons.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- NFC -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.nfc.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.nfc.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="nfc_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.nfc.add"
+                            [checked]="roleEdit[positionIndex].web_rule.nfc.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.nfc.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.nfc.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="nfc_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.nfc.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.nfc.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Organization -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.organization.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.organization.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="organization_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.organization.add"
+                            [checked]="roleEdit[positionIndex].web_rule.organization.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.organization.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.organization.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="organization_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.organization.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.organization.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Facility -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.facility.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.facility.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="facility_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.facility.add"
+                            [checked]="roleEdit[positionIndex].web_rule.facility.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.facility.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.facility.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="facility_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.facility.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.facility.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Floors/Sectors -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.floors_sectors.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.floors_sectors.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="floors_sectors_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.floors_sectors.add"
+                            [checked]="roleEdit[positionIndex].web_rule.floors_sectors.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.floors_sectors.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.floors_sectors.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="floors_sectors_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.floors_sectors.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.floors_sectors.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Zones -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.zones.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.zones.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="zones_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.zones.add"
+                            [checked]="roleEdit[positionIndex].web_rule.zones.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.zones.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.zones.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="zones_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.zones.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.zones.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Cares -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.cares.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.cares.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="cares_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.cares.add"
+                            [checked]="roleEdit[positionIndex].web_rule.cares.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.cares.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.cares.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="cares_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.cares.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.cares.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Create a Questionnaire -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.create_a_questionnaire.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.create_a_questionnaire.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="create_a_questionnaire_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.create_a_questionnaire.add"
+                            [checked]="roleEdit[positionIndex].web_rule.create_a_questionnaire.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.create_a_questionnaire.delete">check_circle
+                          </mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.create_a_questionnaire.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="create_a_questionnaire_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.create_a_questionnaire.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.create_a_questionnaire.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Symptoms -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.symptoms.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.symptoms.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="symptoms_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.symptoms.add"
+                            [checked]="roleEdit[positionIndex].web_rule.symptoms.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.symptoms.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.symptoms.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="symptoms_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.symptoms.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.symptoms.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Diseases -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.diseases.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.diseases.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="diseases_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.diseases.add"
+                            [checked]="roleEdit[positionIndex].web_rule.diseases.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.diseases.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.diseases.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="diseases_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.diseases.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.diseases.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <!-- Assets -->
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.assets.add">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.assets.add">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="assets_add"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.assets.add"
+                            [checked]="roleEdit[positionIndex].web_rule.assets.add"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="roleEdit[positionIndex].web">
+                        <ng-container *ngIf="!editRole">
+                          <mat-icon class="mat-icon-rtl-mirror" color="accent"
+                            *ngIf="roleEdit[positionIndex].web_rule.assets.delete">check_circle</mat-icon>
+                          <mat-icon class="mat-icon-rtl-mirror" color="warn"
+                            *ngIf="!roleEdit[positionIndex].web_rule.assets.delete">cancel</mat-icon>
+                        </ng-container>
+                        <ng-container *ngIf="editRole">
+                          <mat-checkbox color="primary" name="assets_delete"
+                            [(ngModel)]="roleEdit[positionIndex].web_rule.assets.delete"
+                            [checked]="roleEdit[positionIndex].web_rule.assets.delete"></mat-checkbox>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="!roleEdit[positionIndex].web">
+                        NA
+                      </ng-container>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+
+
+      </ng-template>
+    </ng-container>
+
+    <h3 class="app_detail">Role wise Permission</h3>
+    <ng-container>
+        <ng-template ngFor let-item [ngForOf]="roleData" let-i="index">
+            <ng-container *ngIf="item._id == roleType">
+                <div class="table-responsive mt-20 listing">
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 rolestable"  cellspacing="0" style="width:100%; border:1">
+                        <ng-container matColumnDef="positionsz">
+                            <th mat-header-cell *matHeaderCellDef> </th>
+                            <td mat-cell *matCellDef=""> </td>
+                          </ng-container>
+                    </table>
+                </div>
+            </ng-container>
+            <ng-container matColumnDef="header-row-first-group">
+              <th mat-header-cell *matHeaderCellDef 
+                  [style.text-align]="center"
+                  [attr.colspan]="2"> 
+                First group 
+              </th>
+            </ng-container>
+
+            <ng-container matColumnDef="header-row-second-group">
+              <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"> Second group </th>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['header-row-first-group', 'header-row-second-group']"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </ng-template>
+    </ng-container>
+  </mat-card-content>
+  <mat-card-actions *ngIf="editRole">
+    <div class="example-button-row text-right w-100 custom_flex">
+      <button mat-stroked-button class="ml-3 btn_main_cancle" (click)="editRole = !editRole">Cancel</button>
+      <button mat-stroked-button color="primary" class="ml-3 btn_main_done" (click)="saveRole()">Done</button>
+    </div>
+  </mat-card-actions>
+
+
+  <ng-template #roleDialog>
+    <form #f="ngForm">
+      <div class="pop_heading">
+        <h3><span *ngIf="!editId">Add</span><span *ngIf="editId">Edit</span> Role</h3>
+        <span class="">
+          <mat-icon (click)="closeRoleDialog()">close</mat-icon>
+        </span>
+      </div>
+      <div class="newrole">
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <input matInput type="text" placeholder="Role" name="role_name" [(ngModel)]="role.role_name" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-checkbox name="web" [(ngModel)]="role.web">Web Access</mat-checkbox>
+            <br>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-checkbox name="app" [(ngModel)]="role.app">App Access</mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <div class="thebutton">
+        <button mat-button color="basic" (click)="closeRoleDialog()" class="btn_window_cancle">Cancel</button>
+        <button mat-button color="primary" (click)="saveRoleDialog(f)" class="btn_window_done">Save</button>
+      </div>
+    </form>
+  </ng-template>
+
+
+</mat-card>

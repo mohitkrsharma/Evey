@@ -1,0 +1,96 @@
+<mat-card>
+
+  <mat-card-header class="d-flex justify-content-between align-center">
+    <mat-card-title>{{ paramId ?'Edit NFC':'Add NFC'}}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <form #nfcForm="ngForm">
+
+      <div class="d-flex justify-content-between form-row mt-10">
+        <div class="w-30 pr-15">
+        <mat-form-field class="w-100">
+        <mat-label>
+              Nfc Type </mat-label>
+         <mat-select name="nfctype" [(ngModel)]="_formVal.nfctype" required>
+              <mat-option value="zone">Zone</mat-option>
+              <mat-option value="res">Resident</mat-option>
+            </mat-select>
+        </mat-form-field>
+        </div>
+        <div class="w-70 pr-15">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Ntag Id" name="ntagid" [(ngModel)]="_formVal.ntagid"
+              (keypress)="checkAlphanum($event)" required>
+          </mat-form-field>
+        </div>
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <mat-label>
+              Floor </mat-label>
+            <mat-select name="floor" [(ngModel)]="_formVal.floor"
+              (selectionChange)="changeFloor(_formVal.floor,'nochange')" required>
+              <mat-option *ngFor="let item of floorlist" [value]="item.value">
+                {{item.label}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div>
+
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100 pr-15">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Sector</mat-label>
+              <mat-select name="sector" [(ngModel)]="_formVal.sector"
+                (selectionChange)="changeSector(_formVal.sector,'nochange')" required>
+                <mat-option *ngFor="let item of seclist" [value]="item.value">
+                  {{item.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="w-100 pl-15">
+            <mat-form-field class="w-100">
+              <mat-label>
+                Zone </mat-label>
+              <mat-select name="room" [(ngModel)]="_formVal.room" required
+                (selectionChange)="changeZone(_formVal.room,_formVal.resident,'change')">
+                <mat-option *ngFor="let item of zonelist" [value]="item.value">
+                  {{item.label}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between form-row" *ngIf="_formVal.nfctype =='res'">
+        <div class="w-100 pr-15">
+          <mat-form-field class="w-100">
+            <mat-label>
+              Resident</mat-label>
+            <mat-select name="resident" [(ngModel)]="_formVal.resident" required>
+              <mat-option *ngFor="let item of resilist" [value]="item.value">
+                {{item.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="w-100 pl-15">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between tab-marginTop15">
+        <button mat-flat-button color="warn" (click)="cancel()">Cancel</button>
+        <button mat-flat-button class="ml-10" color="primary" (click)="onSubmit(nfcForm, _formVal)">Done</button>
+
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

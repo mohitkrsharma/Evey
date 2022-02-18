@@ -1,0 +1,441 @@
+@import "material";
+@import "main";
+@import "utils";
+@import "responsive";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+
+@mixin main-title {
+  font-size: 64px !important;
+  font-family: 'SFProDisplay-Bold' !important;
+  color: #000 !important;
+}
+
+@mixin mainsub-title {
+  font-size: 48px !important;
+  font-family: 'SFProDisplay-Bold' !important;
+  color: #000 !important;
+}
+
+@mixin main-heading {
+  font-size: 30px !important;
+  font-family: 'SFProDisplay-Bold' !important;
+  color: #000 !important;
+}
+
+@mixin second-heading {
+  font-size: 20px !important;
+  font-family: "SFProDisplay-Bold" !important;
+
+}
+
+@mixin second-heading-semibold {
+  font-size: 20px !important;
+  font-family: 'SFProDisplay-Semibold' !important;
+  /*color: #1e1e1e !important;*/
+}
+
+@mixin second-heading-medium {
+  font-size: 20px !important;
+  font-family: 'SFProDisplay-Medium' !important;
+  /*color: #1e1e1e !important;*/
+}
+
+@mixin title-text {
+  font-size: 16px !important;
+  font-family: 'SFProText-Bold' !important;
+}
+
+@mixin subtitle-text {
+  font-size: 16px !important;
+  font-family: 'SFProText-Medium' !important;
+}
+
+@mixin regular-text {
+  font-size: 16px !important;
+  font-family: 'SFProText-Regular' !important;
+}
+
+
+@mixin secondary-title {
+  font-size: 14px !important;
+  font-family: 'SFProText-Semibold' !important;
+}
+
+@mixin secondary-text-medium {
+  font-size: 14px !important;
+  font-family: 'SFProText-Medium' !important;
+}
+
+@mixin secondary-text-regular {
+  font-size: 14px !important;
+  font-family: 'SFProText-Regular' !important;
+}
+
+@mixin text-small {
+  font-size: 12px !important;
+  font-family: 'SFProText-Regular' !important;
+}
+
+@mixin text-smallest {
+  font-size: 10px !important;
+  font-family: 'SFProText-Regular' !important;
+}
+
+/* ============== Start Btn Style ============== */
+@mixin btn-primary-done {
+  min-width: 100px !important;
+  line-height: 42px !important;
+  height: 42px !important;
+  padding: 0 15px !important;
+  background: #1975B8 !important;
+  font-size: 16px !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  text-align: center !important;
+  box-shadow: 0 0 !important;
+
+
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    background: #28A4DD !important;
+  }
+
+  &:focus {
+    background: #1975B8 !important;
+  }
+
+  &.inactive {
+    background: #E6E7E8 !important;
+  }
+}
+
+@mixin btn-primary-cancle {
+  min-width: 100px !important;
+  line-height: 42px !important;
+  height: 42px !important;
+  padding: 0 15px !important;
+  background: #EF4036 !important;
+  font-size: 16px !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  text-align: center !important;
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    background: #FF7171 !important;
+  }
+
+  &:focus {
+    background: #EF4036 !important;
+  }
+
+  &.inactive {
+    background: #E6E7E8 !important;
+  }
+}
+
+@mixin btn-main {
+  border: 1px solid #1975b8 !important;
+  min-width: 80px !important;
+  line-height: 38px !important;
+  height: 38px !important;
+  background: transparent !important;
+  font-size: 16px !important;
+  color: #1975b8 !important;
+  border-radius: 4px !important;
+  text-align: center !important;
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    background: #F9F9F9 !important;
+  }
+
+  &:focus {
+    color: #7D8599 !important;
+  }
+
+  &.inactive {
+    color: #F9F9F9 !important;
+    border-color: #F9F9F9 !important;
+  }
+}
+
+@mixin btn-secondary {
+  border: 1px solid #1975B8 !important;
+  min-width: 80px !important;
+  line-height: 36px !important;
+  height: 36px !important;
+  background: #1975B8 !important;
+  font-size: 16px !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  text-align: center !important;
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    background: #28A4DD !important;
+    border-color: #28A4DD !important;
+  }
+
+  &:focus {
+    background: #1975B8 !important;
+    border-color: #1975B8 !important;
+  }
+
+  &.inactive {
+    color: #F9F9F9 !important;
+    border-color: #F9F9F9 !important;
+  }
+}
+
+
+@mixin btn-module {
+  min-width: 80px !important;
+  line-height: 36px !important;
+  height: 36px !important;
+  background: transparent !important;
+  font-size: 16px !important;
+  color: #5F86CC !important;
+  border: 1px solid #5F86CC !important;
+  border-radius: 4px !important;
+  text-align: center !important;
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    color: #677FC4 !important;
+    border-color: #677FC4 !important;
+  }
+
+  &:focus {
+    color: #5F86CC !important;
+    border-color: #5F86CC !important;
+  }
+
+  &.inactive {
+    color: #DEDEDD !important;
+    border-color: #DEDEDD !important;
+  }
+}
+
+
+/*===================================================================*/
+
+
+
+@mixin sub-heading {
+
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  font-family: "SF Display" !important;
+  color: #000 !important;
+}
+
+@mixin inner-heading {
+
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "SF Display";
+  color: #000;
+}
+
+@mixin inner-text {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  font-family: "SF Display" !important;
+  color: #414042 !important;
+}
+
+@mixin button-text {
+
+  font-size: 16px;
+  font-family: 'SFProText-Semibold';
+
+}
+
+@mixin other-text {
+
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  font-family: "SF Display" !important;
+
+}
+
+
+
+@mixin regular-text {
+
+  font-size: 16px !important;
+  font-family: 'SFProText-Regular' !important;
+
+}
+
+@mixin semibold-text {
+
+  font-size: 16px !important;
+  font-family: 'SFProText-Semibold' !important;
+
+}
+
+@mixin secondary-title {
+
+  font-size: 14px !important;
+  font-family: 'SFProText-Semibold' !important;
+
+}
+
+@mixin secondary-text {
+
+  font-size: 14px !important;
+  font-family: 'SFProText-Medium' !important;
+
+}
+
+
+@mixin secondary-regular {
+
+  font-size: 14px !important;
+  font-family: 'SFProText-Regular' !important;
+
+}
+
+
+@mixin heading-font {
+  font-size: 40px !important;
+
+  font-family: 'SFProDisplay-Bold' !important;
+
+}
+
+/*popup design css start*/
+
+@mixin main_margin {
+
+  margin: 20px;
+}
+
+@mixin popup_heading {
+
+  font-size: 20px !important;
+  font-family: "SFProDisplay-Bold" !important;
+  padding-bottom: 15px;
+  margin-top: 0;
+
+}
+
+@mixin icon_blue {
+
+  height: 20px;
+  width: 20px;
+  color: #1975b8
+}
+
+@mixin icon_red {
+
+  height: 20px;
+  width: 20px;
+  // color: #ef4036 !important;
+
+}
+
+/*popup design css completed*/
+
+
+
+/*btn-css-start*/
+
+@mixin window_cancel {
+  height: auto !important;
+  font-size: 16px !important;
+  color: #FF6161 !important;
+  line-height: normal !important;
+  padding: 0 !important;
+  background: transparent !important;
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    color: #FF8EA4;
+    background: transparent !important;
+  }
+
+  &:focus {
+    color: #FF6161;
+    background: transparent !important;
+  }
+
+  &.inactive {
+    color: #D8D7E0;
+  }
+}
+
+@mixin window_done {
+  height: auto !important;
+  font-size: 16px !important;
+  color: #4791C6 !important;
+  line-height: normal !important;
+  padding: 0 !important;
+  background: transparent !important;
+  font-family: 'SFProText-Semibold' !important;
+
+  &:hover {
+    color: #79AFE4;
+    background: transparent !important;
+  }
+
+  &:focus {
+    color: #4791C6;
+    background: transparent !important;
+  }
+
+  &.inactive {
+    color: #D5DDE7;
+  }
+}
+
+
+/*btn-css-ends*/
+.mat-tab-body-wrapper {
+  border-radius: 0 0 5px 5px !important;
+}
+
+::ng-deep .ngx-mat-drp-controls{
+  flex-direction: row-reverse !important; 
+}
+
+::ng-deep .ngx-mat-drp-controls button:nth-child(2){
+  color: #FF6161;
+  padding-left: 0;
+}
+
+::ng-deep .ngx-mat-drp-controls button:nth-child(1){
+  padding-right: 0;
+}
+
+::ng-deep .mat-form-field-appearance-legacy.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label, .mat-form-field-appearance-legacy.mat-form-field-can-float .mat-input-server:focus + .mat-form-field-label-wrapper .mat-form-field-label{
+	text-transform: capitalize;
+}
+
+.totalCount{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tcText{
+  font-family: 'SFProText-Regular';
+  font-size: 80%;
+  display: inherit;
+}
+
+.span-pos{
+  color: #1975B8;
+  cursor: pointer;
+  padding-top: 2px !important;
+  margin-bottom: 15px;
+}
+
+.countPos{
+  padding-top: 2px !important;
+  padding-left: 5px !important;
+}

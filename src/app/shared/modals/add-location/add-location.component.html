@@ -1,0 +1,116 @@
+<div class="">
+    <div class="d-flex justify-content-between">
+      <h3>{{(isEdit?"Edit Location":"Add Location")}} </h3>
+      <!-- On Ground toggle -->
+            <div>
+              On Grounds
+                <mat-slide-toggle name="onGround" color="primary" [(ngModel)]="location.onGround"  class="pl-15"></mat-slide-toggle>
+            </div>
+    </div>
+    <div class="newrule">
+      <ng-container>
+        <form #f="ngForm">
+
+          <div class="d-flex justify-content-between form-row">
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Location Name" name="name" [(ngModel)]="location.name" required>
+              </mat-form-field>
+            </div>
+
+            <div class="w-100">
+              <mat-form-field class="w-100 pl-15">
+                <input matInput placeholder="Phone" maxlength="14" mask="(000) 000-0000" name="phone" [(ngModel)]="location.phone" required>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between form-row">
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Address 1" name="line1" [(ngModel)]="location.line1" required>
+              </mat-form-field>
+            </div>
+            <div class="w-100 pl-15">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Address 2" name="line2" [(ngModel)]="location.line2" required>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between form-row">
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="City" name="city" [(ngModel)]="location.city" required>
+              </mat-form-field>
+            </div>
+            <div class="w-100 pl-15">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="State" name="line2" [(ngModel)]="location.state" required>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between form-row">
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <input matInput type="number" mask="00000" minlength="2" maxlength="6" pattern="[0-9]*" (keypress)="($event.charCode >= 48 && $event.charCode < 58)" placeholder="Zip" name="zip" [(ngModel)]="location.zip" required>
+              </mat-form-field>
+            </div>
+            <div class="w-100 pl-15">
+              <!-- <mat-form-field class="w-100">
+                <input matInput placeholder="State" name="line2" [(ngModel)]="location.state" required>
+              </mat-form-field> -->
+            </div>
+          </div>
+
+          <div class="right btm-margin">
+            <div class="w-100">
+              <button mat-stroked-button class="btn_Secondary" color="primary" (click)="addRoom()">Add Room</button>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between form-row" *ngIf="isAddRoom">
+            <div class="w-100">
+              <mat-form-field class="w-100">
+                <input matInput type="text" placeholder="Room Name" name="room" [(ngModel)]="roomName" >
+              </mat-form-field>
+            </div>
+            <div class="act add-mate-icon pl-15">
+                <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                    class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                    mat-raised-button="" role="img" (click)="addMoreRoom()">
+                    add_circle
+                </mat-icon>
+            </div>
+          </div>
+
+          <div class="justify-content-between fixroom-location mb-10" *ngIf="location.room && location.room.length">
+                    <mat-card class="mt-10">
+                      <mat-card-content class="view-height-center">
+                          <h3>Rooms</h3> 
+                          <div class="table-responsive header-fixed-table-wrpper">
+                              <mat-list-item *ngFor="let room of location.room">
+                                  <div class="d-flex view-list w-100">
+                                      <div class="w-90">
+                                          {{room}}
+                                      </div>
+                                      <div class="w-10 btn-align">
+                                        <mat-icon color="warn" class="remove-room" (click)="removeRoom(room)">remove_circle</mat-icon>
+                                      </div>
+                                  </div>
+                                  <mat-divider></mat-divider>        
+                              </mat-list-item>
+                          </div>
+                      </mat-card-content>
+                    </mat-card>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <button mat-flat-button color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+            <button mat-flat-button class="ml-10" color="primary" (click)="onSubmit(f)"
+              class="btn_main_done">Done</button>
+          </div>
+        </form>
+      </ng-container>
+    </div>
+  </div>

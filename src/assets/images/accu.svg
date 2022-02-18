@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-Artboard_6">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="Artboard_6" data-name="Artboard 6" clip-path="url(#clip-Artboard_6)">
+    <g id="Group_74" data-name="Group 74" transform="translate(-112.602 -56)">
+      <path id="Path_81" data-name="Path 81" d="M131.766,86.476s-1.011-1.037,2.607-4.1,4.014-2.918,3.62-4.448,1.317-1.528,1.514,0,2.041,6.743-2.634,8.415S131.766,86.476,131.766,86.476Z" fill="#fff"/>
+      <ellipse id="Ellipse_24" data-name="Ellipse 24" cx="7.326" cy="7.936" rx="7.326" ry="7.936" transform="translate(123.738 71.004)" fill="#e82727" stroke="#e82727" stroke-miterlimit="10" stroke-width="1"/>
+      <g id="Group_73" data-name="Group 73">
+        <path id="Path_82" data-name="Path 82" d="M140.033,77.883a20.913,20.913,0,0,0-1.986-4.8c-1.9-3.58-6.189-10.606-6.975-13.929a52.458,52.458,0,0,1-5.1,10.138,44.882,44.882,0,0,0-3.6,6.778,9,9,0,0,0-.593,5.472A9.393,9.393,0,0,0,132.451,88.7a9.076,9.076,0,0,0,6.391-4.286A8.293,8.293,0,0,0,140.033,77.883Zm-3.851,1.406a1.129,1.129,0,0,1-1.126,1.125H132.93V82.54a1.129,1.129,0,0,1-1.125,1.126h-1.751a1.13,1.13,0,0,1-1.126-1.126V80.414H126.8a1.129,1.129,0,0,1-1.126-1.125V77.538a1.13,1.13,0,0,1,1.126-1.126h2.126V74.286a1.129,1.129,0,0,1,1.126-1.125H131.8a1.128,1.128,0,0,1,1.125,1.125v2.126h2.126a1.13,1.13,0,0,1,1.126,1.126Z" fill="#e82727" fill-rule="evenodd"/>
+      </g>
+    </g>
+  </g>
+</svg>

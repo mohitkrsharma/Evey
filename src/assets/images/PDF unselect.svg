@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <g id="PDF_unselect" data-name="PDF unselect" transform="translate(220 10276)">
+    <g id="select_pdf" data-name="select pdf" transform="translate(64 10)">
+      <rect id="Rectangle_5861" data-name="Rectangle 5861" width="20" height="20" transform="translate(-284 -10286)" fill="rgba(255,255,255,0)"/>
+    </g>
+    <g id="Group_16346" data-name="Group 16346" transform="translate(41.635 -35.134)">
+      <path id="Path_1955" data-name="Path 1955" d="M-248.545-10236.308v-1.249a1.44,1.44,0,0,1,.282-.93,1.335,1.335,0,0,1,.89-.4h5.258l4.693,4.693v2.524" transform="translate(-9.488 0.001)" fill="none" stroke="#a0a5b9" stroke-linecap="round" stroke-width="0.8"/>
+      <path id="Path_1956" data-name="Path 1956" d="M-213.189-10238.89v3.132a1.658,1.658,0,0,0,.51,1.267,1.876,1.876,0,0,0,1.306.555h3.1" transform="translate(-38.635 0.001)" fill="none" stroke="#a0a5b9" stroke-width="0.8"/>
+      <g id="Ellipse_361" data-name="Ellipse 361" transform="translate(-251.485 -10230.844)" fill="none" stroke="#a0a5b9" stroke-width="0.6">
+        <circle cx="4" cy="4" r="4" stroke="none"/>
+        <circle cx="4" cy="4" r="3.7" fill="none"/>
+      </g>
+      <path id="Path_1957" data-name="Path 1957" d="M-204.232-10189.764h1.482v2.1h.928l-1.682,2.316-1.715-2.316h.987Z" transform="translate(-43.965 -39.111)" fill="#a0a5b9"/>
+      <path id="Path_1958" data-name="Path 1958" d="M-248.548-10192.477v4.965a1.272,1.272,0,0,0,.3.8,1.68,1.68,0,0,0,.937.353l4.61-.007" transform="translate(-9.488 -38.095)" fill="none" stroke="#a0a5b9" stroke-linecap="round" stroke-width="0.8"/>
+      <rect id="Rectangle_5862" data-name="Rectangle 5862" width="6.553" height="3.832" rx="0.3" transform="translate(-259.785 -10235.307)" fill="#a0a5b9"/>
+      <path id="Path_1959" data-name="Path 1959" d="M.536-.137v.7H.127V-1.422H.9a.9.9,0,0,1,.393.082.6.6,0,0,1,.261.232.648.648,0,0,1,.091.343.57.57,0,0,1-.2.46.832.832,0,0,1-.553.168Zm0-.331H.9a.359.359,0,0,0,.247-.076.278.278,0,0,0,.085-.218A.327.327,0,0,0,1.148-1a.321.321,0,0,0-.237-.093H.536ZM1.927.562V-1.422h.611a.927.927,0,0,1,.468.118.822.822,0,0,1,.322.335,1.034,1.034,0,0,1,.116.494v.091A1.037,1.037,0,0,1,3.33.109a.815.815,0,0,1-.321.334.934.934,0,0,1-.467.12Zm.409-1.653V.234h.2A.444.444,0,0,0,2.9.077a.708.708,0,0,0,.13-.448v-.1A.719.719,0,0,0,2.9-.935a.442.442,0,0,0-.367-.156Zm2.6.842H4.15V.562H3.741V-1.422H5.033v.331H4.15v.512h.785Z" transform="translate(-259.135 -10232.946)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

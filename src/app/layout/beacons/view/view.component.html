@@ -1,0 +1,123 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View Beacon</mat-card-title>
+        <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="editBeacon(beacon._id)">Edit</button>
+
+
+    </mat-card-header>
+    <mat-card-content *ngIf="beacon">
+        <mat-list>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Beacon Name <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.name?beacon.name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Major <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.major?beacon.major:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Minor <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.minor?beacon.minor:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Beacon Type <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.beacon_type?beacon.beacon_type:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Area Type <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.area_type?beacon.area_type:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Floor<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.floor && beacon.floor['floor'] ?beacon.floor['floor']:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Sector<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.sector?beacon.sector:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Zone<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.room && beacon.room['room']?beacon.room['room']:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Acceptable Range<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.acceptable_range ?beacon.acceptable_range:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Tag<span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{beacon.tag ?beacon.tag:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

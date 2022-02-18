@@ -1,0 +1,100 @@
+<mat-card class="view-height">
+  <mat-card-header>
+      <mat-card-title>Medications
+      </mat-card-title>
+      <mat-card-subtitle class="w-100 mb-0">
+          <div class="d-flex justify-content-between align-center">
+
+            <!-- search record -->
+              <div class="w-30 pr-15">
+                  <mat-form-field class="w-100">
+                      <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                          id="searchInput" placeholder="Search by resident name" />
+                  </mat-form-field>
+              </div>
+              
+              <div class="w-70 pl-15">
+                  <div class="example-button-row text-right w-100">
+                    <!-- *ngIf="listType == 'medications'" -->
+                      <ng-container >
+                        <!-- <button  mat-stroked-button class="medication_btn" (click)="addForm()" class="main_btn ml-3 ">
+                            Add New
+                        </button> -->
+                      </ng-container><br><br>
+
+                      <ng-container *ngIf="listType == 'removed'">
+                         
+                      </ng-container>
+                      <ng-container *ngIf="listType == 'deleted'">
+                         
+                      </ng-container>
+                  </div>
+              </div>
+          </div>
+
+      </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="view-height-center">
+
+      <div *ngIf="data.length > 0" class="table-responsive mt-20 header-fixed-table-wrpper listing">
+          <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8"
+              (matSortChange)="sortData($event)" matSortActive="{{pagiPayload.sort.active}}"
+              matSortDirection="{{pagiPayload.sort.direction}}">
+
+              <ng-container matColumnDef="checkbox">
+                  <th mat-header-cell *matHeaderCellDef>
+                      <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()"></mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let elements">
+                      <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                          (click)="selectElement(elements._id,elements.checked)">
+                      </mat-checkbox>
+                  </td>
+              </ng-container>
+
+              <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                  <th mat-header-cell *matHeaderCellDef class="{{column.id}}"
+                      [mat-sort-header]=" column.sort?column.id:null" [disabled]="column.sort?false: true">
+                        {{column.value}}
+                    </th>
+
+
+                  <td mat-cell *matCellDef="let element">
+                      <!-- _commonService.checkPrivilegeModule('medications','add') &&  -->
+                      <span class="iconalign"
+                          *ngIf="column.id=='resident_name'"
+                          (click)="veiwMedicationList(element._id, element.fac_id)"><a>{{element[column.id]}}</a></span>
+                      <!-- <span class="iconalign"
+                          *ngIf="!_commonService.checkPrivilegeModule('medications','add') && column.id=='resident_name'">{{element[column.id]}}</span> -->
+                      <span class="iconalign" *ngIf="column.id!='resident_name'">{{element[column.id]}} </span>
+
+                      <div class="d-inline-block relative"
+                          *ngIf="column.id=='resident_name' &&  element['isolation_end_date']!=''">
+                          <timer class="test" [days]="element.isolation_days" [id]="element['_id']"
+                              [startDate]="element['isolation_start_date']" [endDate]="element['isolation_end_date']"
+                              (onComplete)="timerCompleted($event)"></timer>
+                      </div>
+                  </td>
+              </ng-container>
+             
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+      </div>
+      <div style="text-align: center; color: #969393" *ngIf="data.length === 0">
+        No Data Found
+      </div>
+    
+  </mat-card-content>
+
+  <mat-card-actions *ngIf="data.length > 0">
+      <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+          [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+  </mat-card-actions>
+
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

@@ -1,0 +1,42 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+.beacon-listing{
+    height:100px;
+    overflow-y:auto
+}
+mat-card.border-card mat-card-content ul.beacon-listing li{
+    justify-content:space-between
+}
+.margin-bottom15{
+    margin-bottom:15px;
+}
+.marginTop15{
+    margin-top:1.25em;
+}
+@media(max-width:991px){
+    .tab-marginTop15{
+        margin-top:1.25em;
+    }
+}
+/*.pad200{
+    padding-top:200px!important;
+}*/
+
+.btn_main_cancle{
+    @include btn-primary-cancle;
+}
+
+.btn_main_done{
+    margin: 0 0 0 5px !important;
+    @include btn-primary-done;
+}
+
+.btn_modual{
+    @include btn-module;
+}
+
+.btn_detail {
+
+    padding: 40px 0;
+
+}

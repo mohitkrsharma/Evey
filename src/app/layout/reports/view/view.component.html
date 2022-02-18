@@ -1,0 +1,104 @@
+<mat-card class="view-height">
+
+  <!-- <div class="spinner-wrapper" *ngIf="loaderexport">
+    <mat-progress-bar value="{{loadervalue}}" bufferValue="{{loaderbuffer}}" mode="buffer"></mat-progress-bar>
+  </div> -->
+
+  <mat-card-header>
+    <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+      <mat-card-title class="mb-0">Custom Reports</mat-card-title>
+        <div class="report_export_btn d-flex align-center">
+          <button mat-stroked-button color="primary" (click)="openCustomerReport()" class="btn_Secondary">
+              Run Another
+          </button>
+          <img *ngIf="count && _commonService.checkPrivilegeModule('reports','export')" (click)="exportXlsx()" class="export_image" src="assets/images/download-xls-icon.svg"/>
+          <img *ngIf="count && _commonService.checkPrivilegeModule('reports','export')" (click)="onExportAsPDF()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+        </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="view-height-center">
+    <div class="shifttimencreated d-flex align-items-center mb-20">
+      <div class="shifttime">
+        <h4>{{ selectedShift }}</h4>
+      </div>
+      <div class="created">
+        <h4>Created by: {{ username }}</h4>
+        <span>{{ startDate }} - {{ endDate }}</span>
+        <!-- <span>{{start_date | date:'MM/dd/yyyy'}} - {{end_date | date:'MM/dd/yyyy'}}</span> -->
+      </div>
+    </div>
+    <div *ngIf="data.length!=0" class="d-flex justify-content-between align-center mt-20">
+      <div class="w-70 d-flex d-blocks">
+        <ul class="tags">
+          <li> <span>CL</span>Call Light </li>
+          <li> <span>F</span>Find </li>
+          <li> <span>N</span>Notify Care Team </li>
+        </ul>
+        <ul class="tags">
+          <li> <span>O</span>Out Of Facility </li>
+          <li> <span>NF</span>NFC </li>
+          <li> <span>VC</span>Virus Care </li>
+        </ul>
+      </div>
+    </div>
+    <mat-card-content *ngIf="data.length==0">
+      <p style="text-align: center; color: #969393" class="message_text">No Data Found</p>
+    </mat-card-content>
+    <div *ngIf="data.length>0" class="table-responsive mt-20 header-fixed-table-wrpper listing">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)"
+        matSortActive="{{pagiPayload.sort.active}}" matSortDirection="{{pagiPayload.sort.direction}}"
+        matSortDisableClear>
+
+        <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+          <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+            [disabled]="column.sort?false: true"> {{column.value}} </th>
+          <td mat-cell *matCellDef="let element">
+            <p *ngIf="column.id != 'status'">{{element[column.id]}}</p>
+            <p *ngIf="column.id === 'status' && element[column.id].length">
+
+              <span *ngFor="let val of element[column.id]">
+                {{ inculdeA[val]}}
+                <!-- {{ val === isNFC ? inculdeA[val]:'-' }} -->
+              </span>
+
+
+            </p>
+            <p *ngIf="column.id === 'status' && element[column.id].length == 0">
+              -
+            </p>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+
+  <!-- <mat-card-actions>
+    <span style="text-align: center; color: #969393" *ngIf="!exportData && recordMessage" class="message">No Data Found</span>
+    <mat-paginator *ngIf="exportData" [length]=count [pageSize]="10" [pageSizeOptions]="[5, 10, 50, 100, 500]"
+      [pageIndex]="pageIndex" (page)="pageEvent = getServerData($event)"></mat-paginator>
+  </mat-card-actions> -->
+
+  <div *ngIf="data.length>0" class="w-100 totalCount">
+    <!-- <span style="text-align: center; color: #969393" *ngIf="!exportData && recordMessage" class="message">No Data Found</span> -->
+    <div class="w-90">
+      <mat-card-actions>
+        <mat-paginator [length]=count [pageSize]="10" [pageSizeOptions]="[10, 50, 100, 500]"
+          [pageIndex]="pagiPayload.pageIndex" (page)="getServerData($event)"></mat-paginator>
+      </mat-card-actions>
+    </div>
+    <div class="w-10 tcText">
+      <span class="span-pos" (click)="getTotalCount()">Total Count:</span>
+      <mat-spinner *ngIf="isLoading" class="countPos" [diameter]="20"></mat-spinner>
+      <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+    </div>
+  </div>
+
+
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

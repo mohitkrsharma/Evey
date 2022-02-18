@@ -1,0 +1,27 @@
+[
+    {
+        "name" : "Early AM",
+        "value" : "4AM - 6AM",
+        "checked": false
+    },
+    {
+        "name" : "AM",
+        "value" : "6AM - 9AM",
+        "checked": false
+    },
+    {
+        "name" : "Noon",
+        "value" : "11AM - 2PM",
+        "checked": false
+    },
+    {
+        "name" : "Evening",
+        "value" : "4PM - 7PM",
+        "checked": false
+    },
+    {
+        "name" : "Bedtime",
+        "value" : "8PM - 10PM",
+        "checked": false
+    }
+]

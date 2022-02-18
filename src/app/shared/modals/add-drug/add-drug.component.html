@@ -1,0 +1,139 @@
+<form [formGroup]="drugForm">
+	<div>
+		<h3 mat-dialog-title> Add Drug </h3>
+
+		<div class="d-flex justify-content-between form-row nfc_label">
+
+			<!-- name -->
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+                    <input type="text" matInput placeholder="Name" formControlName="name">
+                </mat-form-field>
+			</div>
+
+			<!-- strength -->
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="number" placeholder="Strength" formControlName="strength">
+                </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-between form-row mt-24">
+
+			<!-- ndc -->
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="NDC" formControlName="ndc">
+                </mat-form-field>
+			</div>
+
+			<!-- Route -->
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>Route Form</mat-label>
+					<mat-select formControlName="route">
+					  <ngx-mat-select-search formControlName="routeSearch" [(ngModel)]="routeSearch" placeholderLabel="Select route form"
+						noEntriesFoundLabel="Not Found" name="search" (keyup)="filterDosageData($event)">
+					  </ngx-mat-select-search>
+					  <mat-option *ngFor="let item of routeList |stringFilterBy:routeSearch: 'item'" [value]="item">
+						{{item}}
+					  </mat-option>
+					</mat-select>
+				  </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-between form-row mt-24">
+
+			<!-- suffix_name -->
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="Suffix name" formControlName="suffix_name">
+                </mat-form-field>
+			</div>
+
+			<!-- non_suffix_name -->
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="NON Suffix name" formControlName="non_suffix_name">
+                </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-between form-row mt-24">
+
+			<!-- type -->
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<mat-label>Type</mat-label>
+					<mat-select formControlName="type">
+					  <ngx-mat-select-search formControlName="typeSearch" [(ngModel)]="typeSearch" placeholderLabel="Select type"
+						noEntriesFoundLabel="Not Found" name="search" (keyup)="filterTypeData($event)">
+					  </ngx-mat-select-search>
+					  <mat-option *ngFor="let item of typeList |stringFilterBy:typeSearch: 'item'" [value]="item">
+						{{item}}
+					  </mat-option>
+					</mat-select>
+				  </mat-form-field>
+			</div>
+
+			<!-- dosage_form -->
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+					<mat-label>Dosage Form</mat-label>
+					<mat-select formControlName="dosage_form">
+					  <ngx-mat-select-search formControlName="dosageSearch" [(ngModel)]="dosageSearch" placeholderLabel="Select dosage form"
+						noEntriesFoundLabel="Not Found" name="search" (keyup)="filterDosageData($event)">
+					  </ngx-mat-select-search>
+					  <mat-option *ngFor="let item of dosageFormList |stringFilterBy:dosageSearch: 'item'" [value]="item">
+						{{item}}
+					  </mat-option>
+					</mat-select>
+				  </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-between form-row mt-24">
+
+			<!-- laberer_name -->
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="Laberer name" formControlName="laberer_name">
+                </mat-form-field>
+			</div>
+
+			<!-- substance_name -->
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="Substance name" formControlName="substance_name">
+                </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex justify-content-between form-row mt-24">
+
+			<!-- unit -->
+			<div class="w-100 pr-15">
+				<mat-form-field class="w-100">
+					<input matInput type="text" placeholder="Unit" formControlName="unit">
+				</mat-form-field>
+			</div>
+
+			<!-- pharm_class -->
+			<div class="w-100 pl-15">
+				<mat-form-field class="w-100">
+                    <input matInput type="text" placeholder="Pharm class" formControlName="pharm_class">
+                </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+			<button mat-button color="basic" (click)="cancel($event)"
+				class="mr-10 cancel_btn p-0">Cancel</button>
+			<button mat-button color="primary" class="done_btn p-0" cdkFocusInitial
+				(click)="drugDataSave(drugForm.valid)">Done</button>
+		</div>
+
+	</div>
+</form>

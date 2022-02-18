@@ -1,0 +1,393 @@
+<mat-card class="view-height">
+
+    <mat-card-header>
+        <mat-card-title>Rule care</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100 search_detail">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search by Rule Name" />
+                        <!-- <input matInput placeholder="Search"> -->
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+
+                        <button mat-stroked-button class="ml-3 mr-10 add_main" (click)="addRule()">Add New</button>
+                        <!-- <button mat-stroked-button class="ml-3" (click)="sendMail()">Send invite</button> -->
+                        <button #deleteButton mat-stroked-button class="ml-3 add_main"
+                            (click)="delete()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" [matSortActive]="sortActive" [matSortDirection]="sortDirection">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true" class="table_heading"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element" class="rule_care_list">
+                        <ng-container
+                            *ngIf="column.id == 'rule_name' || column.id == 'floor_data' || column.id == 'sector_data' ">
+                            {{ element[column.id] }}
+                        </ng-container>
+                        <ng-container
+                            *ngIf="column.id !== 'rule_name' && column.id !== 'floor_data' && column.id !== 'sector_data' ">
+                            <ng-container *ngIf="element[column.id].length > 45 ">
+                                {{ getRuleText( element[column.id] ) }} <mat-icon class="tooltip"
+                                    matTooltip="{{element[column.id]}}" aria-label="tooltip">info</mat-icon>
+                            </ng-container>
+                            <ng-container *ngIf="45 >= element[column.id].length">
+                                {{ element[column.id] }}
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef class="table_heading">Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button mat-mini-fab color="primary" (click)="editRule(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="deleteRule(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <!--                         <button mat-mini-fab color="primary" (click)="viewRule(elements._id)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                        </button> -->
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+            [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)" class="pagination"></mat-paginator>
+    </mat-card-actions>
+
+
+    <ng-template #ruleCareDialog>
+        <form [formGroup]="scheduleRuleForm">
+            <div class="">
+                <div class="pop_heading">
+                    <h3 style="padding-bottom: 10px !important;"><span *ngIf="!editId">Add</span><span
+                            *ngIf="editId">Edit</span> Rule</h3>
+                    <!--  <span class="">
+                <mat-icon (click)="closeRuleDialog()">close</mat-icon>
+            </span> -->
+                </div>
+
+
+                <div class="newrule">
+
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100">
+                            <mat-form-field class="w-100">
+                                <input matInput type="text" placeholder="Rule Name" name="rule_name"
+                                    formControlName="rule_name" [(ngModel)]="scheduleRule.rule_name" required>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Floor</mat-label>
+                                <mat-select [(ngModel)]="scheduleRule.floor" formControlName="floor" [multiple]="true"
+                                    #multiSelect>
+                                    <mat-select-trigger *ngIf="scheduleRule.floor && scheduleRule.floor.length">
+                                        {{allfloor ? scheduleRule.floor.length -1 : scheduleRule.floor.length }} items
+                                        selected
+                                    </mat-select-trigger>
+                                    <ngx-mat-select-search formControlName="floSearch" [(ngModel)]="floSearch"
+                                        placeholderLabel="Floor" noEntriesFoundLabel="Not Found" name="search">
+                                    </ngx-mat-select-search>
+                                    <mat-option *ngIf="floorDropdown && floorDropdown.length" #selectedFloor
+                                        (click)="selectAllFloor()" [value]="0">All</mat-option>
+                                    <mat-optgroup *ngFor="let group of floorDropdown" [label]="group.name">
+                                        <mat-option *ngFor="let item of group.floor |stringFilterBy:floSearch:'value'"
+                                            [value]="item.key" (click)="selectFloor(item.key)">
+                                            {{item.value}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                                <!-- <mat-select multiple formControlName="floor" [(ngModel)]="scheduleRule.floor" >
+                            <mat-select-trigger *ngIf="scheduleRule.floor && scheduleRule.floor.length">
+                                {{allfloor ? scheduleRule.floor.length -1 : scheduleRule.floor.length  }} items selected
+                            </mat-select-trigger>
+                            <mat-option *ngIf="floorDropdown && floorDropdown.length" #selectedFloor (click)="selectAllFloor()" [value]="0">All</mat-option>
+                            <mat-optgroup *ngFor="let group of floorDropdown" [label]="group.name">
+                                <mat-option *ngFor="let item of group.floor" [value]="item.key" (click)="selectFloor(item.key)">
+                                    {{item.value}}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select> -->
+                            </mat-form-field>
+                        </div>
+
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Sector</mat-label>
+                                <mat-select [(ngModel)]="scheduleRule.sector" formControlName="sector" [multiple]="true"
+                                    #multiSelect>
+                                    <mat-select-trigger *ngIf="scheduleRule.sector && scheduleRule.sector.length">
+                                        {{allsector ? scheduleRule.sector.length -1 :scheduleRule.sector.length }} items
+                                        selected
+                                    </mat-select-trigger>
+                                    <ngx-mat-select-search formControlName="secSearch" [(ngModel)]="secSearch"
+                                        placeholderLabel="Sector" noEntriesFoundLabel="Not Found" name="search">
+                                    </ngx-mat-select-search>
+                                    <mat-option *ngIf="sectorDropdown && sectorDropdown.length" #selectedSector
+                                        (click)="selectAllSector()" [value]="0">All
+                                    </mat-option>
+                                    <mat-optgroup *ngFor="let group of sectorDropdown" [label]="group.name">
+                                        <mat-option *ngFor="let item of group.sector |stringFilterBy:secSearch:'name'"
+                                            [value]="item._id" (click)="selectSector(item._id)">
+                                            {{item.name}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                                <!-- <mat-select multiple formControlName="sector" [(ngModel)]="scheduleRule.sector"  >
+                            <mat-select-trigger *ngIf="scheduleRule.sector && scheduleRule.sector.length">
+                                {{allsector ? scheduleRule.sector.length -1  :scheduleRule.sector.length }} items selected
+                            </mat-select-trigger>
+                            <mat-option *ngIf="sectorDropdown && sectorDropdown.length" #selectedSector (click)="selectAllSector()" [value]="0">All
+                            </mat-option>
+                            <mat-optgroup *ngFor="let group of sectorDropdown" [label]="group.name">
+                                <mat-option *ngFor="let item of group.sector" [value]="item._id" (click)="selectSector(item._id)">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100">
+                            <mat-form-field class="w-100">
+                                <mat-label>Zone</mat-label>
+                                <mat-select [(ngModel)]="scheduleRule.zone" formControlName="zone" [multiple]="true"
+                                    #multiSelect>
+                                    <mat-select-trigger *ngIf="scheduleRule.zone && scheduleRule.zone.length">
+                                        {{allzone ? scheduleRule.zone.length -1 :scheduleRule.zone.length }} items
+                                        selected
+                                    </mat-select-trigger>
+                                    <ngx-mat-select-search formControlName="zSearch" [(ngModel)]="zSearch"
+                                        placeholderLabel="Zone" noEntriesFoundLabel="Not Found" name="search">
+                                    </ngx-mat-select-search>
+                                    <mat-option *ngIf="zoneDropdown && zoneDropdown.length" #selectedZone
+                                        (click)="selectAllZone()" [value]="0">All
+                                    </mat-option>
+                                    <mat-optgroup *ngFor="let zone of zoneDropdown" [label]="zone.name">
+                                        <mat-option *ngFor="let item of zone.room |stringFilterBy:zSearch:'name'"
+                                            [value]="item._id" (click)="selectZone(item._id)">
+                                            {{item.name}}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                </mat-select>
+                                <!-- <mat-select multiple formControlName="zone" [(ngModel)]="scheduleRule.zone" >
+                            <mat-select-trigger *ngIf="scheduleRule.zone && scheduleRule.zone.length">
+                                {{allzone ? scheduleRule.zone.length -1  :scheduleRule.zone.length }} items selected
+                            </mat-select-trigger>
+                            <mat-option *ngIf="zoneDropdown && zoneDropdown.length" #selectedZone (click)="selectAllZone()" [value]="0">All
+                            </mat-option>
+                            <mat-optgroup *ngFor="let zone of zoneDropdown" [label]="zone.name">
+                                <mat-option *ngFor="let item of zone.room" [value]="item._id" (click)="selectZone(item._id)">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <!-- <div class="d-flex justify-content-between form-row">
+                <div class="w-100">
+                    <mat-form-field class="w-100">
+                        <mat-select  placeholder="Select shift" formControlName="shiftype" [(ngModel)]="scheduleRule.shiftype" required >
+                            <mat-option *ngFor="let item of shiftArr" [value]="item.no">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div> -->
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Cares</mat-label>
+                                <mat-select [(ngModel)]="scheduleRule.care" formControlName="care" [multiple]="true"
+                                    #multiSelect>
+                                    <mat-select-trigger *ngIf="scheduleRule.care && scheduleRule.care.length">
+                                        {{ allCares ? scheduleRule.care.length-1 : scheduleRule.care.length}} items
+                                        selected
+                                    </mat-select-trigger>
+                                    <ngx-mat-select-search formControlName="cSearch" [(ngModel)]="cSearch"
+                                        placeholderLabel="Cares" noEntriesFoundLabel="Not Found" name="search">
+                                    </ngx-mat-select-search>
+                                    <mat-option *ngIf="carelist && carelist.length" #selectedCare
+                                        (click)="selectAllcares()" [value]="0">All
+                                    </mat-option>
+                                    <mat-option *ngFor="let filters of carelist |stringFilterBy:cSearch:'value'"
+                                        [value]="filters.key"
+                                        (click)="selectCare(selectedCare.viewValue,filters.value)">
+                                        {{filters.value}}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-select placeholder="Cares" formControlName="care" [(ngModel)]="scheduleRule.care" multiple>
+                            <mat-select-trigger *ngIf="scheduleRule.care && scheduleRule.care.length">
+                                {{ allCares ? scheduleRule.care.length-1 : scheduleRule.care.length}} items selected
+                            </mat-select-trigger>
+                            <mat-option *ngIf="carelist && carelist.length" #selectedCare (click)="selectAllcares()" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let filters of carelist" [value]="filters.key" (click)="selectCare(selectedCare.viewValue,filters.value)">
+                                {{filters.value}}
+                            </mat-option>
+                        </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Performer</mat-label>
+                                <mat-select [(ngModel)]="scheduleRule.user" formControlName="user" [multiple]="true"
+                                    #multiSelect>
+                                    <mat-select-trigger *ngIf="scheduleRule.user && scheduleRule.user.length">
+                                        {{alluser ? scheduleRule.user.length-1 : scheduleRule.user.length}} items
+                                        selected
+                                    </mat-select-trigger>
+                                    <ngx-mat-select-search formControlName="perSearch" [(ngModel)]="perSearch"
+                                        placeholderLabel="Performer" noEntriesFoundLabel="Not Found" name="search">
+                                    </ngx-mat-select-search>
+                                    <mat-option *ngIf="userslist && userslist.length" #selectedUser
+                                        (click)="selectAllusers()" [value]="0">All
+                                    </mat-option>
+                                    <mat-option *ngFor="let filters of userslist |stringFilterBy:perSearch:'value'"
+                                        [value]="filters.key" (click)="selectUser(selectedUser.viewValue,filters.key)">
+                                        {{filters.value| titlecase}}
+                                    </mat-option>
+                                </mat-select>
+                                <!-- <mat-select placeholder="Performer" formControlName="user" [(ngModel)]="scheduleRule.user" multiple>
+                            <mat-select-trigger *ngIf="scheduleRule.user && scheduleRule.user.length">
+                                {{alluser ? scheduleRule.user.length-1 : scheduleRule.user.length}} items selected
+                            </mat-select-trigger>
+                            <mat-option *ngIf="userslist && userslist.length" #selectedUser (click)="selectAllusers()" [value]="0">All
+                            </mat-option>
+                            <mat-option *ngFor="let filters of userslist" [value]="filters.key" (click)="selectUser(selectedUser.viewValue,filters.key)">
+                                {{filters.value| titlecase}}
+                            </mat-option>
+                        </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+                <div class="adtime">
+                    <button mat-button color="basic" (click)="closeRuleDialog()" class="cancel_btn">Cancel</button>
+                    <button mat-button color="primary" (click)="saveRuleDialog()" class="done_btn">Done</button>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template #ruleCareViewDialog>
+        <div class="pop_heading">
+            <h3>View Rule</h3>
+            <span class="">
+                <mat-icon (click)="closeRuleDialog()">close</mat-icon>
+            </span>
+        </div>
+
+        <div class="newrule">
+            <mat-list>
+                <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Rule Name <span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{ viewData.rule_name ? viewData.rule_name : '--' }}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <!-- <mat-list-item *ngIf="!show">
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Shift <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{ viewData.shiftype_data ? viewData.shiftype_data : '--' }}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider> -->
+                <mat-list-item *ngIf="!show">
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Floor <span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{ viewData.floor_data ? viewData.floor_data : '--' }}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Sector <span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{ viewData.sector_data ? viewData.sector_data : '--' }}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Care <span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{ viewData.care_data ? viewData.care_data : '--' }}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Performer <span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{ viewData.user_data ? viewData.user_data : '--' }}
+                        </div>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+        </div>
+
+    </ng-template>

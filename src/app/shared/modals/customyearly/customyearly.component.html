@@ -1,0 +1,72 @@
+<div style="position: relative; height: 100%;">
+    <div class="pop_design">
+        <h3>Custom Yearly</h3>
+        <span>
+            <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+        </span>
+    </div>
+
+    <div class="d-flex mr-10 mt-20">
+        <div class="w-50 pr-15">
+            <mat-form-field class="w-100">
+                <mat-label>Every...</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_tenure']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="yearSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of yearList |stringFilterBy:yearSearch:'key'" [value]="option.value">
+                        {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+            <mat-form-field class="w-100">
+                <mat-label>In the Month of...</mat-label>
+                <mat-select (selectionChange)="checkWeekNumbers(selectedCareList[scheduleRepeat.index]['month_date'])"
+                    [(ngModel)]="selectedCareList[scheduleRepeat.index]['month_date']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="monthNameSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of monthNameList |stringFilterBy:monthNameSearch:'key'"
+                        [value]="option.value"> {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+            <mat-form-field class="w-100">
+                <mat-label>On the...</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_option']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="customrepeatSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of customRepeat |stringFilterBy:customrepeatSearch:'key'"
+                        [value]="option.value"> {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="w-50 pl-15">
+            <mat-form-field class="w-100">
+                <mat-label>Day</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_on']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of customWeekDayList |stringFilterBy:weekSearch:'name'"
+                        [value]="option"> {{option.name | titlecase}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="d-flex mr-10 mt-10 repeat-text">
+        <span
+            class="font-modal font-modal" style="width: 100%;">{{getSchedulePerformingTimeString(selectedCareList[scheduleRepeat.index])}}</span>
+    </div>
+
+    <div class="adtime custom-yearly-btn">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done"
+            (click)="saveRepeatDialog(selectedCareList[scheduleRepeat.index])">Done</button>
+    </div>
+</div>
+  

@@ -1,0 +1,54 @@
+<mat-card class="view-height">
+  <mat-card-header>
+    <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+        <mat-card-title class="mb-0">DNR Reports</mat-card-title>
+        <div class="report_export_btn d-flex align-center">
+          <button mat-stroked-button color="primary" (click)="openDNRReport()" class="btn_Secondary"style="margin-right: 10px;">
+              Run Another
+          </button>
+            <img *ngIf="commonService.checkPrivilegeModule('reports','export') && exportData" (click)="exportXlsx()" class="export_image" src="assets/images/download-xls-icon.svg"/>
+            <img *ngIf="commonService.checkPrivilegeModule('reports','export') && !exportData" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+            <img *ngIf="commonService.checkPrivilegeModule('reports','export') && exportData" (click)="onExportAsPDF()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+        </div>
+    </mat-card-subtitle>
+</mat-card-header>
+  
+
+  <mat-card-content class="view-height-center">
+    <div class="shifttimencreated d-flex align-items-center mb-20">
+      <div class="shifttime">
+        <h4>DNR Reports</h4>
+      </div>
+    </div>
+    <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+        <ng-container matColumnDef="residentName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Resident </th>
+          <td mat-cell *matCellDef="let element"> {{element.residentName}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="unit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Unit </th>
+          <td mat-cell *matCellDef="let element"> {{element.unit}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="admitDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Admit Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.admitDate}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <span style="text-align: center; color: #969393" *ngIf="!exportData && recordMessage" class="message">No Data Found</span>
+  </mat-card-actions>
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

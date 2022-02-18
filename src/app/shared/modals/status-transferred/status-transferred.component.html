@@ -1,0 +1,21 @@
+
+  <mat-form-field class="w-100">
+      <mat-label>Select Location</mat-label>
+      <mat-select name="selectedfac" id="selectedfac" [(ngModel)]="selectedfac" >
+        <ngx-mat-select-search [(ngModel)]="facSearch" placeholderLabel="Select Location" noEntriesFoundLabel="Not Found" name="search">
+        </ngx-mat-select-search>
+        <mat-option *ngFor="let item of facilityList |stringFilterBy:facSearch:'fac_name'" [value]="item._id">
+          {{item.fac_name}}
+        </mat-option>          
+      </mat-select>
+  </mat-form-field>
+
+
+<div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+    <button mat-button color="basic" (click)="cancelStatusFacility()"
+        class="mr-10 cancel_btn p-0">Cancel</button>
+    <button mat-button color="primary" class="done_btn p-0" cdkFocusInitial
+        (click)="setStatusFacility()">Done</button>
+</div>
+
+<!-- (selectionChange)="changeSelection(selectedorg,selectedfac)-->

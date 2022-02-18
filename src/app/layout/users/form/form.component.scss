@@ -1,0 +1,317 @@
+
+@import "./../../../../styles/_cstm-variable.scss";
+
+.invalid-email {
+    color: #ef4036
+}
+
+.ddl-margin {
+    margin-top: 25Px;
+}
+
+.btn-margin {
+    margin-top: 15px;
+}
+
+.no-shadow {
+    box-shadow: none;
+}
+
+.mr-5{ margin-right: 50px; }
+
+.mr-15 {
+
+margin-right: 15px;
+
+ }
+
+.terms_condition {
+    background: #fff;
+   box-shadow: 0 0 6px 0 rgba(74, 74, 74, 0.3);
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    @include secondary-text-regular;
+    display: flex;
+    color: #000;
+    // margin-left: 15px;
+
+    .checkbox {
+    	display: inline-block;
+     }
+
+    .terms_content {
+    	padding-left: 20px;
+    	display: inline-block;
+    }
+}
+.listing td{
+    text-align: center;
+    }
+
+.mat-card {
+
+box-shadow: none !important;
+padding: 20px 30px;
+ }
+ .ann_heading {
+
+margin-top: 30px;
+
+  }
+
+ .btn_modual{
+    @include btn-module;
+
+    &.w-auto{
+        min-width: auto !important;
+    }
+}
+
+.cs_font{
+    @include regular-text;
+}
+
+.btn_main_cancle{
+    @include btn-primary-cancle;
+}
+
+.btn_main_done{
+    margin: 0 0 0 5px !important;
+    @include btn-primary-done;
+
+    &.w_auto{
+        min-width:auto !important;
+    }
+}
+
+.block_facility{
+    margin: 10px 0 30px 0;
+     background: #fff;
+   box-shadow: 0 0 6px 0 rgba(74, 74, 74, 0.3);
+    border-radius: 5px;
+    padding: 20px;
+
+    .ann_heading{
+        margin: 0;
+    }
+
+    .selected_data{
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin-top: 0px;
+
+        .selected {
+            width: 32.5%;
+            background: #EFF8FD;
+            border-radius: 5px;
+            display: flex;
+            padding: 10px;
+            justify-content: space-between;
+            margin: 1.25% 1.25% 0 0;
+
+            &:nth-child(3n){
+                margin-right: 0;
+            }
+
+            .info {
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+
+                .info_im{
+                    span{
+                        font-size: 16px;
+                        color: #1975B8;
+                        margin-top: 4.5px;
+                    }
+                }
+
+                .info_cnt {
+                    padding: 2px 0 0 10px;
+                    @include secondary-text-regular;
+
+                    h4{
+                        @include secondary-title;
+                        margin: 0;
+                    }
+
+                    .fl_size{
+                        color: #28A5DE;
+                        align-items: center;
+
+                        .mat-icon{
+                            color: #28A5DE;
+                            font-size: 16px;
+                            height: auto;
+                            width: auto;
+                        }
+                    }
+
+                    p{
+                        @include secondary-text-regular;
+                        margin: 0;
+                    }
+                }
+            }
+
+            .act{
+                color: #EE4035;
+
+                .mat-icon{
+                    cursor: pointer;
+                    font-size: 16px;
+                    width: auto;
+                    height: auto;
+                }
+            }
+        }
+    }
+}
+
+
+/*popup-css start*/
+.popup_design {
+
+@include main_margin;
+
+}
+.pop_heading {
+    h3 {
+        @include popup_heading;
+
+    }
+
+    .mat-icon {
+
+@include icon_blue;
+cursor: pointer;
+
+ }
+
+}
+.mat-form-field-infix {
+
+padding-top: 0 !important;
+
+ }
+
+
+.newrule {
+
+    .mat-icon {
+
+@include icon_red;
+
+    }
+}
+
+
+.form-row{
+    align-items: center;
+
+    .act{
+        margin-bottom: 10px;
+        .mat-icon{
+            cursor: pointer;
+        }
+         .mat-icon-add{
+            @include icon_blue;
+            cursor: pointer;
+         }
+
+    }
+
+    .ic_plus{
+        margin-bottom: 10px;
+        .mat-icon{
+            cursor: pointer;
+        }
+        .mat-icon-add{
+            @include icon_blue;
+            cursor: pointer;
+        }
+    }
+}
+
+.cancel_btn {
+
+@include window_cancel;
+    background-color: transparent !important;
+
+    padding: 0;
+    margin-top: 9px;
+
+ }
+
+ .done_btn {
+
+@include window_done;
+  background-color: transparent !important;
+
+    padding: 0;
+     margin-top: 9px;
+
+  }
+/*popup css ends*/
+.mt-50{
+    margin-top: 50px;
+}
+.mat-card-header-text {
+    margin: 0px !important;
+    width: 50%;
+  }
+
+.added_field{
+    color: gray !important;
+}
+
+.cancel_icon {
+    color: #EE4035;
+    cursor: pointer;
+}
+.bold {
+    font-family: "SFProText-Bold" !important;
+}
+
+mat-card-content table th {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px;
+}
+
+mat-card-content table tr {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+}
+
+mat-card-content table td {
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px;
+}
+
+.selected-tile {
+  height: 110px;
+  .info {
+    margin: 10px;
+  }
+  .remove-icon {
+      font-size: 24px !important;
+  }
+}
+
+.delete_icon {
+   height: 30px;
+   width: 30px;
+   padding: 0;
+}
+mat-icon {
+   font-size: 16px !important;
+   vertical-align: middle !important;
+}
+
+.mat-icon-font-24 {
+  font-size: 24px !important;
+}

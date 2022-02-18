@@ -1,0 +1,141 @@
+[
+    {
+        "fac_id": "5cc0f71378ae7563887d538b",
+        "org_id": "5a859f300b48ce45436f3948",
+        "dashboardName": "Performance Dashboard",
+        "outstandingResidentData": [
+            {
+                "_id": "5de6cf5a7256531ce9de6b37",
+                "name": "Baker, Sheila",
+                "roomName": "194",
+                "currentShiftCheckIn": true,
+                "previousShiftCheckIn": false,
+                "secondLastShiftCheckIn": false,
+                "thirdLastShiftCheckIn": false,
+                "is_out_of_fac": false
+            },
+            {
+                "_id": "5de6cf5a7256531ce9de6b36",
+                "name": "Amit, Shah",
+                "roomName": "195",
+                "currentShiftCheckIn": false,
+                "previousShiftCheckIn": true,
+                "secondLastShiftCheckIn": false,
+                "thirdLastShiftCheckIn": false,
+                "is_out_of_fac": false
+            },
+            {
+                "_id": "5de6cf5a7256531ce9de6b35",
+                "name": "Karan, Shah",
+                "roomName": "195",
+                "currentShiftCheckIn": false,
+                "previousShiftCheckIn": false,
+                "secondLastShiftCheckIn": true,
+                "thirdLastShiftCheckIn": false,
+                "is_out_of_fac": false
+            },
+            {
+                "_id": "5de6cf5a7256531ce9de6b34",
+                "name": "Sumit, Shah",
+                "roomName": "195",
+                "currentShiftCheckIn": false,
+                "previousShiftCheckIn": false,
+                "secondLastShiftCheckIn": false,
+                "thirdLastShiftCheckIn": true,
+                "is_out_of_fac": false
+            },
+            {
+                "_id": "5de6cf5a7256531ce9de6b33",
+                "name": "Abhishek, Shah",
+                "roomName": "195",
+                "currentShiftCheckIn": true,
+                "previousShiftCheckIn": true,
+                "secondLastShiftCheckIn": true,
+                "thirdLastShiftCheckIn": false,
+                "is_out_of_fac": false
+            }
+        ],
+        "openCareData": [
+            {
+                "resident_id": "5cf55f6faed88f1fc3da2f4a",
+                "performer": "Umang K",
+                "resident": "Lakin, Dorothy",
+                "room": "3",
+                "pausedtime": 1612938276412.06,
+                "care": "AM Cares",
+                "icons": "assets/images/am cares.png"
+            }
+        ],
+        "performedUserData": [
+            {
+                "userData": {
+                    "first_name": "Kyle",
+                    "last_name": "Salter",
+                    "job_title": "5db2cbf12b6044d2126f20a2",
+                    "userId": "5efaee9f86c55b19e66b121d"
+                },
+                "report": {
+                    "totalCare": 4,
+                    "totalCareTime": 99064.68090820312,
+                    "totalUnassignedTime": 0,
+                    "totalTime": 6604.311767578125
+                }
+            }
+        ],
+        "missedCareData": [
+            {
+                "careData": {
+                    "_id": "5aab9996f780e02215f3b650",
+                    "name": "Bathing",
+                    "image": {
+                        "location": "https://evey-io.s3.us-east-2.amazonaws.com/care-icons/care-1601272302336.png"
+                    }
+                },
+                "resident": {
+                    "_id": "5cc30a2563d709764b95fd73",
+                    "first_name": "Phyllis",
+                    "last_name": "Green"
+                },
+                "zone": {
+                    "_id": "5cc3032d63d709764b95fd3c",
+                    "type": "room",
+                    "room": "21"
+                },
+                "_id": "5fff2494089b9a1fc8eaf71f",
+                "start_date": 1610517600000,
+                "start_time": 1610517600000,
+                "end_date": null,
+                "careLevalData": [
+                    "Self"
+                ]
+            }
+        ],
+        "level2ChartData": {
+            "hour": "08:00",
+            "totalcount": 0,
+            "count": 1
+        },
+        "level3ChartData": {
+            "hour": "08:00",
+            "totalcount": 0,
+            "count": 2
+        },
+        "supervisionChartData": {
+            "hour": "08:00",
+            "totalcount": 0,
+            "count": 3
+        },
+        "totalReport": {
+            "totalCarePerformed": 4,
+            "timeOnCare": 99064.68090820312,
+            "timeUnassigned": 0,
+            "totalTime": 99064.68090820312
+        },
+        "shiftChartTimeSlots": {
+            "currentShiftTime": "08:00",
+            "previousShiftTime": "06:00",
+            "secondLastShiftTime": "04:00",
+            "thirdLastShiftTime": "02:00"
+        }
+    }
+]

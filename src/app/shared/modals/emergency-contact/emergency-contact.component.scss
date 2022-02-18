@@ -1,0 +1,142 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+.diagnosis span{
+    font-size: 15px;
+    padding-left: 8px;
+}
+
+ button.mat-basic {
+    background: #f6fafc;
+}
+.cancel_btn { 
+
+@include window_cancel;
+    background-color: transparent !important;
+   
+}
+
+ .done_btn { 
+
+@include window_done;
+  background-color: #fff !important;
+ }
+
+  .emergency_popup {
+  	padding: 30px 20px 24px !important; 
+    max-height: 83vh !important;
+    overflow-y: auto;
+
+  	.mt-10 {
+
+		margin-top: 14px !important;
+
+  	} 
+
+
+    
+  }
+  .mt-14 {
+
+margin-top: 14px;
+
+  }
+
+  .mat-dialog-actions {
+
+		padding: 0 !important;
+		margin-bottom: 0 !important;
+		min-height: auto !important;
+
+  } 
+.mat-card-content { 
+
+margin-bottom: 0 !important;
+
+ }
+.mat-dialog-container {
+
+
+padding: 0 !important;
+
+}
+.p-0 {
+
+padding: 0 !important;
+
+}
+.action_btn {
+
+margin-top: 40px !important;
+
+}
+.mat-checkbox{
+  @include regular-text;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+
+.basecolor {
+  color: #1975b8;
+}
+.cancel_icon {
+
+  color: #EE4035;
+  cursor: pointer;
+}
+
+::ng-deep{
+  .note_textarea{
+  .ui-widget {
+    .ui-editor-toolbar {
+      border: 0;
+      background: transparent;
+      padding: 0;
+  
+      .ql-formats {
+        padding: 0 !important;
+  
+        button {
+          &:first-child {
+            padding-left: 0;
+          }
+        }
+      }
+    }
+  
+    .ui-editor-content {
+      border: 0;
+      padding-top: 15px;
+  
+      .ql-editor {
+        -webkit-appearance: none;
+        padding: 0;
+        resize: none;
+        border-bottom: 1px solid #949494;
+        min-height: 24px !important;
+  
+        &.ql-blank {
+          &::before {
+            left: 0;
+            font-style: normal;
+          }
+        }
+      }
+    }
+  }
+  }
+  }
+
+  .unit_detail {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+::ng-deep{
+  .emergency_popup .mat-select-value-text{
+    color: #000000;
+  }
+}

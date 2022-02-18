@@ -1,0 +1,46 @@
+@import "./../../../../styles/_cstm-variable.scss";
+
+.custom_font{
+
+	.mat-form-field-label-wrapper{
+		@include text-small;
+		.mat-form-field-label {
+			@include text-small;
+		}
+	}
+	.mat-select{
+		@include regular-text;
+	}
+
+	.mat-input-element{
+		@include regular-text;
+	}
+}
+
+.btn_main_cancle{
+    @include btn-primary-cancle;
+}
+
+.btn_main_done{
+    margin: 0 0 0 5px !important;
+    @include btn-primary-done;
+
+    &.w_auto{
+    	min-width:auto !important;
+    }
+}
+
+.calender_icon{
+	position: absolute;
+	top: 50%;
+	right: 0;
+	transform: translateY(-50%);
+	font-size: 14px;
+	color: #A7A9AC;
+	height: 14px;
+	width: 14px;
+
+	&.active_icon{
+		color: #1975b8;
+	}
+}

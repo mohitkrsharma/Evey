@@ -1,0 +1,991 @@
+<mat-card class="care-schedule">
+    <mat-card-header class="d-flex justify-content-between align-center">
+        <mat-card-title class="dash_heading">Schedule Care</mat-card-title>
+    </mat-card-header>
+    <!-- [ngClass]=" firstactive ? 'active' : 'notactive' " -->
+
+    <div class="care_scheduler">
+        <div class="first carestep">
+            <!-- <div class="step"> <span class="number">1</span> <span class="line"></span> </div> -->
+            <div class="step_detail">
+            <mat-expansion-panel class="no_drop_shadow " [expanded]="true" (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                <mat-expansion-panel-header >
+                <mat-panel-title>
+                <div class="header">
+                     <h4><span class="activity_step">Step One</span>Select Resident</h4>
+                     <!-- <span *ngIf="firstEditOption" (click)="goForward('resident');" class="new_icon">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> edit
+                    </span> -->
+                </div>
+                </mat-panel-title>
+                </mat-expansion-panel-header>
+                <!-- <mat-expansion-panel [expanded]="false"  hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Rajesh</mat-panel-title>
+
+                    </mat-expansion-panel-header>
+                            <h4 class="">Rjs</h4>
+
+                </mat-expansion-panel> -->
+
+
+                <div class="selected_data" *ngIf="this.selectedResidentList.length">
+                    <div class="selected selected-tile" *ngFor="let residentData of this.selectedResidentList">
+                        <div class="info">
+                            <h4 class="capitalized-text">
+                                {{ residentData.resident.name }}
+                            </h4>
+                            <div class="custom_flex">
+                                <!-- <mat-icon (click)="editAssignedResident(residentData.resident.value)">edit</mat-icon>  -->
+                                <p *ngIf="residentData?.resident?.unit" aria-label="tooltip"> {{ 'Unit ' + residentData?.resident?.unit + ' | '}} </p>
+                                &nbsp;<p matTooltip="{{ residentData.care_level }}" *ngIf="residentData.care_level" aria-label="tooltip"> {{ ' ' + residentData.care_level }} </p>
+                                &nbsp;<p matTooltip="{{ residentData.note }}" *ngIf="residentData.note" aria-label="tooltip"> {{  residentData.note }} </p>
+                            </div>
+                            <!-- <p *ngIf="!residentData.note" class="notassigned">
+                                <mat-icon>remove</mat-icon>
+                            </p> -->
+                        </div>
+                        <div class="act" *ngIf="!firstEditOption">
+                            <!-- <mat-icon (click)="deleteAssignedResident(residentData.resident.value)">close</mat-icon> -->
+                            <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon " mat-raised-button="" role="img" (click)="deleteAssignedResident(residentData.resident.value)" >remove_circle </mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidefopt" *ngIf="firstEdit">
+                    <div class="added">
+                        <div class="selectr">
+                            <mat-form-field class="w-100">
+                                <mat-label>Select Resident/Unit</mat-label>
+                                <mat-select [(ngModel)]="selectedResident.resident_id" [ngModelOptions]="{standalone: true}" [required]="(this.selectedResidentList.length)?false: true" (selectionChange)="addResidentSelect(selectedResident)">
+                                    <ngx-mat-select-search [(ngModel)]="resSearch" placeholderLabel="Select Resident" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option class="capitalized-text" *ngFor="let resident of residentslist |stringFilterBy:resSearch:'name?unit'" [value]="resident.value"> {{resident.name}} {{'  ' + resident.unit}} </mat-option>
+                                </mat-select>
+                                <!--  <mat-select [(ngModel)]="selectedResident.resident_id"
+                                    [ngModelOptions]="{standalone: true}" [required]="(this.selectedResidentList.length)?false: true">
+                                    <mat-option *ngFor="let resident of residentslist" [value]="resident.value">
+                                        {{resident.name}}
+                                    </mat-option>
+                                </mat-select> -->
+                            </mat-form-field>
+                        </div>
+                       <!--  <div class="addnote">
+                            <mat-form-field class="w-100">
+                                <mat-label>Add Note</mat-label>
+                                <textarea matInput placeholder="" cdkTextareaAutosize #autosize="cdkTextareaAutosize" [(ngModel)]="selectedResident.note" [ngModelOptions]="{standalone: true}"></textarea>
+                            </mat-form-field>
+                        </div> -->
+                        <div class="addr">
+                           <!-- <button mat-flat-button [color]="'add'" (click)="assignResident(selectedResident)">Add</button> -->
+
+                            <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" (click)="assignResident(selectedResident)"> add_circle </mat-icon> -->
+
+                        </div>
+                    </div>
+                   <!--  <div class="nextcancel" *ngIf="this.selectedResidentList.length">
+                        <button mat-stroked-button color="" class="cancel-btn" (click)="goSchedular()">Cancel</button>
+                        <button mat-flat-button color="primary" (click)="goForward('care')">Save & Continue</button>
+                    </div> -->
+                </div>
+            </mat-expansion-panel>
+            </div>
+        </div>
+        <div class="second carestep" [ngClass]="{'disable' : seconddisable}">
+            <!-- <div class="step" [ngClass]="{ 'active' : !seconddisable }"> <span class="number">2</span> <span class="line"></span> </div> -->
+            <div class="step_detail">
+                <mat-expansion-panel class="no_drop_shadow" [expanded]="step === 1" (opened)="setStep(1)" [disabled]="isDisabledCare">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                <div class="header">
+                    <h4><span class="activity_step">Step Two</span>Select Care</h4> <!-- <span *ngIf="secondEditOption" (click)="goForward('care')" class="new_icon">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true" ></i> edit</span> -->
+                </div>
+                </mat-panel-title>
+                 </mat-expansion-panel-header>
+                <div class="selected_data" *ngIf="this.selectedCareList.length">
+                    <div class="selected selected-tile" *ngFor="let careData of this.selectedCareList">
+                        <div class="info d-flex care-info">
+                            <div class="icon_detail">
+                                <div class="icon_detail d-flex" >
+                                    <img *ngIf="careData.care.image!=''" [src]="careData.care.image" width="30px">
+                                </div>
+                                <!-- <mat-icon mat-raised-button (click)="editCareList(item)" class="mat-icon material-icon basecolor cursor" role="img" aria-hidden="true">edit </mat-icon> -->
+                              </div>
+                            <div class="care_content">
+                                <h4>{{ careData.care.value }} </h4>
+
+                            </div>
+
+                            <div class="d-flex custom_flex">
+                                <!-- <mat-icon (click)="editAssignedCare(careData.care.key)">edit</mat-icon> -->
+                                <span *ngIf="careData.user_id.value"> - Assigned to: {{ careData.user_id.value }}</span>
+                            </div>
+
+                            <p matTooltip="{{ careData.note }}" *ngIf="careData.note" aria-label="tooltip"> {{ careData.note }} </p>
+                            <!-- <p *ngIf="!careData.note" class="notassigned">
+                                <mat-icon>remove</mat-icon>
+                            </p> -->
+                            <!-- <p class="m-0" matTooltip="{{ careData.note }}" aria-label="tooltip">
+                                <span *ngIf="careData.user_id.value">{{ careData.user_id.value }}</span>
+                                <span *ngIf="!careData.user_id.value" class="notassigned" ><mat-icon>remove</mat-icon></span>
+                            </p> -->
+                        </div>
+                        <div class="act" *ngIf="!secondEditOption">
+                            <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" (click)="deleteAssignedCare(careData.care.key)" >remove_circle </mat-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidesopt" *ngIf="secondEdit">
+                    <div class="carelist">
+                        <div class="selectr">
+
+                            <mat-form-field class="w-100">
+                                <mat-label>Select Care</mat-label>
+                                <mat-select [(ngModel)]="selectedCare.care_id" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" (selectionChange)="assignCareSelect(selectedCare)">
+                                    <ngx-mat-select-search [(ngModel)]="carSearch" placeholderLabel="Select Care" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <span *ngFor="let group of carelist |stringFilterBy:carSearch:'value'; let i = index ;">
+                                        <mat-optgroup [label]="group.value" *ngIf="group?.subCares && group?.subCares?.length" (click)="activeToggler(i,$event)">
+                                            <img class="cares-image" *ngIf="group.image!='' && group?.subCares && group?.subCares?.length" [src]="group.image" width="30px"/>
+                                            <mat-icon aria-hidden="true" class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon" mat-raised-button="" role="img"
+                                            *ngIf="group?.subCares && group?.subCares?.length && i != activeClassIndex">expand_more</mat-icon>
+                                            <mat-icon aria-hidden="true" class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon" mat-raised-button="" role="img"
+                                            *ngIf="group?.subCares && group?.subCares?.length && i === activeClassIndex">expand_less</mat-icon>
+                                            <mat-option [class.active]="i === activeClassIndex" *ngFor="let subCare of group?.subCares" [value]="subCare.key">
+                                            <img *ngIf="subCare.image!=''" [src]="subCare.image" width="30px"/>
+                                            <span class="pl-5">{{subCare.value}}</span>
+                                          </mat-option>
+                                        </mat-optgroup>
+
+                                        <mat-option *ngIf="!group?.subCares?.length && group.value" [class.disable]="group.hasSubCares" [class.active]="i === activeClassIndex" [disabled]="group.hasSubCares" [value]="group.key">
+                                            <img *ngIf="group.image!=''" [src]="group.image" width="30px"/>
+                                            <span [class.pl-33]="group.image ==''" class="pl-5">
+                                                {{group.value}}
+                                            </span>
+                                        </mat-option>
+
+                                    </span>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <!-- <mat-form-field class="w-100">
+                                <mat-label>Select Care</mat-label>
+                                <mat-select [(ngModel)]="selectedCare.care_id" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true">
+                                    <ngx-mat-select-search [(ngModel)]="carSearch" placeholderLabel="Select Care" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let care of carelist |stringFilterBy:carSearch:'value'" [value]="care.key"> {{care.value}} </mat-option>
+                                </mat-select> -->
+                                <!--  <mat-select [(ngModel)]="selectedCare.care_id" [ngModelOptions]="{standalone: true}"
+                                    [required]="(showerror == false)?false: true">
+                                    <mat-option *ngFor="let care of carelist" [value]="care.key">
+                                        {{care.value}}
+                                    </mat-option>
+                                </mat-select> -->
+                            <!-- </mat-form-field> -->
+                        </div>
+
+                        <!-- <div class="assignto">
+                            <mat-form-field class="w-100">
+                                <mat-label>Assign To Perfomer</mat-label>
+                                <mat-select [(ngModel)]="selectedCare.user_id" [ngModelOptions]="{standalone: true}">
+                                    <ngx-mat-select-search [(ngModel)]="perSearch" placeholderLabel="Select Perfomer" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let user of userslist |stringFilterBy:perSearch:'value'" [value]="user"> {{user.value}} </mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+                        </div> -->
+
+                        <!--
+                        <div class="addnote">
+                            <mat-form-field class="w-100">
+                                <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                                    placeholder="Notes" [(ngModel)]="selectedCare.note"
+                                    [ngModelOptions]="{standalone: true}"></textarea>
+                            </mat-form-field>
+                        </div>
+ -->
+                        <!-- <div class="addr">
+
+
+                            <mat-icon _ngcontent-fvg-c18="" _ngcontent-bgg-c33="" aria-hidden="true" (click)="assignCare(selectedCare)" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img"> add_circle </mat-icon>
+
+                        </div> -->
+                    </div>
+                    <!-- <div class="nextcancel" *ngIf="this.selectedCareList.length">
+                        <button mat-stroked-button color="" class="cancel-btn" (click)="goForward('resident')">Cancel</button>
+                        <button mat-flat-button color="primary" (click)="goForward('duration');">Save & Continue</button>
+                    </div> -->
+                </div>
+                 </mat-expansion-panel>
+            </div>
+        </div>
+        <div class="third carestep" [ngClass]="{'disable' : thirddisable}">
+            <!-- <div class="step"> <span class="number">3</span> <span class="line"></span> </div> -->
+            <div class="step_detail">
+                <mat-expansion-panel class="no_drop_shadow overflow_show" [expanded]="step2 === 2" (opened)="setStep2(2)" [disabled]="isDisabledDuration">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                <div class="header">
+                    <h4><span class="activity_step">Step Three</span>Duration of Care</h4> <!-- <span *ngIf="thirdEditOption" (click)="goForward('duration')" class="new_icon">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> edit</span> -->
+                </div>
+                </mat-panel-title>
+                 </mat-expansion-panel-header>
+                <div class="hidetopt">
+                    <div class="selected_data w-100" *ngIf="showAddedcares">
+                        <div *ngFor="let careData of this.selectedCareList;let ci = index" class="w-100">
+                            <div class="selected_duration w-100 no_drop_shadow bdr_crd">
+                                <div class="d-flex">
+                                    <h4>{{ careData.care.value }}</h4>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div class="w-100 pr-15">
+                                        <ng-container *ngIf="afterpreview">
+                                            <label>Start Date</label> {{ this.selectedCareList[ci].startDate | date:'mediumDate' }} </ng-container>
+                                        <ng-container *ngIf="!afterpreview">
+                                            <mat-form-field class="w-100">
+                                                <input matInput [matDatepicker]="picker_ci" placeholder="Start Date" [min]="selectedCareList[ci].minDate" (click)="picker_ci.open();closeTimePopUp(ci)" (dateChange)="startDateChangeEvent('change', $event,ci)" [(ngModel)]="this.selectedCareList[ci].startDate" [ngModelOptions]="{standalone: true}" required>
+                                                <mat-datepicker-toggle matSuffix [for]="picker_ci">
+                                                    <mat-icon matDatepickerToggleIcon>
+                                                        <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                                      </mat-icon>
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker_ci></mat-datepicker>
+                                            </mat-form-field>
+                                        </ng-container>
+                                    </div>
+                                    <div class="w-100 pl-15 ">
+                                        <ng-container *ngIf="afterpreview && this.selectedCareList[ci].endDate">
+                                            <label>End Date</label> {{ this.selectedCareList[ci].endDate | date:'mediumDate' }} </ng-container>
+                                        <ng-container *ngIf="!afterpreview">
+                                            <mat-form-field class="w-100">
+                                                <input matInput [matDatepicker]="picker2_ci" placeholder="End Date" [min]="selectedCareList[ci].minDateEnd" (click)="picker2_ci.open()" [ngModelOptions]="{standalone: true}" [(ngModel)]="this.selectedCareList[ci].endDate">
+                                                <mat-datepicker-toggle matSuffix [for]="picker2_ci">
+                                                    <mat-icon matDatepickerToggleIcon>
+                                                        <img class="custom-calendarsvg2" src="./assets/images/report/calendar-menu-icon-blue.svg" width="22" height="20.321">
+                                                      </mat-icon>
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #picker2_ci></mat-datepicker>
+                                            </mat-form-field>
+                                        </ng-container>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div class="w-100 pr-15">
+                                        <ng-container class="mb-10">
+                                          <!--   <label>Add Time</label>  -->
+                                        </ng-container>
+
+                                        <div class="addtime mr-20">
+                                            <!-- this.selectedCareList[ci].time -->
+
+                                            <span class="adtm">
+                                                <a (click)="onAddTimePopup(careData.care.key,ci)" *ngIf="!afterpreview">Add Time</a>
+                                                <!-- this.selectedCareList[ci]['timePopup'] = !this.selectedCareList[ci]['timePopup'] -->
+                                                <div class="timePopup" [ngClass]="{'active': this.selectedCareList[ci]['timePopup']}">
+                                                    <div class="pop_heading">
+                                                        <h3>Add Time</h3>
+                                                    </div>
+                                                    <ng-container  *ngFor="let timeData of selectedCareTime[ci]; let i = index">
+                                                       <ng-container>
+                                                            <mat-form-field class="w-100">
+                                                                <mat-label>Select Time Option</mat-label>
+                                                                <mat-select [(ngModel)]="timeOption" (selectionChange)="onTimeOptionchanged(timeOption)" required>
+                                                                    <ngx-mat-select-search [(ngModel)]="timesearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                                                    <mat-option *ngFor="let option of addTimeOptions |stringFilterBy:timesearch:'value'" [value]="option.key"> {{option.value}} </mat-option>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="timeOption =='shift'">
+                                                            <mat-form-field class="w-100">
+                                                                <mat-label>Select Shift</mat-label><!--(selectionChange)="changeShift($event.value)"-->
+                                                                <mat-select [(ngModel)]="shift"[multiple]="true" #multiSelect
+                                                                    required>
+                                                                   <!-- <mat-select-trigger *ngIf="scheduleReport.resident && scheduleReport.resident.length">
+                                                                        {{allresident ? scheduleReport.resident.length : scheduleReport.resident.length - 1}} items
+                                                                        selected
+                                                                      </mat-select-trigger>-->
+                                                                    <ngx-mat-select-search [(ngModel)]="shiftSearch" placeholderLabel="Select Shifts" noEntriesFoundLabel="Not Found"
+                                                                        name="search"></ngx-mat-select-search>
+                                                                  <!--  <mat-option *ngIf="shiftArr && shiftArr.length" #selectedShift
+                                                                     [value]="0" (click)="selectAllShift()">All
+                                                                    </mat-option>-->
+                                                                    <mat-option #SelectedShift *ngFor="let item of shiftArr |stringFilterBy:resSearch:'name'" [value]="item" (click)="changeShift(item,ci,$event,SelectedShift)">
+
+                                                                    {{item.name}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                                </mat-form-field>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="timeOption =='medpass'">
+                                                            <mat-form-field class="w-100">
+                                                                <mat-label>Select Medpass</mat-label>
+                                                                <mat-select [(ngModel)]="medpass"[multiple]="true" #multiSelect
+                                                                    required>
+                                                                   <!-- <mat-select-trigger *ngIf="scheduleReport.resident && scheduleReport.resident.length">
+                                                                        {{allresident ? scheduleReport.resident.length : scheduleReport.resident.length - 1}} items
+                                                                        selected
+                                                                      </mat-select-trigger>-->
+                                                                    <ngx-mat-select-search [(ngModel)]="medPassSearch" placeholderLabel="Select Medpasses" noEntriesFoundLabel="Not Found"
+                                                                        name="search"></ngx-mat-select-search>
+                                                                  <!--  <mat-option *ngIf="shiftArr && shiftArr.length" #selectedShift
+                                                                     [value]="0" (click)="selectAllShift()">All
+                                                                    </mat-option>-->
+                                                                    <mat-option #SelectedMedPass *ngFor="let item of medPassArr |stringFilterBy:resSearch:'name'" [value]="item" (click)="changeMedpass(item,ci,$event,SelectedMedPass)">
+                                                                    {{item.name}}
+                                                                    </mat-option>
+                                                                </mat-select>
+                                                                </mat-form-field>
+                                                        </ng-container>
+                                                 <!--   <ng-container *ngIf="isshiftwise">
+                                                        <span *ngIf="this.selectedCareList.length" class="w-100 added_time_list">
+                                                            <ng-container *ngFor="let timeData of selectedCareList[ci].time; let i = index">
+                                                                <div class="reponlytime remove_border_time">
+                                                                    <div class="start">
+                                                                        <label class="w-100 d-block time-label">Start Time</label>
+                                                                        <ejs-timepicker [class]="'pickerBorder' " [format]='formatString' [value]="timeData.startTime" readonly="true"  [enabled]=false required [showClearButton]=false></ejs-timepicker>
+                                                                    </div>
+                                                                    <div class="end">
+                                                                        <label class="w-100 d-block time-label">End Time</label>
+                                                                        <ejs-timepicker [value]="timeData.endTime"  [class]="'pickerBorder' " [format]='formatString' readonly="true"  [enabled]=false required [showClearButton]=false></ejs-timepicker>
+                                                                    </div>
+                                                                    <div class="cl">
+                                                                        <div class="ic_mins">
+                                                                            <mat-icon  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" *ngIf="this.selectedCareList[ci].time.length"
+                                                                            (click)="onRemoveTime(careData.care.key,i,ci)">remove_circle </mat-icon>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+                                                        </span>
+                                                        <ng-container>
+                                                            <div class="reponlytime remove_border_time">
+                                                                <div class="start">
+                                                                    <label class="w-100 d-block time-label">Start Time</label>
+
+                                                                    <ejs-timepicker [(ngModel)]="timeData.startTime" [ngModelOptions]="{standalone: true}" (change)="updateCareTimeChanged(careData.care.key,ci,timeData,$event)" [class]="'pickerBorder' " [format]='formatString' [value]="timeData.startTime" [required]="true" [min]="addPopupStartMin" [step]='15' [showClearButton]=false></ejs-timepicker>
+                                                                    </div>
+                                                                <div class="end">
+                                                                    <label class="w-100 d-block time-label">End Time</label>
+
+                                                                    <ejs-timepicker [(ngModel)]="timeData.endTime" [value]="timeData.endTime" [ngModelOptions]="{standalone: true}" [class]="'pickerBorder' " [format]='formatString' [min]="timeData.startTime" [required]="true" [step]='15' [showClearButton]=false></ejs-timepicker>
+                                                                    </div>
+                                                             <div class=" ic_plus" *ngIf="!isEdit">
+                                                                 <mat-icon _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                                                mat-raised-button="" role="img" (click)="onSaveAddTime(careData.care.key,ci,timeData)">add_circle </mat-icon>
+                                                              </div>
+                                                            </div>
+                                                        </ng-container> <span class="arrow"></span>
+                                                    </ng-container>   -->
+                                                    <ng-container *ngIf="timeOption =='time'">
+                                                            <ng-container>
+                                                                    <div class="reponlytime remove_border_time">
+                                                                        <div class="start">
+                                                                            <label class="w-100 d-block time-label">Start Time</label>
+
+                                                                            <ejs-timepicker [(ngModel)]="timeData.startTime" [ngModelOptions]="{standalone: true}" (change)="updateCareTimeChanged(careData.care.key,ci,timeData,$event)" [class]="'pickerBorder' " [format]='formatString' [value]="timeData.startTime" [required]="true" [min]="addPopupStartMin" [step]='15' [showClearButton]=false></ejs-timepicker>
+
+                                                                            <!-- <p-calendar class="w-100" timeOnly="true" hourFormat="24" [(ngModel)]="timeData.startTime" (onSelect)="updateCareTimeChanged(careData.care.key,ci,timeData)" [ngModelOptions]="{standalone: true}" [required]="true"> </p-calendar> '-->
+                                                                        </div>
+                                                                        <div class="end">
+                                                                            <label class="w-100 d-block time-label">End Time</label>
+
+                                                                            <ejs-timepicker [(ngModel)]="timeData.endTime" [value]="timeData.endTime" [ngModelOptions]="{standalone: true}" [class]="'pickerBorder' " [format]='formatString' [required]="true" [step]='15' [showClearButton]=false [min]="timeData.startTime"></ejs-timepicker><!-- -->
+
+                                                                            <!-- <p-calendar matInput class="w-100" timeOnly="true" [minDate]="timeData.startTime" hourFormat="24" [(ngModel)]="timeData.endTime" [ngModelOptions]="{standalone: true}" [required]="true"> </p-calendar> -->
+                                                                        </div>
+                                                                       <!-- <div class="cl">
+                                                                            <div class="ic_mins">
+                                                                                <mat-icon  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" *ngIf="this.selectedCareList[ci].time.length"
+                                                                                (click)="onRemoveTime(careData.care.key,i,ci)">remove_circle </mat-icon>
+                                                                            </div>-->
+                                                                            <!-- <mat-icon *ngIf="this.selectedCareList[ci].time.length"
+                                                                                (click)="onRemoveTime(careData.care.key,i,ci)">close</mat-icon> </div> -->
+
+                                                                     <div class="ic_plus" *ngIf="!isEdit">
+                                                                         <mat-icon _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                                                        mat-raised-button="" role="img" (click)="onSaveAddTime(careData.care.key,ci,timeData,shift, timeOption,false)">add_circle </mat-icon>
+                                                                      </div>
+                                                                    </div>
+
+                                                                        <!--  <mat-icon *ngIf="this.selectedCareTime[ci].length == i+1"
+                                                                        (click)="onAddTime(careData.care.key,ci)">add</mat-icon> -->
+                                                                    <!-- <div class="adtime">
+                                                                        <button mat-button color="primary" class="done-btn" (click)="onSaveAddTime(careData.care.key,ci,timeData, true)">Done</button>
+                                                                    </div> -->
+                                                            </ng-container>
+                                                            <span class="arrow"></span>
+                                                    </ng-container>
+                                                        <span *ngIf="this.selectedCareList.length" class="w-100 added_time_list">
+                                                             <ng-container *ngFor="let timeData of selectedCareList[ci].time?.slice().reverse(); let i = index">
+                                                                 <div class="reponlytime remove_border_time">
+                                                                     <div class="start">
+                                                                         <label class="w-100 d-block time-label">Start Time</label>
+                                                                         <ejs-timepicker [class]="'pickerBorder' " [format]='formatString' [value]="timeData.startTime" readonly="true"  [enabled]=false required [showClearButton]=false></ejs-timepicker>
+                                                                     </div>
+                                                                     <div class="end">
+                                                                         <label class="w-100 d-block time-label">End Time</label>
+                                                                         <ejs-timepicker [value]="timeData.endTime"  [class]="'pickerBorder' " [format]='formatString' readonly="true"  [enabled]=false required [showClearButton]=false></ejs-timepicker>
+                                                                     </div>
+                                                                     <div class="cl">
+                                                                         <div class="ic_mins">
+                                                                             <mat-icon  _ngcontent-egi-c18="" aria-hidden="true" class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color" mat-raised-button="" role="img" *ngIf="this.selectedCareList[ci].time.length"
+                                                                             (click)="onRemoveTime(careData.care.key,i,ci)">remove_circle </mat-icon>
+                                                                         </div>
+                                                                         <!-- <mat-icon *ngIf="this.selectedCareList[ci].time.length"
+                                                                             (click)="onRemoveTime(careData.care.key,i,ci)">close</mat-icon> -->
+                                                                     </div>
+                                                                 </div>
+                                                             </ng-container>
+
+                                                         </span>
+                                                    <div class="adtime">
+                                                        <button mat-button color="basic" (click)="onAddTimePopup(careData.care.key,ci)" class="btn_window_cancle">Cancel</button>
+                                                        <button mat-button color="primary" (click)="onSaveAddTime(careData.care.key,ci,timeData,shift, timeOption,true)" class="btn_window_done">Done</button>
+                                                    </div>
+                                                </ng-container>
+                                                </div>
+                                            </span>
+                                            <ng-container *ngFor="let timeData of selectedCareList[ci].time;let ia = index"> <span class="reptime"> {{timeData.startTime | date:'HH:mm'}} -
+                                                {{timeData.endTime | date:'HH:mm'}}
+                                                <mat-icon (click)="onRemoveListTime(ci, ia,timeData)" *ngIf="!afterpreview">
+                                                    close</mat-icon>
+                                            </span>
+                                        </ng-container>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 pl-15">
+                                        <div class="reptime">
+                                            <ng-container *ngIf="afterpreview">
+                                                <mat-label>Repeats</mat-label> {{ getRepeatValue(this.selectedCareList[ci]['repeat']) }}
+                                            </ng-container>
+                                            <ng-container *ngIf="!afterpreview">
+                                                <mat-form-field class="w-100">
+                                                    <mat-label>Repeats</mat-label>
+                                                    <mat-select [(ngModel)]="this.selectedCareList[ci]['repeat']" [ngModelOptions]="{standalone: true}" required (selectionChange)="repeatChanged(ci)">
+                                                        <ngx-mat-select-search [(ngModel)]="rSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                                        <mat-option *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'" [value]="option.key"> {{option.value}} </mat-option>
+                                                        <!-- <mat-option value="custom">Custom</mat-option> -->
+                                                    </mat-select>
+                                                    <!--  <mat-select [(ngModel)]="this.selectedCareList[ci]['repeat']" [ngModelOptions]="{standalone: true}" required (selectionChange)="repeatChanged(ci)">
+                                                    <mat-option *ngFor="let option of repeatOptions" [value]="option.key">
+                                                        {{option.value}}
+                                                    </mat-option>
+                                                    <mat-option value="custom">Custom</mat-option>
+                                                </mat-select> -->
+                                                </mat-form-field>
+                                            </ng-container>
+                                            <div class="timeset timeset_desc" *ngIf="this.selectedCareList[ci]['repeat_on'] && this.selectedCareList[ci]['repeat'] == 'every_week'">
+                                                <p>Occurs every {{ weekDayTextInForm(this.selectedCareList[ci]['repeat_on']) }}</p>
+                                            </div>
+                                            <div class="timeset timeset_desc" *ngIf="this.selectedCareList[ci]['repeat'] == 'every_month' || this.selectedCareList[ci]['repeat'] == 'every_year'">
+                                                <p *ngIf="this.selectedCareList[ci]['repeat_option'] == 'on_day'">Occurs <span *ngIf="this.selectedCareList[ci]['repeat'] == 'every_year'">every {{ selectedCareList[ci].startDate | date: 'MMMM' }}</span><span *ngIf="this.selectedCareList[ci]['repeat'] == 'every_month'">on day</span> {{ selectedCareList[ci].startDate | date: 'dd'}} </p>
+                                                <p *ngIf="this.selectedCareList[ci]['repeat_option'] == 'on_week_number'">Occurs <span *ngIf="this.selectedCareList[ci]['repeat'] == 'every_year'"> every year on the {{ selectedCareList[ci].startDate | weekNumber | alphaNumber }} {{ selectedCareList[ci].startDate | date: 'EEEE' }} of {{ selectedCareList[ci].startDate | date: 'MMMM' }}</span> <span *ngIf="this.selectedCareList[ci]['repeat'] == 'every_month'"> on the {{ selectedCareList[ci].startDate | weekNumber | alphaNumber }} {{ selectedCareList[ci].startDate | date: 'EEEE' }}</span> </p>
+                                                <p *ngIf="this.selectedCareList[ci]['repeat_option'] == 'on_last_week'">Occurs <span *ngIf="this.selectedCareList[ci]['repeat'] == 'every_year'"> every year on the last {{ selectedCareList[ci].startDate | date: 'EEEE' }} of {{ selectedCareList[ci].startDate | date: 'MMMM' }}</span> <span *ngIf="this.selectedCareList[ci]['repeat'] == 'every_month'"> on the last {{ selectedCareList[ci].startDate | date: 'EEEE' }}</span> </p>
+                                            </div>
+                                            <div class="timeset timeset_desc" *ngIf="selectedCareList[ci]['repeat'] == 'custom_weekly' || selectedCareList[ci]['repeat'] == 'custom_monthly' || selectedCareList[ci]['repeat'] == 'custom_yearly'">
+                                                <p *ngIf="selectedCareList[ci]['repeat_option']">
+                                                    {{getSchedulePerformingTimeString(selectedCareList[ci])}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                 </mat-expansion-panel >
+
+
+            </div>
+
+
+        </div>
+
+                    <!-- <div class="nextcancel" >
+                        <button mat-stroked-button color="" class="cancel-btn" (click)="goForward('cancel')">Cancel</button>
+                        <button mat-flat-button color="primary" (click)="goForward('done')" class="preview_btn">Preview</button>
+                    </div> -->
+
+                    <div class="nextcancel" *ngIf="afterpreview2">
+                        <button mat-stroked-button color="" class="cancel-btn" (click)="goSchedular()">Cancel</button>
+                        <button mat-flat-button color="primary" (click)="done()" class="preview_btn">Done</button>
+                    </div>
+        <!-- <div class="nextcancel careDate" *ngIf="afterpreview2"> -->
+            <!-- <p class="">Care will start from {{careStartDate | date:'fullDate' }}</p> -->
+            <!-- <div class="c">
+                <button mat-stroked-button color="" class="cancel-btn" (click)="goSchedular()">Cancel</button> -->
+                <!-- <button mat-stroked-button color="" (click)="goForward('duration');">Edit</button> -->
+                <!-- <button mat-flat-button color="primary" class="ml-10 preview_btn" (click)="done()">Done</button>
+            </div> -->
+        <!-- </div> -->
+    </div>
+</mat-card>
+
+<ng-template #duplicateCareDialog>
+    <div style="text-align: center;">
+        <h3 style="text-align: center;">Are you sure ?</h3>
+    </div>
+    <div style="text-align: center;">
+        <span *ngFor="let dup of _duplicateCares"> {{ dup.careData.name }} is already scheduled at time {{ '(' + dup.start_time + ')' }}.<br/></span>
+    </div>
+    <div style="text-align: center;margin-top: 20px;">
+        <p > Do you want to continue ? </p>
+    </div>
+    <div class="adtime mt-0">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeDuplicateDialog(false)">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done" (click)="confirmDuplicateDialog()">Confirm</button>
+    </div>
+</ng-template>
+
+<ng-template #repeatChangeDialog>
+    <div class="pop_design ">
+        <h3><span *ngIf="getRepeatValue(this.selectedCareList[this.scheduleRepeat.index]['repeat']) != 'Never Repeat'">Repeat </span> {{getRepeatValue(this.selectedCareList[this.scheduleRepeat.index]['repeat'])}}</h3> <span class="">
+            <!-- <mat-icon (click)="closeRepeatDialog()">close</mat-icon> -->
+        </span>
+    </div>
+    <div class="form cstm_radio_new">
+        <div class="">
+
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat == 'never'">
+                <p class="care_detail">This scheduled care will never repeat.</p>
+            </div>
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_day'">
+                <p class="care_detail">{{ this.selectedCareList[this.scheduleRepeat.index].care.value }} Occur(s) everyday</p>
+            </div>
+
+            <div class="timeset timeset_desc" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_week'">
+                <p class="care_detail">{{ this.selectedCareList[this.scheduleRepeat.index].care.value }} Occur(s) every {{ weekDayTextInForm(this.selectedCareList[this.scheduleRepeat.index].repeat_on) }}</p>
+            </div>
+
+            <div class="timeset timeset_desc list_option_radio" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_month'">
+                <p>Would you like to repeat care on the {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                    <span *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">, the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} </span>
+                    <span *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4"> or the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}</span>  of every month?
+                </p>
+            </div>
+
+            <div class="timeset timeset_desc list_option_radio" *ngIf="this.scheduleRepeat.repeat_on && this.scheduleRepeat.repeat == 'every_year'">
+                <p>Would you like to repeat care on the {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                <span *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">, the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} </span>
+                <span *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4"> or the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>
+                 annually?</p>
+            </div>
+
+
+            <!-- <div class="timeset timeset_desc" *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month' || this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'">
+                <p *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat_option'] == 'on_day'">Occurs <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'">every {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'MMMM' }}</span><span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month'">on day</span> {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'dd'}} </p>
+                <p *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat_option'] == 'on_week_number'">Occurs <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'"> every year on the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} of {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'MMMM' }}</span> <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month'"> on the {{ selectedCareList[this.scheduleRepeat.index].startDate | weekNumber | alphaNumber }} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}</span> </p>
+                <p *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat_option'] == 'on_last_week'">Occurs <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_year'"> every year on the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }} of {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'MMMM' }}</span> <span *ngIf="this.selectedCareList[this.scheduleRepeat.index]['repeat'] == 'every_month'"> on the last {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}</span> </p>
+            </div>   -->
+
+            <div class="timeset" *ngIf="this.scheduleRepeat.repeat == 'every_month' || this.scheduleRepeat.repeat == 'every_year'">
+                <mat-radio-group class="selyear radio-group" aria-label="Select an option" [ngModel]="this.scheduleRepeat.repeat_option" [ngModelOptions]="{standalone: true}">
+                    <ng-container>
+
+                        <mat-radio-button value="on_day" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">{{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                                <span *ngIf="this.scheduleRepeat.repeat == 'every_month'"></span>
+                                {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}
+                            <!-- </button>   -->
+                        </mat-radio-button>
+
+                    </ng-container>
+
+                    <ng-container *ngIf="4 >= (this.scheduleRepeat.startDate | weekNumber : listfilterChar)">
+                        <mat-radio-button value="on_week_number" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ dayNamesShort(this.scheduleRepeat.startDate) }}<span *ngIf="this.scheduleRepeat.repeat == 'every_year'"> of {{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                            <!-- </button> -->
+                        </mat-radio-button>
+                    </ng-container>
+
+                    <ng-container *ngIf="(this.scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4">
+                        <mat-radio-button value="on_last_week" name="repeat_option" (change)="radioRepeatChange($event)">
+                            <!-- <button mat-flat-button class="btn_modual"> -->
+                                Last {{ dayNamesShort(this.scheduleRepeat.startDate) }}<span *ngIf="this.scheduleRepeat.repeat == 'every_year'"> of {{ this.scheduleRepeat.startDate | date: 'MMM' }}</span>
+                            <!-- </button> -->
+                        </mat-radio-button>
+                    </ng-container>
+                </mat-radio-group>
+            </div>
+
+            <div class="timeset" *ngIf="this.scheduleRepeat.repeat == 'every_month' || this.scheduleRepeat.repeat == 'every_year'">
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_day'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class="care_detail font-modal"><!-- {{ this.selectedCareList[this.scheduleRepeat.index].care.value }} --> Care will occur
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on {{ this.scheduleRepeat.startDate | date: 'MMM' }} {{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on </span> {{ this.scheduleRepeat.startDate | date: 'dd'}}{{dateFormat2( this.scheduleRepeat.startDate | date: 'dd')}} {{ selectedCareList[this.scheduleRepeat.index].startDate | date: 'EEEE' }}
+                </p>
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_week_number'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class="care_detail font-modal"><!-- {{ this.selectedCareList[this.scheduleRepeat.index].care.value }} --> Care will occur
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on  {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ this.scheduleRepeat.startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on {{ this.scheduleRepeat.startDate | weekNumber  }}{{dateFormat2( this.scheduleRepeat.startDate | weekNumber )}} {{ this.scheduleRepeat.startDate | date: 'EEEE' }}</span>
+                </p>
+                <p *ngIf="this.scheduleRepeat.repeat_option == 'on_last_week'" style="font-family: 'SFProText-Regular' !important;font-size: 14px !important;" class="care_detail font-modal"><!-- {{ this.selectedCareList[this.scheduleRepeat.index].care.value }} --> Care will occur
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_year'">yearly on the last {{ this.scheduleRepeat.startDate | date: 'EEEE' }} of {{ this.scheduleRepeat.startDate | date: 'MMMM' }}</span>
+                    <span *ngIf="this.scheduleRepeat.repeat == 'every_month'">monthly on the last {{ this.scheduleRepeat.startDate | date: 'EEEE' }}</span>
+                </p>
+            </div>
+
+        </div>
+    </div>
+    <div class="adtime mt-0">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done" (click)="saveRepeatDialog()">Done</button>
+    </div>
+</ng-template>
+
+<ng-template #callRepeatDialog>
+    <div class="pop_heading">
+        <h3>Repeat</h3> <span class="">
+            <mat-icon (click)="closeRepeatDialog()">close</mat-icon>
+        </span>
+    </div>
+    <div class="form">
+        <!-- <div class="lbl"><label>Start date</label></div> -->
+        <div class="repinfo">
+             <!--<div class="selectdate">
+               <label>Start Date</label>
+                  <mat-form-field>
+                    <input matInput [matDatepicker]="picker" placeholder="Start Date" [min]="minDate" (dateChange)="startDateChangeEvent('change', $event)" [(ngModel)]="scheduleRepeat.startDate" [ngModelOptions]="{standalone: true}" required readonly>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>-->
+            <div class="repdayweek cstm_class_repeat">
+                <div class="form_row">
+                    <label>Start Date</label>
+                    <div class="date">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="picker" [min]="minDate" (dateChange)="startDateChangeEvent('change', $event, scheduleRepeat.index)" (click)="picker.open()" [(ngModel)]="scheduleRepeat.startDate" [ngModelOptions]="{standalone: true}" required>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                        <!-- {{ scheduleRepeat.startDate | date: 'mediumDate'}} -->
+                    </div>
+                </div>
+                <div class="rht">
+                    <div class="form_row">
+                        <label>Repeat every</label>
+                        <div class="ldrep">
+                            <div class="day" *ngIf="scheduleRepeat.repeat !== 'every_year'">
+                                <mat-form-field>
+                                    <mat-select [(ngModel)]="scheduleRepeat.repeat_tenure" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true">
+                                        <ngx-mat-select-search [(ngModel)]="nSearch" placeholderLabel="Select Repeat" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <mat-option *ngFor="let i of arrayNumber(10) |stringFilterBy:nSearch:'i'" [value]="i"> {{i}} </mat-option>
+                                    </mat-select>
+                                    <!--  <mat-select [(ngModel)]="scheduleRepeat.repeat_tenure" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true">
+                                        <mat-option *ngFor="let i of arrayNumber(10)" [value]="i">
+                                            {{i}}
+                                        </mat-option>
+                                    </mat-select> -->
+                                </mat-form-field>
+                            </div>
+                            <div class="rep">
+                                <mat-form-field>
+                                    <mat-select [(ngModel)]="scheduleRepeat.repeat" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" (selectionChange)="repeatPopChanged(ci)">
+                                        <ngx-mat-select-search [(ngModel)]="rSearch" placeholderLabel="Select Option" noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <ng-container *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'">
+                                            <mat-option *ngIf="option.key != 'never'" [value]="option.key"> {{option.value}} </mat-option>
+                                            <!-- <mat-option *ngFor="let option of repeatOptions |stringFilterBy:rSearch:'value'" [value]="option.key">
+                                            {{option.value}}
+                                          </mat-option> -->
+                                        </ng-container>
+                                    </mat-select>
+                                    <!-- <mat-select [(ngModel)]="scheduleRepeat.repeat" [ngModelOptions]="{standalone: true}" [required]="(showerror == false)?false: true" (selectionChange)="repeatPopChanged(ci)" >
+                                        <ng-container *ngFor="let option of repeatOptions" >
+                                            <mat-option *ngIf="option.key != 'never'"  [value]="option.key">
+                                                {{option.value}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-select> -->
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="customradio" *ngIf="scheduleRepeat.repeat == 'every_week' || scheduleRepeat.repeat == 'every_day' ">
+                        <div class="rd_hol">
+                            <input type="checkbox" id="M" value="Monday" [(ngModel)]="scheduleRepeat.repeat_on.monday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.monday" (change)="weekDayChanged($event)">
+                            <label for="M"><span>M</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="T" value="Tuesday" [(ngModel)]="scheduleRepeat.repeat_on.tuesday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.tuesday" (change)="weekDayChanged($event)">
+                            <label for="T"><span>T</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="W" value="Wednesday" [(ngModel)]="scheduleRepeat.repeat_on.wednesday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.wednesday" (change)="weekDayChanged($event)">
+                            <label for="W"><span>W</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="Th" value="Thursday" [(ngModel)]="scheduleRepeat.repeat_on.thursday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.thursday" (change)="weekDayChanged($event)">
+                            <label for="Th"><span>T</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="F" value="Friday" [(ngModel)]="scheduleRepeat.repeat_on.friday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.friday" (change)="weekDayChanged($event)">
+                            <label for="F"><span>F</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="Sa" value="Saturday" [(ngModel)]="scheduleRepeat.repeat_on.saturday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.saturday" (change)="weekDayChanged($event)">
+                            <label for="Sa"><span>S</span></label>
+                        </div>
+                        <div class="rd_hol">
+                            <input type="checkbox" id="Su" [(ngModel)]="scheduleRepeat.repeat_on.sunday" [ngModelOptions]="{standalone: true}" [checked]="scheduleRepeat.repeat_on.sunday" (change)="weekDayChanged($event)">
+                            <label for="Su"><span>S</span></label>
+                        </div>
+                    </div>
+                    <div class="yearSelction">
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_day'">
+                            <p class="care_detail">{{ careData.care.value }} Occurs every day</p>
+                        </div>
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_week'">
+                            <p class="care_detail">{{ careData.care.value }} Occurs every {{ weekDayText() }}</p>
+                        </div>
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_month' || scheduleRepeat.repeat == 'every_year'">
+                            <mat-radio-group class="selyear" aria-label="Select an option" [ngModel]="scheduleRepeat.repeat_option" [ngModelOptions]="{standalone: true}">
+                                <ng-container>
+                                    <mat-radio-button value="on_day" name="repeat_option" (change)="radioRepeatChange($event)">On <span *ngIf="scheduleRepeat.repeat == 'every_year'">{{ scheduleRepeat.startDate | date: 'MMMM' }}</span><span *ngIf="scheduleRepeat.repeat == 'every_month'">day</span> {{ scheduleRepeat.startDate | date: 'dd'}} </mat-radio-button>
+                                </ng-container>
+                                <ng-container *ngIf="4 >= (scheduleRepeat.startDate | weekNumber : listfilterChar)">
+                                    <mat-radio-button value="on_week_number" name="repeat_option" (change)="radioRepeatChange($event)">On the {{ scheduleRepeat.startDate | weekNumber | alphaNumber }} {{ scheduleRepeat.startDate | date: 'EEEE' }}<span *ngIf="scheduleRepeat.repeat == 'every_year'"> of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> </mat-radio-button>
+                                </ng-container>
+                                <ng-container *ngIf="(scheduleRepeat.startDate | weekNumber : listfilterChar) >= 4">
+                                    <mat-radio-button value="on_last_week" name="repeat_option" (change)="radioRepeatChange($event)">On the last {{ scheduleRepeat.startDate | date: 'EEEE' }}<span *ngIf="scheduleRepeat.repeat == 'every_year'"> of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> </mat-radio-button>
+                                </ng-container>
+                            </mat-radio-group>
+                        </div>
+                        <div class="timeset" *ngIf="scheduleRepeat.repeat == 'every_month' || scheduleRepeat.repeat == 'every_year'">
+                            <p *ngIf="scheduleRepeat.repeat_option == 'on_day'">Occurs <span *ngIf="scheduleRepeat.repeat == 'every_year'">every {{ scheduleRepeat.startDate | date: 'MMMM' }}</span><span *ngIf="scheduleRepeat.repeat == 'every_month'">on day</span> {{ scheduleRepeat.startDate | date: 'dd'}}</p>
+                            <p *ngIf="scheduleRepeat.repeat_option == 'on_week_number'">Occurs <span *ngIf="scheduleRepeat.repeat == 'every_year'"> every year on the {{ scheduleRepeat.startDate | weekNumber | alphaNumber }} {{ scheduleRepeat.startDate | date: 'EEEE' }} of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> <span *ngIf="scheduleRepeat.repeat == 'every_month'"> on the {{ scheduleRepeat.startDate | weekNumber | alphaNumber }} {{ scheduleRepeat.startDate | date: 'EEEE' }}</span></p>
+                            <p *ngIf="scheduleRepeat.repeat_option == 'on_last_week'">Occurs <span *ngIf="scheduleRepeat.repeat == 'every_year'"> every year on the last {{ scheduleRepeat.startDate | date: 'EEEE' }} of {{ scheduleRepeat.startDate | date: 'MMMM' }}</span> <span *ngIf="scheduleRepeat.repeat == 'every_month'"> on the last {{ scheduleRepeat.startDate | date: 'EEEE' }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="adtime">
+        <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+        <button mat-button color="primary" class="btn_window_done" (click)="saveRepeatDialog()">Done</button>
+    </div>
+</ng-template>
+
+<!-- Weeekly -->
+<ng-template #customweekly>
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Weekly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+
+        <div>
+            <mat-form-field class="w-50 wd-170">
+                <mat-label>Every...</mat-label>
+                <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_tenure']"
+                    [ngModelOptions]="{standalone: true}" required>
+                    <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                    <mat-option *ngFor="let option of weekList |stringFilterBy:weekSearch:'key'" [value]="option.value">
+                        {{option.key}} </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="d-flex mr-10 mt-20">
+            <div class="customradio">
+                <div class="rd_hol">
+                    <input type="checkbox" id="Su" [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.sunday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.sunday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Su"><span>Sun</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="M" value="Monday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.monday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.monday"
+                        (change)="weekDayChanged($event)">
+                    <label for="M"><span>Mon</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="T" value="Tuesday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.tuesday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.tuesday"
+                        (change)="weekDayChanged($event)">
+                    <label for="T"><span>Tues</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="W" value="Wednesday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.wednesday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.wednesday"
+                        (change)="weekDayChanged($event)">
+                    <label for="W"><span>Wed</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="Th" value="Thursday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.thursday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.thursday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Th"><span>Thurs</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="F" value="Friday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.friday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.friday"
+                        (change)="weekDayChanged($event)">
+                    <label for="F"><span>Fri</span></label>
+                </div>
+                <div class="rd_hol">
+                    <input type="checkbox" id="Sa" value="Saturday"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index].repeat_on.saturday"
+                        [ngModelOptions]="{standalone: true}"
+                        [checked]="selectedCareList[scheduleRepeat.index].repeat_on.saturday"
+                        (change)="weekDayChanged($event)">
+                    <label for="Sa"><span>Sat</span></label>
+                </div>
+            </div>
+
+        </div>
+        <div class="d-flex mr-10 mt-20 mb-5">
+            <span class="font-modal">{{getSchedulePerformingTimeString(selectedCareList[scheduleRepeat.index])}}</span>
+            <!-- <span>{{careString}}</span> -->
+        </div>
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(selectedCareList[scheduleRepeat.index])">Done</button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Monthly -->
+<ng-template #custommonthly>
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Monthly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+
+        <div class="d-flex mr-10 mt-20">
+            <div class="w-50 pr-15">
+                <mat-form-field class="w-100">
+                    <mat-label>Every...</mat-label>
+                    <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_tenure']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="monthSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of monthList |stringFilterBy:monthSearch:'key'"
+                            [value]="option.value"> {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>On the...</mat-label>
+                    <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['month_date']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="daySearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of monthDayList |stringFilterBy:daySearch:'name'"
+                            [value]="option.value"> {{option.name}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="d-flex mr-10 mt-20">
+            <span
+                class="font-modal font-modal">{{getSchedulePerformingTimeString(selectedCareList[scheduleRepeat.index])}}</span>
+            <!-- <span>{{careString}}</span> -->
+        </div>
+
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(this.selectedCareList[this.scheduleRepeat.index])">Done</button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Yearly -->
+<ng-template #customyearly>
+    <div style="position: relative; height: 100%;">
+        <div class="pop_design">
+            <h3>Custom Yearly</h3>
+            <span>
+                <mat-icon (click)="closeRepeatDialog()"></mat-icon>
+            </span>
+        </div>
+
+        <div class="d-flex mr-10 mt-20">
+            <div class="w-50 pr-15">
+                <mat-form-field class="w-100">
+                    <mat-label>Every...</mat-label>
+                    <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_tenure']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="yearSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of yearList |stringFilterBy:yearSearch:'key'" [value]="option.value">
+                            {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>In the Month of...</mat-label>
+                    <mat-select (selectionChange)="checkWeekNumbers(selectedCareList[scheduleRepeat.index]['month_date'])"
+                        [(ngModel)]="selectedCareList[scheduleRepeat.index]['month_date']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="monthNameSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of monthNameList |stringFilterBy:monthNameSearch:'key'"
+                            [value]="option.value"> {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>On the...</mat-label>
+                    <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_option']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="customrepeatSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of customRepeat |stringFilterBy:customrepeatSearch:'key'"
+                            [value]="option.value"> {{option.key}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="w-50 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>Day</mat-label>
+                    <mat-select [(ngModel)]="selectedCareList[scheduleRepeat.index]['repeat_on']"
+                        [ngModelOptions]="{standalone: true}" required>
+                        <ngx-mat-select-search [(ngModel)]="weekSearch" placeholderLabel="Select Option"
+                            noEntriesFoundLabel="Not Found" name="search" required></ngx-mat-select-search>
+                        <mat-option *ngFor="let option of customWeekDayList |stringFilterBy:weekSearch:'name'"
+                            [value]="option"> {{option.name | titlecase}} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="d-flex mr-10 mt-10">
+            <span
+                class="font-modal font-modal">{{getSchedulePerformingTimeString(selectedCareList[scheduleRepeat.index])}}</span>
+        </div>
+
+        <div class="adtime custom-yearly-btn">
+            <button mat-button color="basic" class="btn_window_cancle" (click)="closeRepeatDialog()">Cancel</button>
+            <button mat-button color="primary" class="btn_window_done"
+                (click)="saveRepeatDialog(selectedCareList[scheduleRepeat.index])">Done</button>
+        </div>
+    </div>
+</ng-template>

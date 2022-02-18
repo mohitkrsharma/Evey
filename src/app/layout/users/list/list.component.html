@@ -1,0 +1,231 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title *ngIf="!isArcheive">Users</mat-card-title>
+        <mat-card-title *ngIf="isArcheive">User Archive</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-20 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search by user name" />
+                        <!-- <input matInput placeholder="Search"> -->
+                    </mat-form-field>
+                </div>
+                <div class="w-80 pl-15">
+                    <div class="example-button-row text-right w-100">
+                        <button *ngIf="userAccess.isAdd" mat-stroked-button class="ml-3 btn_Secondary" (click)="addForm()">Add New</button>
+
+                        <button mat-stroked-button class="ml-3 btn_Secondary" (click)="filter()">Filter</button>
+
+                        <button *ngIf="userAccess.isExport" mat-stroked-button class="ml-3 btn_Secondary" (click)="exportUser()">Export</button>
+
+                        <!-- <button *ngIf="userAccess.isAdd" mat-stroked-button class="ml-3 btn_Secondary" (click)="toggle()">Bulk Upload</button> -->
+
+                        <button *ngIf="!isArcheive" mat-stroked-button class="ml-3 btn_Secondary" (click)="sendMail()">Send Invite</button>
+
+                        <button *ngIf="userAccess.isAdd && !isArcheive" mat-stroked-button class="ml-3 btn_Secondary" (click)="achieve()" >Archive</button>
+
+                        <button *ngIf="isArcheive"  mat-stroked-button (click)="defArchieve()" class="ml-3 btn_Secondary">Active</button>
+
+                        <button *ngIf="userAccess.isDelete" #deleteButton mat-stroked-button class="ml-3 btn_Secondary" (click)="delete()">Delete</button>
+                       <!--  <button *ngIf="isArcheive" #restoreButton mat-stroked-button class="ml-3 btn_Secondary" (click)="deleteRestore()">Restore</button> -->
+
+                    </div>
+                </div>
+            </div>
+            <!-- bulk upload form -->
+            <ng-container *ngIf="show">
+                <div class="d-flex justify-content-between form-row mt-20">
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Organization</mat-label>
+                                <mat-select [(ngModel)]="organization"(selectionChange)="changeOrg($event.value,'bulk')" name="organization">
+                                <ngx-mat-select-search [(ngModel)]="orgSearch1" placeholderLabel="Select Organization" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch1:'org_name'" [value]="item._id">
+                                {{item.org_name}}
+                                </mat-option>
+                                </mat-select>
+                            <!-- <mat-select [(ngModel)]="organization" (selectionChange)="changeOrg(organization,'bulk')">
+                                <mat-option *ngFor="let item of organiz" [value]="item._id">
+                                    {{item.org_name}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Building</mat-label>
+                                <mat-select  [(ngModel)]="facility"(selectionChange)="changeFac($event.value,'bulk')" name="facility" required>
+                                 <ngx-mat-select-search [(ngModel)]="searchCtrl1" placeholderLabel="Select Building" noEntriesFoundLabel="Not Found"
+                                 name="search"></ngx-mat-select-search>
+                                <mat-option *ngFor="let item of fac_list  |stringFilterBy:searchCtrl1:'fac_name'" [value]="item._id">
+                                {{item.fac_name}}
+                                </mat-option>
+                                </mat-select>
+                           <!--  <mat-select [(ngModel)]="facility" (selectionChange)="changeFac(facility,'bulk')">
+                                <mat-option *ngFor="let item of fac_list" [value]="item._id">
+                                    {{item.fac_name}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end form-row">
+                    <div>
+                        <label for="choose-field" class="choose-btn btn_Secondary">Upload</label>
+                        <input id="choose-field" [(ngModel)]="filedata" #myInput class="choose-field" type="file"
+                            name="useravatar" (change)="uploadFile($event,organization,facility)">
+                        <!-- <button mat-flat-button class="ml-10" color="primary" (click)="download()">Download</button> -->
+                        <a href="assets/excel/Add_User.xlsx" mat-flat-button class="ml-10 btn_Secondary" color="primary"
+                            download>Download
+                            Sample</a>
+
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between form-row" *ngFor="let row of errorMsg">
+                        <label>{{row}}</label>
+                </div>
+            </ng-container>
+
+            <!-- filter user data -->
+            <ng-container *ngIf="filtershow">
+                <div class="d-flex justify-content-between form-row mt-20">
+                    <div class="w-100 pr-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Organization</mat-label>
+                            <mat-select [(ngModel)]="organization"(selectionChange)="changeOrg($event.value,'filter')" name="organization">
+                                <ngx-mat-select-search [(ngModel)]="orgSearch" placeholderLabel="Select Organization" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                                <mat-option *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'" [value]="item._id">
+                                {{item.org_name}}
+                                </mat-option>
+                                </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                            <mat-label>
+                                Building</mat-label>
+                                 <mat-select  [(ngModel)]="facility"(selectionChange)="changeFac($event.value,'filter')" name="facility" required>
+                                 <ngx-mat-select-search [(ngModel)]="searchCtrl" placeholderLabel="Select Building" noEntriesFoundLabel="Not Found"
+                                 name="search"></ngx-mat-select-search>
+                                <mat-option *ngFor="let item of fac_list  |stringFilterBy:searchCtrl:'fac_name'" [value]="item._id">
+                                {{item.fac_name}}
+                                </mat-option>
+                                </mat-select>
+                            <!-- <mat-select [(ngModel)]="facility" (selectionChange)="changeFac(facility,'filter')">
+                                <mat-option *ngFor="let item of fac_list" [value]="item._id">
+                                    {{item.fac_name}}
+                                </mat-option>
+                            </mat-select> -->
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end form-row">
+                    <button mat-flat-button class="ml-10" color="primary" (click)="resetFilter()" class="btn_Secondary">Reset</button>
+                </div>
+            </ng-container>
+
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center" *ngIf="dataSource">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" matSortActive="{{pagiPayload.sort.active}}"
+                matSortDirection="{{pagiPayload.sort.direction}}" matSortDisableClear>
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="iconalign" *ngIf="userAccess.isEdit && column.id=='name' && column.id !='facility'"  (click)="editUser(element._id)"><a>{{element[column.id]}}</a></span>
+                        <span class="iconalign" *ngIf="!userAccess.isEdit && column.id=='name' && column.id !='facility'"  >{{element[column.id]}}</span>
+                        <span class="iconalign" *ngIf="column.id!='name' && column.id !='facility'" >{{element[column.id]}} </span>
+                        <span class="iconalign" *ngIf="column.id ==='facility'" >
+                         <ul *ngIf="element[column.id]">
+                             <li *ngFor="let item of element[column.id].split(',')">
+                               <span>{{item}}</span>
+                             </li>
+                         </ul>
+
+                        </span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="enable_livedashboard">
+                    <th class="min-width" mat-header-cell [hidden]="true" *matHeaderCellDef> Enable Live Dashboard </th>
+                    <td mat-cell [hidden]="true" *matCellDef="let elements">
+                        <mat-slide-toggle color="primary" [checked]="elements.enable_livedashboard"
+                            (change)="onChangelivedashboard($event,elements._id)" [disabled]="!userAccess.isEdit"></mat-slide-toggle>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="suspend_user">
+                    <th style="width: 100px !important;" class="min-width" mat-header-cell *matHeaderCellDef>Access</th>
+                    <td mat-cell *matCellDef="let elements">
+                      <mat-slide-toggle (change)="suspendUser($event,elements._id);elements.active=$event.checked" color="primary" [checked]="elements.active" [disabled]="!userAccess.isEdit">
+                      </mat-slide-toggle>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="email_access">
+                    <th mat-header-cell [hidden]="true" *matHeaderCellDef> Email Access </th>
+                    <td mat-cell [hidden]="true" *matCellDef="let elements">
+                        <mat-slide-toggle color="primary" [checked]="elements.email_access"
+                            (change)="sendEmailAccessToggle($event,elements._id)" [disabled]="!userAccess.isEdit"></mat-slide-toggle>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th style="width: 100px !important;" class="min-width" mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button *ngIf="userAccess.isEdit" mat-mini-fab color="primary" (click)="editUser(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button *ngIf="userAccess.isDelete" mat-mini-fab color="primary" (click)="deleteUser(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <!--  <button *ngIf="_commonService.checkPrivilegeModule('users','add') && isArcheive" mat-mini-fab color="primary" (click)="restoreUser(elements._id)">
+                          <mat-icon>restore</mat-icon>
+                        </button> -->
+                        <!-- <button mat-mini-fab color="primary" (click)="viewUser(elements._id)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                        </button> -->
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <div class="w-100 totalCount">
+        <div class="w-90">
+            <mat-card-actions>
+                <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+                    [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+            </mat-card-actions>
+        </div>
+        <div class="w-10 tcText">
+            <span class="span-pos" (click)="getTotalCount()">Total Count:</span>
+            <mat-spinner *ngIf="isLoading" class="countPos" [diameter]="20"></mat-spinner>
+            <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+        </div>
+    </div>
+
+</mat-card>
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

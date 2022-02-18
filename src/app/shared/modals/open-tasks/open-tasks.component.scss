@@ -1,0 +1,17 @@
+table thead th{ text-align: left;}
+table td, table th{vertical-align: middle}
+table.mat-table{border-spacing: 0;}
+.mat-cell, .mat-footer-cell {
+    font-size: 14px;
+    padding: 8px 0px !important; 
+    word-break: break-word;
+}
+mat-row, mat-header-row, mat-footer-row, th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
+    border-bottom-color: rgba(0, 0, 0, 0.12);
+	border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+.mat-header-cell {
+    padding: 8px 0px !important;
+	font-weight: bold;
+}

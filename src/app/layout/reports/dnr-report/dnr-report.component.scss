@@ -1,0 +1,199 @@
+@import "./../../../../styles/cstm-variable";
+
+.mat-cell{
+    text-transform: capitalize;
+}
+
+.btn_Secondary{
+    margin:0 0 0 5px !important;
+    @include btn-main;
+}
+
+.censuscreated {
+    display: flex;
+    justify-content: space-between;
+    background: #1975B8;
+    padding: 10px 15px;
+    color: #BFE7F6;
+    border-radius: 5px;
+    margin-top: 35px !important;
+    .shifttime,
+    .created {
+        h4 {
+            margin: 0 0 5px 0;
+            color: #fff;
+            font-weight: 400;
+        }
+
+        span {
+            color: #BFE7F6;
+        }
+    }
+
+    .repname {
+        display: flex;
+        align-items: center;
+
+        h3 {
+            margin: 0;
+            font-weight: 400;
+            color: #fff;
+        }
+    }
+}
+
+// .censuscreated {
+//     .shifttime {
+//         font-size: 20px !important;
+//         font-family: "SFProDisplay-Bold" !important;
+//         // @include title-text;
+
+//         h4 {
+//             margin: 0;
+//         }
+//     }
+
+//     .created {
+//         h4 {
+//             @include title-text;
+//         }
+
+//         span {
+//             @include title-text;
+//         }
+//     }
+// }
+
+tbody{
+    .value{
+        text-align: center;
+    }
+    td{
+        @include secondary-text-regular
+    }
+}
+thead{
+    td{
+        @include secondary-title
+    }
+}
+
+table {
+    border-collapse: collapse;
+}
+.table td, .table th {
+    padding: .75rem;
+    vertical-align: middle;
+    border-top: 1px solid #DEE2E6;
+    border-bottom: 1px solid #DEE2E6;
+    height: 50px;
+}
+thead tr th {
+    border: 0 !important;
+}
+.text-red {
+     color: #EF4036 !important;
+}
+.text-green {
+    color: #25d505 !important;
+}
+
+
+  .census-grids {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+.censusgrid {
+    max-width: calc(25% - 1.8vh);
+    width: 24%;
+    // border: 1px solid #b6ddef;
+    background: #e9f9fe;
+    padding: 10px;
+    border-radius: 5px;
+}
+.censusgrid2 {
+    max-width: calc(1050% - 1.8vh);
+    width: 100%;
+    border: 1px solid #b6ddef;
+    // background: #e9f9fe;
+    padding: 10px;
+    border-radius: 5px;
+}
+.countab {
+    display: flex;
+    font-size: 5.5vh ;
+    font-family: "SFProDisplay-Bold" !important;
+    color: #1d78be;
+    margin: 0;
+}
+.count2 {
+    font-size: 3.5vh;
+    font-family: "SFProDisplay-Bold" !important;
+    margin: 17px 0px 0px 0px;
+}
+.visibility-hidden{
+    visibility: hidden;
+}
+.totalresi {
+    font-size: 1.8vh;
+    color: #1d78be;
+    font-family: 'SFProText-Regular' !important;
+    margin: 0;
+}
+.goalresi{
+    font-size: 1.8vh;
+    font-family: 'SFProText-Regular' !important;
+    margin: 0;
+}
+.text-grey {
+    color: #58595B;
+}
+.pop_heading {
+    margin-bottom: 25px;
+
+    h3 {
+        margin: 0;
+    }
+
+    .font_style {
+        @include secondary-text-regular;
+    }
+}
+img.custom-calendarsvg2 {
+    position: relative;
+    width: 1em;
+    margin-top: -22px;
+    margin-left: 0;
+}
+
+.btn_report_pop {
+    margin-top: 20px;
+
+    button {
+        background: transparent !important;
+    }
+}
+
+.censuscreated {
+    .shifttime {
+      @include second-heading;
+  
+      h4 {
+        margin: 0;
+      }
+    }
+  
+    .created {
+      h4 {
+        @include title-text;
+      }
+  
+      span {
+        @include title-text;
+      }
+    }
+  }

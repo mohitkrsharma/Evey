@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <clipPath id="clip-garbage-color">
+      <rect width="36" height="36"/>
+    </clipPath>
+  </defs>
+  <g id="garbage-color" clip-path="url(#clip-garbage-color)">
+    <g id="Group_6" data-name="Group 6" transform="translate(-112.602 -730)">
+      <path id="Path_11" data-name="Path 11" d="M141.407,733.77l-6.458.916-.121-.83a2.183,2.183,0,0,0-2.475-1.834l-4.425.628a2.119,2.119,0,0,0-1.813,2.394l.128.878-6.827.968a.94.94,0,0,0-.8,1.063l.111.765a.946.946,0,0,0,1.074.795l21.991-3.121a.939.939,0,0,0,.8-1.062l-.111-.765A.946.946,0,0,0,141.407,733.77Zm-13.811,1.1a.908.908,0,0,1,.777-1.025l4.007-.568a.914.914,0,0,1,1.037.767l.121.838-5.82.826Z" fill="#0063ab"/>
+      <path id="Path_12" data-name="Path 12" d="M119.672,740.484l2.184,21.749A1.974,1.974,0,0,0,123.829,764H137.17a1.974,1.974,0,0,0,1.973-1.767l2.184-21.749Z" fill="#0063ab"/>
+    </g>
+  </g>
+</svg>

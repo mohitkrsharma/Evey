@@ -1,0 +1,71 @@
+<mat-card *ngIf="announcement">
+  <mat-card-header class="d-flex justify-content-between align-center w-100">
+    <mat-card-title>View Announcement</mat-card-title>
+    <div class="d-flex align-center w-100 justify-content-end pr-15">
+      Active
+      <mat-slide-toggle color="primary" class="pl-15 " [(ngModel)]="announcement.isactive" name="isactive" (change)="onChangeActive($event, announcement._id)" >
+      </mat-slide-toggle>
+    </div>
+    <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="editUser(announcement._id)"
+    >
+      Edit
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list *ngIf="announcement">
+      <mat-card
+        class="alert-box mb-10"
+        *ngIf="announcement.message != ''"
+        [ngStyle]="{
+          'background-color': announcement.background_color,
+          'border-color': announcement.border_color,
+          color: announcement.font_color,
+          'font-size': announcement.font_size + 'px'
+        }"
+      >
+        <mat-card-content
+          class="m-0 p-0"
+          [ngStyle]="{ 'font-size': announcement.font_size + 'px' }"
+        >
+          <p [innerHTML]="announcement.message | sanitizeText"></p>
+        </mat-card-content>
+      </mat-card>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">Orginization<span>:</span></div>
+          <div class="w-70 pl-15">
+            {{ facility.org }}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">Facility<span>:</span></div>
+          <div class="w-70 pl-15">
+            {{ facility.fac }}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">Created Date <span>:</span></div>
+          <div class="w-70 pl-15">
+            {{ announcement.date ? (announcement.date | date) : "--" }}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

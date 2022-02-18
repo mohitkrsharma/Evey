@@ -1,0 +1,324 @@
+<header class="main-header" (window:beforeunload)="doBeforeUnload()" (window:unload)="doUnload()">
+  <div class="heading">Alerts and Announcements</div>
+  <div class="nav-brand d-flex align-center"><img src="assets/logo/dashboard_logo.svg">
+  </div>
+  <!-- <div class="current-time">
+    Monday, July 19<sup>th</sup> 13:35
+  </div> -->
+  <div class="current-time">
+    <!-- {{ _dateTime | date:'MMM d, y, h:mm a' }} -->
+    <div class="datetime">
+      {{ _date }}
+      <span></span>
+      <mat-icon>access_time</mat-icon>{{ _time }}
+    </div>
+    <span> {{ facility }} </span>
+    <!-- Monday, July 19<sup>th</sup> 13:35 -->
+  </div>
+</header>
+
+<div class="content-wrapper statusdashboard">
+
+  <div class="statusdashboard_main">
+
+
+    <div class="left">
+      <div class="top-side">
+        <div class="report-detail">
+
+          <div class="section_title">
+            <img class="covidicon" src="./assets/images/virus-new.svg" width="28"><span>COVID-19 Facility Status</span>
+          </div>
+
+          <div class="numbers">
+
+            <div class="report-grid">
+
+              <div class="resident">
+                <h3>{{ exceptional_count }}</h3>
+                <span>COVID-19 High Risk <mat-icon>error</mat-icon> </span>
+              </div>
+
+            </div>
+
+
+            <div class="report-grid">
+
+              <div class="resident">
+                <h3>{{isolated_residents.length}}</h3>
+                <span>Isolation</span>
+              </div>
+
+            </div>
+
+            <div class="report-grid">
+
+              <div class="resident covid">
+                <h3>{{totalPostive}}</h3>
+                <span>COVID-19 Positive</span>
+              </div>
+
+            </div>
+
+
+          </div>
+
+
+          <div class="report_content">
+
+            <div class="report-grid table-grid level two-blocks lighblue ">
+              <div class="grid-heading d-flex justify-content-between">
+                <div class="d-flex align-items-center">COVID-19 High Risk
+                  <span class="lengthcount">({{ exceptional_count }})</span>
+                </div>
+              </div>
+              <div class="table-wrapper table-exceptional-risk">
+                <table class="scroller" mat-table [dataSource]="dataSource1">
+                  <ng-container matColumnDef="resident">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="room">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">{{element.room && element.room!="" ?element.room : '-'}}
+
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              </div>
+
+            </div>
+
+            <div class="report-grid table-grid level two-blocks lighblue">
+              <div class="grid-heading d-flex justify-content-between">
+                <div class="d-flex align-items-center">Isolation
+                  <span class="lengthcount"
+                    *ngIf="isolated_residents && isolated_residents.length">({{ isolated_residents.length }})</span>
+                </div>
+              </div>
+              <div class="table-wrapper table-level-isolation">
+
+                <table class="scroller" mat-table [dataSource]="dataSource">
+                  <ng-container matColumnDef="resident">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                      <span *ngIf="element.isolation_end_date!=''">
+                        <timer [days]="element.isolation_days" [displayValue]="true"
+                          [startDate]="element.isolation_start_date" [endDate]="element.isolation_end_date"
+                          [id]="element._id" (onComplete)="timerCompleted($event)"></timer>
+                      </span>
+                    </td>
+                  </ng-container>
+                  <!-- <ng-container matColumnDef="isolation_end_date">
+                  <th mat-header-cell *matHeaderCellDef>Remaining</th>
+                  <td mat-cell *matCellDef="let element">
+
+
+                   <span *ngIf="element.isolation_end_date!=''"><timer [days]="element.isolation_days" [displayValue]="true" [startDate]="element.isolation_start_date" [endDate]="element.isolation_end_date" [id]="element._id"  (onComplete)="timerCompleted($event)"></timer></span>
+                  </td>
+                </ng-container> -->
+                  <ng-container matColumnDef="room">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element"> {{element.room && element.room!="" ?element.room : '-'}}
+
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumnsIsolation; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumnsIsolation;"></tr>
+                </table>
+
+              </div>
+            </div>
+
+            <div class="report-grid table-grid level two-blocks lighblue">
+              <div class="grid-heading d-flex justify-content-between">
+                <div class="d-flex align-items-center">COVID-19 Testing Status
+                  <span class="lengthcount"
+                    *ngIf="testing_status_list && testing_status_list.length">({{ testing_status_list.length }})</span>
+                </div>
+              </div>
+              <div class="table-wrapper table-level-testing">
+
+                <table class="scroller" mat-table [dataSource]="dataSource2">
+                  <ng-container matColumnDef="resident">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element"> {{element.last_name}}, {{element.first_name}}
+                      <img *ngIf="element.testing_status=='Negative'" src="./assets/images/negative.svg" width="28">
+                      <img *ngIf="element.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                      <img *ngIf="element.testing_status=='In-Progress'" src="./assets/images/inprogress.svg"
+                        width="28">
+                      <!-- <img *ngIf="checkIsolation(element._id)" src="./assets/images/alarm14.svg" width="28" height="28" >-->
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="room">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                      {{element.room && element.room!="" ?element.room.room : '-'}}
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+
+      <div class="bottom-side">
+        <div class="left_table">
+          <div class="table-grid graph">
+            <div class="grid-heading d-flex justify-content-between">
+              <div class="d-flex align-items-center mb-3">Fall(s)
+                <span class="lengthcount" *ngIf="getFallData && getFallData.length">Last 24 Hours</span>
+              </div>
+            </div>
+            <div class="table-wrapper table-level-fall">
+
+              <table class="scroller" mat-table [dataSource]="dataSource3">
+                <ng-container matColumnDef="resident">
+                  <th mat-header-cell *matHeaderCellDef>Resident</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.resident && element.resident!="" ?element.resident : '-'}}
+                    <!-- <img *ngIf="checkIsolation(element._id)" src="./assets/images/alarm14.svg" width="28" height="28" >-->
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="room">
+                  <th mat-header-cell *matHeaderCellDef class="t-center">Rm</th>
+                  <td mat-cell *matCellDef="let element" class="t-center">
+                    {{element.roomData && element.roomData!="" ?element.roomData : '-'}}
+
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="care">
+                  <th mat-header-cell *matHeaderCellDef>Care</th>
+                  <td mat-cell *matCellDef="let element"> {{element.care && element.care!="" ?element.care : '-'}}
+
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="performer">
+                  <th mat-header-cell *matHeaderCellDef>Performer</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.reporter && element.reporter!="" ?element.reporter : '-'}}
+
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsFall; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsFall;"></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-grid graph">
+            <div class="grid-heading d-flex justify-content-between">
+              <div class="d-flex align-items-center mb-3">Notify Care Team
+                <span class="lengthcount"
+                  *ngIf="getNotifyData && getNotifyData.length">({{ getNotifyData.length }})</span>
+              </div>
+            </div>
+            <div class="table-wrapper table-level-notify">
+
+              <table class="scroller" mat-table [dataSource]="dataSource4">
+                <ng-container matColumnDef="resident">
+                  <th mat-header-cell *matHeaderCellDef>Resident</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.resident && element.resident!="" ?element.resident : '-'}}
+                    <!-- <img *ngIf="checkIsolation(element._id)" src="./assets/images/alarm14.svg" width="28" height="28" >-->
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="room">
+                  <th mat-header-cell *matHeaderCellDef class="t-center">Rm</th>
+                  <td mat-cell *matCellDef="let element" class="t-center">
+                    {{element.roomData && element.roomData!="" ?element.roomData : '-'}}
+
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="care">
+                  <th mat-header-cell *matHeaderCellDef>Care</th>
+                  <td mat-cell *matCellDef="let element"> {{element.care && element.care!="" ?element.care : '-'}}
+
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="performer">
+                  <th mat-header-cell *matHeaderCellDef>Performer</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{element.reporter && element.reporter!="" ?element.reporter : '-'}}
+
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsFall; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsFall;"></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="right_side">
+
+      <!-- <div class="resident"> -->
+      <div class="announce" *ngIf="announce && announce.length">
+        <!--  <mat-card-header>
+        <mat-card-title class="ann_heading">Announcement <span>({{ announce.length}})</span></mat-card-title>
+      </mat-card-header> -->
+        <mat-card-content class="mb-10 announcement-container announcement-scroll">
+          <ng-container class="scroller" *ngFor="let _announce of announce; let listIndex = index">
+            <div>
+              <mat-card style="word-break:break-word" class="alert-box"
+                [ngStyle]="{'background-color':_announce.background_color,'border-color':_announce.border_color,'color':_announce.font_color,'font-size':_announce.font_size+'px'}">
+                <mat-card-content class="m-0" [ngStyle]="{'font-size':_announce.font_size+'px'}">
+                  <p [innerHTML]=" _announce.message | sanitizeText "></p>
+                </mat-card-content>
+                <!--   <i (click)="hideAnnouncemnt(listIndex)" class="material-icons"
+                [ngStyle]="{'color':announce.font_color}">clear</i> -->
+              </mat-card>
+            </div>
+            <div>
+              <mat-card style="word-break:break-word" class="alert-box" *ngIf="hide"
+                [ngStyle]="{'background-color':_announce.background_color,'border-color':_announce.border_color,'color':_announce.font_color,'font-size':_announce.font_size+'px'}">
+                <mat-card-content class="m-0" [ngStyle]="{'font-size':_announce.font_size+'px'}">
+                  <p [innerHTML]=" _announce.message | sanitizeText "></p>
+                </mat-card-content>
+                <i (click)="hideAnnouncemnt(listIndex)" class="material-icons"
+                  [ngStyle]="{'color':announce.font_color}">clear</i>
+              </mat-card>
+            </div>
+          </ng-container>
+        </mat-card-content>
+      </div>
+      <!-- <span>Wash Hands every <b>30 Minutes</b></span> -->
+      <!--  </div>
+ -->
+      <!--  <div class="remember">
+    <span>REMEMBER to record your cares. Disciplinary action will be taken if care is not recorded care at time of service.</span>
+</div> -->
+
+    </div>
+  </div>
+</div>
+
+<ng-template #connectionModal>
+  <p>Internet is not their</p>
+</ng-template>

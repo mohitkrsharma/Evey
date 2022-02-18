@@ -1,0 +1,155 @@
+
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title>Visitors</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100">
+                            <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput id="searchInput" placeholder="Search by visitor name, phone no." />
+                      
+                          
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+                       
+                        </div>
+                </div>
+            </div>
+
+           
+        </mat-card-subtitle>
+
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)" [matSortActive]="sortActive"
+            [matSortDirection]="sortDirection" #table >
+     
+                <!-- <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked" (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container> -->
+                
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null" [disabled]="column.sort?false: true" > {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element"> {{element[column.id]}} </td>
+                </ng-container>
+               
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <!-- <button mat-mini-fab color="primary" (click)="viewVisitor(elements._id)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                          </button> -->
+                     
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+            </table>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <mat-paginator [length]=count [pageSize]="10" [pageSizeOptions]="[10, 50, 100, 500]" [pageIndex]="pageIndex" (page)="getServerData($event)"></mat-paginator>
+    </mat-card-actions>
+</mat-card>
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+    <mat-icon>keyboard_arrow_up</mat-icon>
+  </button>
+
+
+  <ng-template #addQuestion>
+    <form [formGroup]="questionForm" >
+        <div class="pop_heading">
+            <h3>{{(isEdit?"Edit":"Add")}} Question</h3>
+            <span class="">
+                <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+            </span>
+        </div>
+        
+        <div class="newrule">
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                   <label>Question Type</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-40">
+                        <mat-label>Question Type</mat-label>
+                        <mat-select  formControlName="type"  [(ngModel)]="question.type">
+                         <mat-option *ngFor="let item of Question_Types"  (click)="getFieldType($event)" [value]="item.type" >
+                            {{item.name}}
+                        </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                   <label>Add Question</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Question here.."  formControlName="question" [(ngModel)]="question.question"  required >
+                    </mat-form-field>
+                </div>
+            </div>
+
+            
+            <div class="selection" *ngIf="isOptionField">
+                <ng-container  formArrayName="options">
+                    <div class="d-flex justify-content-between align-center form-row"  *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+                    
+                        <div class="w-20">
+                           <label>Option</label>
+                        </div>
+                        <div class="w-80 d-flex justify-content-between align-center">
+                            <span [ngClass]="btnClass" ></span>
+                            <mat-form-field class="w-100">
+                                <input matInput type="text" placeholder="Option {{pointIndex + 1}}"  formControlName="label"   [required]="pointIndex>1" >
+                            </mat-form-field>
+                         
+    
+                            <button *ngIf="pointIndex>1" class="addopt" (click)="removeOption(pointIndex)" >-</button>     
+                             
+                       </div>
+                    
+                       
+                    </div>
+                </ng-container>
+               
+               
+                <div class="d-flex justify-content-between align-center form-row" *ngIf="optionsPoints.controls.length<10">
+                    <div class="w-20">
+                      
+                    </div>
+                    <div class="w-80 d-flex justify-content-between align-center">
+                        <button class="addopt" (click)="addOption()" >+</button>
+                    </div>
+                </div>
+                
+                
+            </div>
+
+  
+
+
+        </div>
+
+
+        <div class="adtime">
+            <button mat-button color="basic" (click)="closeQuestionDialog()" >Cancel</button>
+            <button mat-button color="primary" (click)="saveQuestionDialog()"  >Save</button>
+        </div>
+    </form>
+</ng-template>

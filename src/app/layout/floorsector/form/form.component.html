@@ -1,0 +1,146 @@
+<mat-card>
+  <mat-card-header class="d-flex justify-content-between align-center">
+    <mat-card-title *ngIf="!isEdit" >Add Floor/Sector</mat-card-title>
+    <mat-card-title *ngIf="isEdit">Edit Floor/Sector</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form #floorsectorForm="ngForm">
+      <div *ngIf="!floorsector._id">
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <input matInput type="number" placeholder="Floor" [(ngModel)]="floorsector.floor" name="floor" required>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100 pr-15">
+            <mat-card class="border-card">
+              <mat-card-header>
+                <mat-card-title class ="ann_heading">Available Sectors</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ul class="beacon-listing">
+                  <li *ngFor="let item of sectorArr">
+                    <span class="user-name">
+                      {{item.name}}
+                    </span>
+                    <div class="d-flex justify-content-end">
+                      <span>
+                        <button mat-mini-fab color="primary" class="mr-10 small-btn"
+                          (click)="removeSectorNew(item.name)">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="w-100 pl-15 tab-marginTop15">
+            <mat-card class="border-card">
+              <mat-card-header>
+                <mat-card-title class ="ann_heading">Add Sectors</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Sector" (keypress)="allwoAlphaAndNum($event)" name="newsector"
+                    [(ngModel)]="floorsector.newsector" name="newsector" [required]="!(sectorArr && sectorArr.length)">
+                </mat-form-field>
+                <div class="d-flex justify-content-end">
+                  <button mat-stroked-button color="primary" (click)=addSectorNew(floorsector.newsector) class="btn_modual">
+                    Add
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="floorsector._id">
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100">
+                <mat-form-field class="w-100">
+                  <input matInput type="number" placeholder="Floor" [(ngModel)]="floorsector.floor" name="floor"
+                    required>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+                <mat-card class="border-card">
+                  <mat-card-header>
+                    <mat-card-title class ="ann_heading">Available Sectors</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <ul class="beacon-listing">
+                      <li *ngFor="let item of floorsector['sector']">
+                        <span class="user-name">
+                          {{item.name}}
+                        </span>
+                        <div class="d-flex justify-content-end">
+                          <span>
+                            <button *ngIf="floorsector['sector'].length > 1" mat-mini-fab color="primary"
+                              class="mr-10 small-btn" (click)="removeSector(item._id,floorsector._id)">
+                              <mat-icon>delete</mat-icon>
+                            </button>
+                            <button *ngIf="floorsector['sector'].length == 1" mat-mini-fab color="primary"
+                              class="mr-10 small-btn" (click)="removeSector(item._id,floorsector._id)" disabled>
+                              <mat-icon>delete</mat-icon>
+                            </button>
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+
+              <div class="w-100 pl-15 tab-marginTop15">
+                <mat-card class="border-card">
+                  <mat-card-header>
+                    <mat-card-title class ="ann_heading">Add Sectors</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <mat-form-field class="w-100">
+                      <input matInput placeholder="Sector" (keypress)="allwoAlphaAndNum($event)" name="newsector"
+                        [(ngModel)]="newsector" name="newsector"
+                        [required]="!(floorsector['sector'] && floorsector['sector'].length)">
+                    </mat-form-field>
+                    <div class="d-flex justify-content-end">
+                      <button mat-stroked-button color="primary" (click)=addSector(newsector,floorsector) class="btn_modual">
+                        Add
+                      </button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between btn_detail">
+        <button mat-flat-button color="warn" (click)="cancel()" class="btn_main_cancle">Cancel</button>
+        <div>
+          <button mat-flat-button color="primary" class="ml-10" (click)="submit(floorsectorForm,floorsector,1)"
+            *ngIf="!paramId" class="btn_main_done w_auto">Add Zones</button>
+          <button *ngIf="_commonService.checkPrivilegeModule('floors/sectors', privilege)" mat-flat-button color="primary" class="ml-10"
+            (click)="submit(floorsectorForm,floorsector,0)" class="btn_main_done">Done</button>
+        </div>
+
+      </div>
+    </form>
+  </mat-card-content>
+
+</mat-card>

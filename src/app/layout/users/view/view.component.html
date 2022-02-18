@@ -1,0 +1,155 @@
+<mat-card>
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View User</mat-card-title>
+        <div class="d-flex align-center w-100 justify-content-end pr-15">
+            Enable Live dashboard
+            <mat-slide-toggle color="primary" class="pl-15" [checked]="islivedashboard" [(ngModel)]="islivedashboard"
+                name="islivedashboard" (change)="onChangelivedashboard($event)">
+            </mat-slide-toggle>
+        </div>
+        <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+        <button mat-flat-button color="primary" class="mr-10" (click)="sendMail(user._id)">Send Invite</button>
+        <button mat-flat-button color="primary" (click)="editUser(user._id)">Edit</button>
+
+
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list *ngIf="user">
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Name <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.first_name}} {{user.last_name}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Username <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.username}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Position <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.job_title}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Access Level<span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{user.role_id?user.role_id['role_name']:'--'}}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Personal Email <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.email?user.email:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Work Email <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.work_email?user.work_email:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                             Phone <span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{user.home_phone?user.home_phone:'--'}}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Mobile <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.mobile_phone?user.mobile_phone:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                      Employee Id <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.employeeId?user.employeeId:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Organization<span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{facility.org}}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>
+                    <div class="d-flex view-list w-100">
+                        <div class="w-30 pr-15">
+                            Building<span>:</span>
+                        </div>
+                        <div class="w-70 pl-15">
+                            {{ facility.fac }}
+                        </div>
+                    </div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Created Date <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{user.date?(user.date|date):'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          
+          
+        </mat-list>
+    </mat-card-content>
+</mat-card>

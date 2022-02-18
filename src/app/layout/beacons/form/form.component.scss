@@ -1,0 +1,52 @@
+
+
+@import "./../../../../styles/_cstm-variable.scss";
+
+.example-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.example-container>* {
+    width: 100%;
+}
+.beacon_heading {	
+
+label { 
+
+@include inner-heading;
+
+}
+
+}
+
+mat-radio-button { 
+
+@include inner-text;
+
+  }
+
+.btn_main_cancle{
+    @include btn-primary-cancle;
+}
+
+.btn_main_done{
+    margin: 0 0 0 5px !important;
+    @include btn-primary-done;
+}
+
+.label_text{
+    @include regular-text;
+}
+
+.btn_detail {
+
+    padding: 40px 0;
+
+
+}

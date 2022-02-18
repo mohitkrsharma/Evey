@@ -1,0 +1,30 @@
+
+@import "./../../../../styles/_cstm-variable.scss";
+
+.btn_cancel {
+  @include btn-primary-cancle;
+}
+
+.btn_done {
+  @include btn-primary-done;
+}
+
+.btn_detail {
+
+	padding: 40px 0;
+
+}
+
+.hidden {
+  display: none;
+}
+
+.removeicon{
+  cursor: pointer;
+  color: #ef4036 !important;
+}
+
+[data-hidden="true"]
+{
+  display: none !important
+}

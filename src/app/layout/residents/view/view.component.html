@@ -1,0 +1,545 @@
+<mat-card>
+  <mat-card-header class="d-flex justify-content-between align-center w-100">
+    <mat-card-title>View Resident </mat-card-title>
+  </mat-card-header>
+  <div class=" d-flex responsive align-center w-100 justify-content-between">
+    <div>
+      <timer *ngIf="isolation_end_date!=''" [id]="resident._id" [endDate]="isolation_end_date" (onComplete)="timerCompleted($event)"></timer>
+    </div>
+    <div> <span class="pl-15">Out of facility</span>
+      <mat-slide-toggle color="primary" class="pl-15"  [checked]="resident.is_out_of_fac"  [(ngModel)]="resident.is_out_of_fac" name="is_out_of_fac" (change)="onChangefacility($event)"> </mat-slide-toggle>
+      <span class="pl-15">Hospice</span>
+      <mat-slide-toggle color="primary" class="pl-15" [checked]="resident.hospice" [(ngModel)]="resident.hospice" name="hospice" (change)="onChangeHospice($event)"> </mat-slide-toggle>
+      <span class="pl-15">2:00 Check-ins</span>
+      <mat-slide-toggle [disabled]= "((resident.care_level && resident.care_level?.name === 'Level 1'))?true:false" color="primary" class="pl-15 pr-15" [checked]="resident.two_am_checkin" [(ngModel)]="resident.two_am_checkin" name="two_am_checkin" (change)="onChangeCheckin($event)"> </mat-slide-toggle>
+      <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+      <!-- <button mat-flat-button color="primary" (click)="editResident(resident._id)">Edit</button>--> 
+    </div>
+  </div>
+	
+   <div class="d-flex headsection mb-20 mt-20">
+	  <div class="profile_pic">
+	   <img src="./assets/images/pic.png" class="img-fluid" alt="profile-pic">
+		  <span><a href="#"><img src="./assets/images/editpic.svg" alt="editpic"></a></span>
+	  </div>
+	  <div class="rightside w-50">
+		  <div class="d-flex">
+			  <h1>{{resident.first_name}} {{resident.last_name}}</h1>
+			 <div class="d-flex res">
+				 <span class="mat-button-wrapper ml-10 alerts position-relative"><mat-icon _ngcontent-c3="" class="mat-icon material-icon text-danger" role="img" aria-hidden="true">report_problem
+</mat-icon><span class="new badge text-danger position-absolute"><a href="#">2</a></span></span>
+				 
+			  <div class="ml-20 d-flex alogn-items-center"><span class="opentasks">Open Tasks</span><span class="new badge"><a href="#">4</a></span></div>
+				 </div>
+		  </div>
+		  <div class="d-flex">
+		  <div class="w-100"> <label>COVID-19 Isolation</label>
+		   <mat-form-field class="w-30 ml-10">
+            <mat-select name="organization" [(ngModel)]="resident.organization"
+              (selectionChange)="changeOrg(resident.organization, 1)" required>
+              <mat-option *ngFor="let item of organiz" [value]="item._id" >
+                {{item.org_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+			  </div>
+		  <div class="w-100"> <label>COVID-19 Isolation</label>
+		   <mat-form-field class="w-30 ml-10">
+            <mat-select name="organization" [(ngModel)]="resident.organization"
+              (selectionChange)="changeOrg(resident.organization, 1)" required>
+              <mat-option *ngFor="let item of organiz" [value]="item._id" >
+                {{item.org_name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+			  </div>
+		  </div>
+	  </div>
+	</div>
+	
+<!-- personal and health information -->
+  <mat-card-header class="d-flex justify-content-between align-center w-100 border-bottom">
+    <mat-card-title>Personal & Health Information</mat-card-title>
+  </mat-card-header>
+	
+  <mat-card-content>
+	  
+    <div class="row personalhealthinfo mt-20">
+		
+      <div class="w-30">
+        <table class="highlight w-100">
+          <tbody>
+            <tr>
+              <td>Temperature</td>
+              <td class="text-right"><strong class="text-danger">101.5°</strong></td>
+            </tr>
+            <tr>
+              <td>Pulse</td>
+              <td class="text-right"><strong>100 bpm</strong></td>
+            </tr>
+            <tr>
+              <td>Respiration</td>
+              <td class="text-right"><strong>18 bpm</strong></td>
+            </tr>
+            <tr>
+              <td>Blood Pressure</td>
+              <td class="text-right"><strong>120/80 mm Hg</strong></td>
+            </tr>
+            <tr>
+              <td>Oxygen</td>
+              <td class="text-right"><strong>70 mm Hg</strong></td>
+            </tr>
+            <tr>
+              <td>Blood Sugar</td>
+              <td class="text-right"><strong>100 mg/dL</strong></td>
+            </tr>
+            <tr>
+              <td>Weight</td>
+              <td class="text-right"><strong>205 lbs</strong></td>
+            </tr>
+            <tr>
+              <td>Height</td>
+              <td class="text-right"><strong>5'11"</strong></td>
+            </tr>
+            <tr>
+              <td>BMI</td>
+              <td class="text-right"><strong>35</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+		
+      <div class="w-70 ml-20">
+        <mat-card-content>
+          <form>
+            <div class="d-flex justify-content-between form-row">
+              <div class="w-100 pr-15">
+              
+                <mat-form-field class="w-100">
+                  <input disabled matInput placeholder="First Name" name="first_name" [(ngModel)]="resident.first_name"
+                    (keypress)="checkAlpha($event)" required>
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input disabled matInput placeholder="Last Name" name="last_name" [(ngModel)]="resident.last_name"
+                    (keypress)="checkAlphalast($event)" required>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <!-- <mat-form-field class="w-100">
+                  <input matInput placeholder="DOB" name="dob" [(ngModel)]="resident.dob">
+                </mat-form-field> -->
+                <!-- <mat-form-field class="w-100">
+                  <mat-label>DOB</mat-label>
+                  <input disabled name="dob" matInput [matDatepicker]="picker" (dateInput)="getDob('input', $event)" (dateChange)="getDob('change', $event)" [(ngModel)]="resident.dob">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field> -->
+                <!-- <mat-form-field class="w-100">
+                  <input matInput name="date" (click)="picker.open()" [matDatepicker]="picker"
+                      placeholder="DOB" [(ngModel)]="resident.dob" required>
+                  <mat-datepicker-toggle matSuffix [for]="picker" #picker></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field> -->
+              </div>
+              <div class="w-100 pl-15">
+                <!-- <mat-form-field class="w-100">
+                  <input  disabled matInput number  placeholder="Age" name="age" [(ngModel)]="resident.age">
+                </mat-form-field> -->
+              </div>
+            </div>
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Organization</mat-label>
+                  <mat-select disabled name="organization" [(ngModel)]="resident.organization"
+                    (selectionChange)="changeOrg(resident.organization, 1)" required>
+                    <mat-option *ngFor="let item of organiz" [value]="item._id">
+                      {{item.org_name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Facility</mat-label>
+                  <mat-select  disabled name="facility" [(ngModel)]="resident.facility"
+                    (selectionChange)="changeFac(resident.facility, 1);" required>
+                    <mat-option *ngFor="let item of faclist" [value]="item._id">
+                      {{item.fac_name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <!-- <mat-form-field class="w-100">
+                  <input matInput placeholder="Admit Date" name="admit_date" [(ngModel)]="resident.admit_date">
+                </mat-form-field> -->
+                <!-- <mat-form-field class="w-100">
+                  <mat-label>Admit Date</mat-label>
+                  <input  disabled matInput name="admit_date" [matDatepicker]="picker1" (dateInput)="admitDate('input', $event)" (dateChange)="admitDate('change', $event)" [(ngModel)]="resident.admit_date">
+                  <mat-datepicker-toggle matSuffix [for]="picker1" ></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field> -->
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Unit</mat-label>
+                  <input  disabled matInput placeholder="Unit" name="unit" [(ngModel)]="resident.unit">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100" *ngIf="paramId">
+                  <mat-label>
+                    Status</mat-label>
+                  <mat-select disabled name="resident_status" [(ngModel)]="resident.resident_status"
+                    (selectionChange)="changeStatus(resident.resident_status, 1)" required>
+                    <mat-option *ngFor="let item of statusData" [value]="item.value">
+                      {{item.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-100" *ngIf="!paramId">
+                  <input disabled matInput name="resident_status" value="Active" [(ngModel)]="resident.resident_status" disabled>
+                </mat-form-field>
+
+              </div>
+              <div class="w-100 pl-15" *ngIf="paramId && resident.room && resident.room.room">
+                <mat-form-field class="w-100">
+                  <input disabled matInput name="room" [(ngModel)]="resident.room.room">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>
+                    Care Level</mat-label>
+                  <mat-select disabled name="care_level" [(ngModel)]="resident.care_level"
+                    (selectionChange)="changeCareLevel(resident.care_level,resident.resident_status, 1)" required>
+                    <mat-option *ngFor="let item of carelevelData" [value]="item._id">
+                      {{item.label}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input disabled matInput placeholder="Billing Id" name="billingId" [(ngModel)]="resident.billingId">
+                </mat-form-field>
+              </div>
+            </div>
+         
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input disabled matInput placeholder="Phone" name="home_phone" [(ngModel)]="resident.home_phone" maxlength="14"
+                    mask="(000) 000-0000">
+                </mat-form-field>
+              </div>
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input disabled matInput placeholder="Mobile" name="mobile_phone" [(ngModel)]="resident.mobile_phone"
+                    maxlength="14" mask="(000) 000-0000">
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+		</mat-card-content>
+      </div>
+		
+    </div>
+	  
+  </mat-card-content>
+	
+  <!-- Current diagnosis -->
+  <mat-card-header class="d-flex justify-content-between align-center w-100 border-bottom">
+    <mat-card-title>Current Diagnosis</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="diagnosis mt-10 mb-10">
+      <div class="d-flex align-items-center w-100">
+        <div class="w-25 mr-20"  *ngFor="let disease of pre_diseases;let i=index">
+          <!-- <mat-checkbox color="primary" name="check_{{i}}" id="check_{{i}}"
+          checked disabled>
+          </mat-checkbox > -->
+          <span>{{disease?.name}}  </span>
+        
+        </div>
+      </div>
+     
+    </div>
+  </mat-card-content>
+  <!-- Current diagnosis -->
+</mat-card>
+
+<!-- Contacts -->
+<mat-card class="mt-20 contacts">
+  <mat-card-header class="d-flex justify-content-between align-items-center w-100 border-bottom">
+    <mat-card-title>Contacts</mat-card-title>
+	<mat-icon mat-raised-button (click)="openDialog()" class="mat-icon material-icon basecolor cursor" role="img" aria-hidden="true">add_circle
+</mat-icon> 
+  </mat-card-header>
+  <div class="d-flex">
+    <div class="w-33">
+      <mat-card class="mt-20 border">
+        <ul>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+              <g id="Icon_feather-user" data-name="Icon feather-user" transform="translate(-5 -3.5)">
+                <path id="Path_1026" data-name="Path 1026" d="M22,28.5v-2a4,4,0,0,0-4-4H10a4,4,0,0,0-4,4v2" transform="translate(0 -6)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <path id="Path_1027" data-name="Path 1027" d="M20,8.5a4,4,0,1,1-4-4,4,4,0,0,1,4,4Z" transform="translate(-2 0)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </g>
+            </svg>
+            <span> John Smith (Brother)</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18.001" height="18.033" viewBox="0 0 18.001 18.033">
+              <path id="Icon_feather-phone" data-name="Icon feather-phone" d="M19.167,15v2.413a1.609,1.609,0,0,1-1.754,1.609,15.921,15.921,0,0,1-6.943-2.47,15.687,15.687,0,0,1-4.827-4.827,15.921,15.921,0,0,1-2.47-6.975A1.609,1.609,0,0,1,4.775,3H7.189A1.609,1.609,0,0,1,8.8,4.384a10.329,10.329,0,0,0,.563,2.261A1.609,1.609,0,0,1,9,8.342L7.977,9.363A12.872,12.872,0,0,0,12.8,14.19l1.022-1.022a1.609,1.609,0,0,1,1.7-.362,10.329,10.329,0,0,0,2.261.563A1.609,1.609,0,0,1,19.167,15Z" transform="translate(-2.167 -2)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
+            <span>(987) 549-8589, (965) 564-4364</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.834" height="14.096" viewBox="0 0 17.834 14.096">
+              <g id="Icon_feather-mail" data-name="Icon feather-mail" transform="translate(-1.955 -5.25)">
+                <path id="Path_1024" data-name="Path 1024" d="M4.574,6h12.6a1.579,1.579,0,0,1,1.574,1.574v9.447A1.579,1.579,0,0,1,17.17,18.6H4.574A1.579,1.579,0,0,1,3,17.021V7.574A1.579,1.579,0,0,1,4.574,6Z" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+                <path id="Path_1025" data-name="Path 1025" d="M18.745,9l-7.872,5.511L3,9" transform="translate(0 -1.426)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+              </g>
+            </svg>
+            <span>micheal@gmail.com</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16.335" height="22.4" viewBox="0 0 16.335 22.4">
+              <g id="maps-and-flags" transform="translate(-70.373 0.2)">
+                <g id="Group_358" data-name="Group 358" transform="translate(70.573)">
+                  <g id="Group_357" data-name="Group 357" transform="translate(0)">
+                    <path id="Path_1047" data-name="Path 1047" d="M78.541,0a7.977,7.977,0,0,0-7.968,7.968c0,5.452,7.13,13.456,7.434,13.794a.718.718,0,0,0,1.068,0c.3-.338,7.434-8.342,7.434-13.794A7.977,7.977,0,0,0,78.541,0Zm0,20.184c-2.4-2.85-6.533-8.474-6.533-12.216a6.533,6.533,0,1,1,13.066,0C85.073,11.71,80.941,17.332,78.541,20.184Z" transform="translate(-70.573)" fill="#606060" stroke="#707070" stroke-width="0.4"/>
+                  </g>
+                </g>
+                <g id="Group_360" data-name="Group 360" transform="translate(74.532 3.959)">
+                  <g id="Group_359" data-name="Group 359" transform="translate(0)">
+                    <path id="Path_1048" data-name="Path 1048" d="M166.717,92.134a4.009,4.009,0,1,0,4.009,4.009A4.013,4.013,0,0,0,166.717,92.134Zm0,6.583a2.574,2.574,0,1,1,2.574-2.574A2.577,2.577,0,0,1,166.717,98.717Z" transform="translate(-162.708 -92.134)" fill="#606060" stroke="#707070" stroke-width="0.4"/>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <span>3756  Stark Hollow Road, Holyoke, CO, 80734</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="36.562"  viewBox="0 0 16.562 16.484">
+              <g id="edit-tools" transform="translate(0.35 0.212)">
+                <path id="Path_1049" data-name="Path 1049" d="M14.565,47.517a.393.393,0,0,0-.393.394v3.5a1.182,1.182,0,0,1-1.179,1.182H1.965A1.182,1.182,0,0,1,.786,51.409V41.142A1.182,1.182,0,0,1,1.965,39.96h3.49a.394.394,0,0,0,0-.788H1.965A1.97,1.97,0,0,0,0,41.142V51.409a1.97,1.97,0,0,0,1.965,1.97H12.993a1.97,1.97,0,0,0,1.965-1.97v-3.5a.393.393,0,0,0-.393-.394Zm0,0" transform="translate(0 -37.458)" fill="#606060" stroke="#707070" stroke-width="0.7"/>
+                <path id="Path_1050" data-name="Path 1050" d="M118.218.753a1.681,1.681,0,0,0-2.377,0l-6.665,6.665a.374.374,0,0,0-.1.164l-.876,3.164a.374.374,0,0,0,.46.46l3.164-.877a.373.373,0,0,0,.164-.1l6.665-6.665a1.683,1.683,0,0,0,0-2.377ZM109.99,7.661l5.455-5.455L117.2,3.965,111.749,9.42Zm-.351.705,1.405,1.406-1.944.539Zm8.49-5.325-.4.4-1.759-1.759.4-.4a.934.934,0,0,1,1.321,0l.439.438A.935.935,0,0,1,118.129,3.041Zm0,0" transform="translate(-103.408 0)" fill="#606060" stroke="#707070" stroke-width="0.7"/>
+              </g>
+            </svg>
+            <span> Lorem Ipsum is simply dummy text of the printing and typesetting industry's standard dummy... <b><a href="#"> More</a></b></span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18.001" height="18.033" viewBox="0 0 18.001 18.033">
+              <path id="Icon_feather-phone" data-name="Icon feather-phone" d="M19.167,15v2.413a1.609,1.609,0,0,1-1.754,1.609,15.921,15.921,0,0,1-6.943-2.47,15.687,15.687,0,0,1-4.827-4.827,15.921,15.921,0,0,1-2.47-6.975A1.609,1.609,0,0,1,4.775,3H7.189A1.609,1.609,0,0,1,8.8,4.384a10.329,10.329,0,0,0,.563,2.261A1.609,1.609,0,0,1,9,8.342L7.977,9.363A12.872,12.872,0,0,0,12.8,14.19l1.022-1.022a1.609,1.609,0,0,1,1.7-.362,10.329,10.329,0,0,0,2.261.563A1.609,1.609,0,0,1,19.167,15Z" transform="translate(-2.167 -2)" fill="none" stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
+            <span class="text-danger"> Emergency Contact</span></li>
+        </ul>
+      </mat-card>
+    </div>
+    <div class="w-33 ml-10">
+      <mat-card class="mt-20 border">
+        <ul>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+              <g id="Icon_feather-user" data-name="Icon feather-user" transform="translate(-5 -3.5)">
+                <path id="Path_1026" data-name="Path 1026" d="M22,28.5v-2a4,4,0,0,0-4-4H10a4,4,0,0,0-4,4v2" transform="translate(0 -6)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <path id="Path_1027" data-name="Path 1027" d="M20,8.5a4,4,0,1,1-4-4,4,4,0,0,1,4,4Z" transform="translate(-2 0)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </g>
+            </svg>
+            <span> John Smith (Brother)</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18.001" height="18.033" viewBox="0 0 18.001 18.033">
+              <path id="Icon_feather-phone" data-name="Icon feather-phone" d="M19.167,15v2.413a1.609,1.609,0,0,1-1.754,1.609,15.921,15.921,0,0,1-6.943-2.47,15.687,15.687,0,0,1-4.827-4.827,15.921,15.921,0,0,1-2.47-6.975A1.609,1.609,0,0,1,4.775,3H7.189A1.609,1.609,0,0,1,8.8,4.384a10.329,10.329,0,0,0,.563,2.261A1.609,1.609,0,0,1,9,8.342L7.977,9.363A12.872,12.872,0,0,0,12.8,14.19l1.022-1.022a1.609,1.609,0,0,1,1.7-.362,10.329,10.329,0,0,0,2.261.563A1.609,1.609,0,0,1,19.167,15Z" transform="translate(-2.167 -2)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
+            <span>(987) 549-8589, (965) 564-4364</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.834" height="14.096" viewBox="0 0 17.834 14.096">
+              <g id="Icon_feather-mail" data-name="Icon feather-mail" transform="translate(-1.955 -5.25)">
+                <path id="Path_1024" data-name="Path 1024" d="M4.574,6h12.6a1.579,1.579,0,0,1,1.574,1.574v9.447A1.579,1.579,0,0,1,17.17,18.6H4.574A1.579,1.579,0,0,1,3,17.021V7.574A1.579,1.579,0,0,1,4.574,6Z" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+                <path id="Path_1025" data-name="Path 1025" d="M18.745,9l-7.872,5.511L3,9" transform="translate(0 -1.426)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+              </g>
+            </svg>
+            <span>micheal@gmail.com</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16.335" height="22.4" viewBox="0 0 16.335 22.4">
+              <g id="maps-and-flags" transform="translate(-70.373 0.2)">
+                <g id="Group_358" data-name="Group 358" transform="translate(70.573)">
+                  <g id="Group_357" data-name="Group 357" transform="translate(0)">
+                    <path id="Path_1047" data-name="Path 1047" d="M78.541,0a7.977,7.977,0,0,0-7.968,7.968c0,5.452,7.13,13.456,7.434,13.794a.718.718,0,0,0,1.068,0c.3-.338,7.434-8.342,7.434-13.794A7.977,7.977,0,0,0,78.541,0Zm0,20.184c-2.4-2.85-6.533-8.474-6.533-12.216a6.533,6.533,0,1,1,13.066,0C85.073,11.71,80.941,17.332,78.541,20.184Z" transform="translate(-70.573)" fill="#606060" stroke="#707070" stroke-width="0.4"/>
+                  </g>
+                </g>
+                <g id="Group_360" data-name="Group 360" transform="translate(74.532 3.959)">
+                  <g id="Group_359" data-name="Group 359" transform="translate(0)">
+                    <path id="Path_1048" data-name="Path 1048" d="M166.717,92.134a4.009,4.009,0,1,0,4.009,4.009A4.013,4.013,0,0,0,166.717,92.134Zm0,6.583a2.574,2.574,0,1,1,2.574-2.574A2.577,2.577,0,0,1,166.717,98.717Z" transform="translate(-162.708 -92.134)" fill="#606060" stroke="#707070" stroke-width="0.4"/>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <span>3756  Stark Hollow Road, Holyoke, CO, 80734</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="36.562"  viewBox="0 0 16.562 16.484">
+              <g id="edit-tools" transform="translate(0.35 0.212)">
+                <path id="Path_1049" data-name="Path 1049" d="M14.565,47.517a.393.393,0,0,0-.393.394v3.5a1.182,1.182,0,0,1-1.179,1.182H1.965A1.182,1.182,0,0,1,.786,51.409V41.142A1.182,1.182,0,0,1,1.965,39.96h3.49a.394.394,0,0,0,0-.788H1.965A1.97,1.97,0,0,0,0,41.142V51.409a1.97,1.97,0,0,0,1.965,1.97H12.993a1.97,1.97,0,0,0,1.965-1.97v-3.5a.393.393,0,0,0-.393-.394Zm0,0" transform="translate(0 -37.458)" fill="#606060" stroke="#707070" stroke-width="0.7"/>
+                <path id="Path_1050" data-name="Path 1050" d="M118.218.753a1.681,1.681,0,0,0-2.377,0l-6.665,6.665a.374.374,0,0,0-.1.164l-.876,3.164a.374.374,0,0,0,.46.46l3.164-.877a.373.373,0,0,0,.164-.1l6.665-6.665a1.683,1.683,0,0,0,0-2.377ZM109.99,7.661l5.455-5.455L117.2,3.965,111.749,9.42Zm-.351.705,1.405,1.406-1.944.539Zm8.49-5.325-.4.4-1.759-1.759.4-.4a.934.934,0,0,1,1.321,0l.439.438A.935.935,0,0,1,118.129,3.041Zm0,0" transform="translate(-103.408 0)" fill="#606060" stroke="#707070" stroke-width="0.7"/>
+              </g>
+            </svg>
+            <span> Lorem Ipsum is simply dummy text of the printing and typesetting industry's standard dummy... <b> <a href="#">More</a></b></span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18.999" height="18.999" viewBox="0 0 18.999 18.999">
+              <g id="surface1" transform="translate(0 -0.001)">
+                <path id="Path_1088" data-name="Path 1088" d="M.557,365.636H10.65a.557.557,0,0,0,.557-.557v-1.187a1.673,1.673,0,0,0-1.113-1.574v-.724A1.6,1.6,0,0,0,8.5,360H2.711a1.6,1.6,0,0,0-1.6,1.6v.724A1.673,1.673,0,0,0,0,363.892v1.187A.557.557,0,0,0,.557,365.636Zm2.155-4.527H8.5a.485.485,0,0,1,.485.485v.629H2.227v-.629A.485.485,0,0,1,2.711,361.109Zm-1.6,2.783a.557.557,0,0,1,.557-.557H9.537a.557.557,0,0,1,.557.557v.631H1.113Zm0,0" transform="translate(0 -346.637)" fill="#47a835"/>
+                <path id="Path_1089" data-name="Path 1089" d="M94.562,11.589a1.669,1.669,0,0,0,2.991-1.2,6.568,6.568,0,0,0,1.381-.394l5.211,6.922a1.67,1.67,0,1,0,2.668-2.009L101.6,7.984a6.577,6.577,0,0,0,.76-1.218,1.67,1.67,0,0,0,1.982-2.543L101.667.666a1.669,1.669,0,0,0-2.991,1.2,6.554,6.554,0,0,0-4.809,3.62,1.67,1.67,0,0,0-1.982,2.544Zm6.267-2.781.743.987-.889.67-.743-.987A6.555,6.555,0,0,0,100.829,8.807Zm4.986,7.548a.557.557,0,0,1-.78-.11l-3.683-4.892.889-.67,3.683,4.891A.557.557,0,0,1,105.815,16.355ZM100,1.226a.557.557,0,0,1,.78.11l2.678,3.557a.557.557,0,0,1-.889.67L99.888,2.005A.557.557,0,0,1,100,1.226ZM99.184,2.92l2.309,3.067a5.452,5.452,0,0,1-4.447,3.348L94.737,6.268A5.447,5.447,0,0,1,99.184,2.92Zm-6.3,3.662a.556.556,0,0,1,.779.11l2.678,3.557h0a.557.557,0,0,1-.889.67L92.773,7.362A.556.556,0,0,1,92.883,6.582Zm0,0" transform="translate(-88.151 0)" fill="#47a835"/>
+              </g>
+            </svg>
+            <span class="text-success">Power of Attorney</span></li>
+        </ul>
+      </mat-card>
+    </div>
+    <div class="w-33 ml-10">
+      <mat-card class="mt-20 border">
+        <ul>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20">
+              <g id="Icon_feather-user" data-name="Icon feather-user" transform="translate(-5 -3.5)">
+                <path id="Path_1026" data-name="Path 1026" d="M22,28.5v-2a4,4,0,0,0-4-4H10a4,4,0,0,0-4,4v2" transform="translate(0 -6)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                <path id="Path_1027" data-name="Path 1027" d="M20,8.5a4,4,0,1,1-4-4,4,4,0,0,1,4,4Z" transform="translate(-2 0)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </g>
+            </svg>
+            <span> John Smith (Brother)</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18.001" height="18.033" viewBox="0 0 18.001 18.033">
+              <path id="Icon_feather-phone" data-name="Icon feather-phone" d="M19.167,15v2.413a1.609,1.609,0,0,1-1.754,1.609,15.921,15.921,0,0,1-6.943-2.47,15.687,15.687,0,0,1-4.827-4.827,15.921,15.921,0,0,1-2.47-6.975A1.609,1.609,0,0,1,4.775,3H7.189A1.609,1.609,0,0,1,8.8,4.384a10.329,10.329,0,0,0,.563,2.261A1.609,1.609,0,0,1,9,8.342L7.977,9.363A12.872,12.872,0,0,0,12.8,14.19l1.022-1.022a1.609,1.609,0,0,1,1.7-.362,10.329,10.329,0,0,0,2.261.563A1.609,1.609,0,0,1,19.167,15Z" transform="translate(-2.167 -2)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
+            <span>(987) 549-8589, (965) 564-4364</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.834" height="14.096" viewBox="0 0 17.834 14.096">
+              <g id="Icon_feather-mail" data-name="Icon feather-mail" transform="translate(-1.955 -5.25)">
+                <path id="Path_1024" data-name="Path 1024" d="M4.574,6h12.6a1.579,1.579,0,0,1,1.574,1.574v9.447A1.579,1.579,0,0,1,17.17,18.6H4.574A1.579,1.579,0,0,1,3,17.021V7.574A1.579,1.579,0,0,1,4.574,6Z" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+                <path id="Path_1025" data-name="Path 1025" d="M18.745,9l-7.872,5.511L3,9" transform="translate(0 -1.426)" fill="none" stroke="#606060" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+              </g>
+            </svg>
+            <span>micheal@gmail.com</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16.335" height="22.4" viewBox="0 0 16.335 22.4">
+              <g id="maps-and-flags" transform="translate(-70.373 0.2)">
+                <g id="Group_358" data-name="Group 358" transform="translate(70.573)">
+                  <g id="Group_357" data-name="Group 357" transform="translate(0)">
+                    <path id="Path_1047" data-name="Path 1047" d="M78.541,0a7.977,7.977,0,0,0-7.968,7.968c0,5.452,7.13,13.456,7.434,13.794a.718.718,0,0,0,1.068,0c.3-.338,7.434-8.342,7.434-13.794A7.977,7.977,0,0,0,78.541,0Zm0,20.184c-2.4-2.85-6.533-8.474-6.533-12.216a6.533,6.533,0,1,1,13.066,0C85.073,11.71,80.941,17.332,78.541,20.184Z" transform="translate(-70.573)" fill="#606060" stroke="#707070" stroke-width="0.4"/>
+                  </g>
+                </g>
+                <g id="Group_360" data-name="Group 360" transform="translate(74.532 3.959)">
+                  <g id="Group_359" data-name="Group 359" transform="translate(0)">
+                    <path id="Path_1048" data-name="Path 1048" d="M166.717,92.134a4.009,4.009,0,1,0,4.009,4.009A4.013,4.013,0,0,0,166.717,92.134Zm0,6.583a2.574,2.574,0,1,1,2.574-2.574A2.577,2.577,0,0,1,166.717,98.717Z" transform="translate(-162.708 -92.134)" fill="#606060" stroke="#707070" stroke-width="0.4"/>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <span>3756  Stark Hollow Road, Holyoke, CO, 80734</span></li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="36.562"  viewBox="0 0 16.562 16.484">
+              <g id="edit-tools" transform="translate(0.35 0.212)">
+                <path id="Path_1049" data-name="Path 1049" d="M14.565,47.517a.393.393,0,0,0-.393.394v3.5a1.182,1.182,0,0,1-1.179,1.182H1.965A1.182,1.182,0,0,1,.786,51.409V41.142A1.182,1.182,0,0,1,1.965,39.96h3.49a.394.394,0,0,0,0-.788H1.965A1.97,1.97,0,0,0,0,41.142V51.409a1.97,1.97,0,0,0,1.965,1.97H12.993a1.97,1.97,0,0,0,1.965-1.97v-3.5a.393.393,0,0,0-.393-.394Zm0,0" transform="translate(0 -37.458)" fill="#606060" stroke="#707070" stroke-width="0.7"/>
+                <path id="Path_1050" data-name="Path 1050" d="M118.218.753a1.681,1.681,0,0,0-2.377,0l-6.665,6.665a.374.374,0,0,0-.1.164l-.876,3.164a.374.374,0,0,0,.46.46l3.164-.877a.373.373,0,0,0,.164-.1l6.665-6.665a1.683,1.683,0,0,0,0-2.377ZM109.99,7.661l5.455-5.455L117.2,3.965,111.749,9.42Zm-.351.705,1.405,1.406-1.944.539Zm8.49-5.325-.4.4-1.759-1.759.4-.4a.934.934,0,0,1,1.321,0l.439.438A.935.935,0,0,1,118.129,3.041Zm0,0" transform="translate(-103.408 0)" fill="#606060" stroke="#707070" stroke-width="0.7"/>
+              </g>
+            </svg>
+            <span> Lorem Ipsum is simply dummy text of the printing and typesetting industry's standard dummy... <b><a href="#"> More</a></b></span></li>
+        </ul>
+      </mat-card>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mt-20 mb-10 linktoexpand"><span><a href="#">All Contacts</a></span></div>
+</mat-card>
+<!-- Contacts -->
+
+
+	<div class="row preferences">
+		<!-- preferences-->
+		<!-- <mat-card class="mt-20 prefrences w-30">
+
+		  <mat-card-header class="d-flex justify-content-between align-items-center w-100 border-bottom">
+			<mat-card-title>Food Preference</mat-card-title>
+		  </mat-card-header>
+
+			<div class="w-100 mr-20 mt-10 mb-10">
+				  <mat-checkbox class="mr-10" color="primary" [(ngModel)]="checked" ></mat-checkbox>
+				  <span>Fatty Liver Disease</span>
+			</div>
+
+			<div class="w-100 mr-20">
+				  <mat-checkbox class="mr-10" color="primary" [(ngModel)]="checked" ></mat-checkbox>
+				  <span>Fatty Liver Disease</span>
+			</div>
+
+
+		  <mat-card-header class="d-flex justify-content-between align-items-center w-100 border-bottom mt-20">
+			<mat-card-title>Entertainment Preferences</mat-card-title>
+		  </mat-card-header>
+
+			<div class="w-100 mr-20 mt-10 mb-10">
+				  <mat-checkbox class="mr-10" color="primary" [(ngModel)]="checked" ></mat-checkbox>
+				  <span>Music</span>
+			</div>
+
+			<div class="w-100 mr-20">
+				  <mat-checkbox class="mr-10" color="primary" [(ngModel)]="checked" ></mat-checkbox>
+				  <span>Old Movies</span>
+			</div>
+
+
+		</mat-card> -->
+
+		<!-- preferences -->
+
+		<!-- imagesmemories -->
+		<!-- <mat-card class="mt-20 ml-20 imagesmemories w-70">
+
+		  <mat-card-header class="d-flex justify-content-between align-items-center w-100 border-bottom">
+			<mat-card-title>Images & Memories</mat-card-title>
+		  </mat-card-header>
+
+		<div class="scrolling">
+			<div class="d-flex mt-20">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			   <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+		  </div>
+			<div class="d-flex mt-20">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			   <img class="mr-10" src="./assets/images/img.png" alt="memories">
+			  <img class="mr-10" src="./assets/images/img.png" alt="memories">
+		  </div>
+			</div>
+
+		</mat-card> -->
+		<!-- imagesmemories -->
+	</div>
+
+<!--bottom buttons -->
+<div class="d-flex justify-content-between mt-20 mb-20">
+  <!-- <button mat-flat-button color="warn" ("")>Cancel</button> -->
+  <button mat-flat-button color="primary" (click)="cancel()">Done</button>
+</div>
+<!--bottom buttons -->
+
+

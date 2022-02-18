@@ -1,0 +1,642 @@
+/* h1, h2, h3, h4, h5, h6{
+
+}
+
+.primarybtn{
+	with:  100px;
+	height: 42px;
+	font-size: 16pt;
+	border-radius: 4px;
+	color: white;
+}
+
+.primarybtn.disable, .secondrybtn.disable{
+	background: #e6e7e8 !important;
+}
+
+.secondrybtn{
+	with:  100px;
+	height: 42px;
+	font-size: 14pt;
+	border-radius: 4px;
+	color: #6d6e71;
+	border: 1px solid #a7a9ac;
+	background: transparent;
+}
+
+.secondrybtn:hover{
+	background: #f9f9f9;
+}
+
+.modulebtn{
+	with:  100px;
+	height: 42px;
+	font-size: 16pt;
+	border-radius: 4px;
+	color: #3474b3;
+	background: #fff;
+	border: 1px solid #3474b3;
+}
+
+.modulebtn:hover{
+	border: 1px solid #3474b3;
+	background: #f9fdff;
+}
+
+.modulebtn:focus{
+	border: 1px solid #3474b3;
+}
+
+.secondrybtn.disable, .modulebtn.disable{
+	border: 1px solid #d1d3d4;
+	color: #d1d3d4;
+}
+
+.txtbtn{
+	with:  100px;
+	height: 42px;
+	font-size: 16pt;
+	border-radius: 4px;
+}
+
+.redbtn{
+	background: #de4f41;
+}
+
+.redbtn:hover{
+	background: #ef7975;
+}
+
+.redbtn:focus{
+	background: #de4f41;
+}
+
+.bluebtn{
+	background: #3474b3;
+}
+
+.bluebtn:hover{
+	background: #4ea2d8;
+}
+
+.bluebtn:focus{
+	background: #3474b3;
+}
+
+.redtxt{
+	background: #ec4d3d;
+}
+
+.redtxt:hover{
+	background: #ef7975;
+}
+
+.redtxt:focus{
+	background: #ec4d3d;
+}
+
+.redtxt.disable, .bluetxt.disable{
+	background: #d1d3d4;
+}
+
+.bluetxt{
+	background: #3474b3;
+}
+
+.bluetxt:hover{
+	background: #4ea2d8;
+}
+
+.bluetxt:focus{
+	background: #3474b3;
+}
+
+table {
+    word-wrap: break-word;
+	text-align: center;
+	border-collapse: collapse;
+    text-indent: initial;
+    border-spacing: 2px;
+}
+
+td {
+    display: table-cell;
+    vertical-align: inherit;
+}
+
+.mat-table th{
+	font-size: 1.5vh;
+	color: #545454;
+	font-family: "SFProText-Semibold";
+}
+
+.mat-table td{
+	font-size: 1.5vh;
+	color: #000;
+	font-family: "SFProText-Regular";
+}
+
+.mat-table tr {
+    height: 36px;
+}
+
+tr.mat-header-row{
+    height: 40px !important;
+}
+
+tr.mat-footer-row, tr.mat-row {
+    height: 40px !important;
+}
+
+tr td span.greentxt{
+	color: #3DB64C;
+}
+
+.table td, .table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.borderd-anno{
+	border: 1px solid #1875b7;
+	background-color: #fff;
+	border-radius: 4px;
+	color: #1875b7;
+}
+
+.blue-anno{
+	border: 1px solid #1875b7;
+	background-color: #e6f5fc;
+	border-radius: 4px;
+	color: #1875b7;
+
+}
+
+.darkblue-anno{
+	border: 1px solid #1875b7;
+	background-color: #28a4dd;
+	border-radius: 4px;
+	color: #ffffff;
+}
+
+.darkbluev1-anno{
+	border: 1px solid #1875b7;
+	background-color: #1875b7;
+	border-radius: 4px;
+	color: #ffffff;
+}
+
+.red-anno{
+	border: 1px solid #ee4035;
+	background-color: #ee4035;
+	border-radius: 4px;
+	color: #ffffff;
+}
+
+.redborderd-anno{
+	border: 1px solid #ee4035;
+	background-color: #fff;
+	border-radius: 4px;
+	color: #ee4035;
+}
+
+.grey-anno{
+	border: 1px solid #231f20;
+	background-color: #f1f1f2;
+	border-radius: 4px;
+	color: #231f20;
+}
+
+.mat-form-field-wrapper{
+	margin-bottom: 24px;
+	padding-bottom: 0;
+}
+
+.mat-form-field-label span{
+	font-weight: 12pt;
+	font-family: "SFProText-Regular";
+}
+
+.btn_report_pop{
+    margin-top: 16px;
+} */
+
+/* Table CSS Start */
+
+.listing th {
+	font-size: 16px !important;
+	font-family: "SFProText-Bold" !important;
+	color: #000 !important;
+  }
+  
+  .iconWithText{
+	margin: 0;
+  }
+  
+  .listing td, .mat-cell, .mat-footer-cell {
+	font-size: 16px !important;
+	font-family: "SFProText-Regular" !important;
+	color: #2B2B2B !important;
+	padding: 10px !important;
+	line-height: 1.5 !important;
+	width: 0px !important;
+	word-break: break-word !important;
+  }
+
+  .listing td p{
+	  margin-top: 0px;
+	  margin-bottom: 0px;
+  }
+  
+  .mat-header-cell {
+  padding: 0px 12px !important;
+  color: #000;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "SF Display";
+}
+
+.mat-fab[_ngcontent-uvm-c27]:not([class*=mat-elevation-z]), .mat-mini-fab[_ngcontent-uvm-c27]:not([class*=mat-elevation-z]) {
+    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
+}
+
+/* Ends */
+
+/* Input, Select Fields */
+
+.mat-focused{}
+
+label.mat-form-field-empty, label.mat-form-field-label {
+    font-size: 16px !important;
+    font-family: "SFProText-Regular" !important;
+}
+
+.mat-input-element, .mat-select{
+	font-size: 16px !important;
+	font-family: "SFProText-Regular" !important;
+}
+
+input[type="text"], .ql-editor p{
+	font-size: 16px !important;
+}
+
+label{
+	font-size: 14px !important;
+}
+
+.mat-select {
+    max-height: 23px !important;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-wrapper {
+    padding-bottom: 24px !important;
+}
+
+.action_btn{
+	margin-top: 40px;
+}
+
+/* Input Placeholder */
+
+.ann_pop .newrule .ui-widget .ui-editor-content .ql-editor{
+	font-size: 16px !important;
+	min-height: 30px !important;
+}
+
+/* Dialog Boxes */
+
+.popup-container{
+	width: 1100px;
+	max-width: 90%;
+	max-height: 90%;
+	height: 600px;
+	box-sizing: border-box;
+}
+
+.popup-container .popupbox{
+	border-radius: 4px;
+	box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+    background: white;
+    color: rgba(0, 0, 0, 0.87);
+	padding: 30px 20px 24px;
+}
+
+.popup-container .popupbox h3{
+	font-size: 20px;
+    /* font-family: "SFProDisplay-Bold"; */
+    padding-bottom: 15px;
+    margin-top: 0;
+}
+
+.popup_design.ann_pop{
+	max-height: 90vh !important;
+}
+
+.rediblue .mat-select-trigger .mat-select-value{
+	top: 2px;
+    position: relative;
+    font-weight: 400;
+}
+
+.mat-select-arrow-wrapper{
+	top: 3px;
+    position: relative;
+}
+
+.ql-container p br{
+	display: none;
+}
+
+.nfc_label .mat-form-field-label-wrapper{
+	margin-top: 0px !important;
+}
+
+
+/* Activity Page */
+
+.blockactivity .mat-expansion-panel-header{
+	min-height: 70px !important;
+	padding: 0px 0px 10px 0px;
+}
+
+.blockactivity .added{
+	padding: 10px 0px !important;
+}
+
+.blockactivity h5.text-description{
+	margin: auto;
+    color: #1975b8;
+    text-shadow: none;
+    font-size: 17px;
+    font-weight: 100;
+    line-height: 24px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.blockactivity .hidefopt .added{
+	border-bottom: 0 !important;
+	margin-bottom: 10px;
+	padding-bottom: 5px !important;
+}
+
+.activity_step{
+	font-size: 14px !important;
+    display: inline-block;
+    width: 100%;
+    font-weight: 500 !important;
+    font-family: "SFProText-semibold" !important;
+    margin-bottom: 5px;
+}
+
+.note_textarea .ui-widget .ui-editor-toolbar{
+	padding: 10px 0px;
+}
+
+img.custom-calendarsvg2{
+	width: 1.3em !important;
+	margin-top: 0px !important;
+}
+
+.mat-expansion-panel-header[aria-disabled=true] .activity_step{
+	color: inherit !important;
+}
+
+.blockactivity .note_textarea .ui-widget .ui-editor-content .ql-editor{
+	min-height: 36px !important;
+    padding: 0.4375em 0 !important;
+}
+
+.blockactivity .mat-slide-toggle{
+	height: 44px;
+    margin-bottom: 15px;
+    margin-top: 5px;
+}
+
+.blockactivity .start, .blockactivity .end{
+	flex: 1 0 40%;
+}
+
+.nopad{
+	padding: 0px !important;
+}
+
+.blockactivity .nopad .selected_duration{
+	border: 0px !important;
+    padding: 0 !important;
+    margin-top: 14px;
+}
+
+.nolmar{
+	margin-left: 0px !important;
+}
+
+.tipactive{
+	color: #939393;
+}
+
+/* Activity Care Calendar */
+
+.calendar_custom .cal-week-view .cal-hour-odd{
+	background-color: transparent !important;
+}
+
+.calendar_custom .cal-hour-segment{
+	min-height: 50px;
+	padding-left: 20px;
+}
+
+.calendar_custom .cal-hour-segment{
+	border-bottom: thin solid !important;
+	border-bottom-color: #b9b9b9 !important;
+	position: static !important;
+}
+
+.calendar_custom .cal-week-view .cal-time{
+	position: absolute;
+	left: 20px;
+	padding-top: 0;
+}
+
+.calendar_custom .cal-hour{
+    padding-left: 8% !important;
+    position: relative !important;
+}
+
+.calendar_custom .cal-week-view mwl-calendar-week-view-hour-segment{
+	min-height: 50px;
+	padding-left: 20px;
+}
+
+.calendar_custom .cal-current-time-marker{
+	margin-left: 100px;
+    width: calc(100% - 100px);
+}
+
+.calendar_custom .cal-event span.cal-event-title{
+	font-size: 16px;
+    color: rgb(22, 22, 22);
+    font-weight: 500;
+    display: inline-block;
+    width: 100%;
+    padding: 0px 10px;
+}
+
+.calendar_custom .cal-day-view .cal-events-container {
+    margin-left: 98px;
+}
+
+.cal-day-view .cal-current-time-marker {
+    margin-left: 100px !important;
+    width: calc(100% - 100px) !important;
+}
+
+.vscroll-fix h3{
+	font-size: 18px;
+    font-weight: 300;
+    margin-bottom: 12px;
+}
+
+.vscroll-fix h2{
+	margin: auto;
+    width: 100%;
+    font-size: 26px;
+}
+
+.vscroll-fix .description p{
+	font-size: 15px;
+    line-height: 24px;
+}
+
+.vscroll-fix .date-label{
+	font-size: 14px !important;
+	font-weight: 500;
+	margin-bottom: 20px;
+}
+
+.vscroll-fix .address p.fontfix-map .adress-span{
+	font-size: 16px !important;
+    line-height: 24px;
+    margin-bottom: 20px;
+    display: inline-block;
+    width: 100%;
+    font-weight: 500;
+    margin-top: 10px;
+}
+
+.vscroll-fix .address p.fontfix-map .adress-span .mat-icon{
+	width: 15px !important;
+    position: relative;
+    top: 2px;
+    margin-right: 4px;
+}
+
+.vscroll-fix .address .detail-span{
+	font-size: 15px;
+    line-height: 22px;
+    font-weight: 500;
+    width: 100%;
+    display: inline-block;
+}
+
+.calendar_custom .cal-week-view .cal-starts-within-day .cal-event{
+	border-radius: 4px !important;
+	background-color: #add264ab !important;
+}
+
+.calendar_custom .cal-draggable{
+	background-color: #add264 !important;
+	border-radius: 4px;
+}
+
+.calendar_custom .scroll-calenderfix{
+	height: 63vh;
+    overflow-y: scroll;
+}
+
+/* Location Popup Fix */
+
+.fixroom-location{
+	padding-bottom: 35px;
+}
+
+.zonefix-space{
+	align-items: flex-start !important;
+}
+
+.fixroom-location .mat-card{
+	padding: 0px !important;
+    border: 0px !important;
+    box-shadow: none !important;
+    padding-top: 10px !important;
+}
+
+.fixroom-location .mat-card .view-height-center h3{
+	margin: 0;
+}
+
+.fixroom-location .mat-card .view-height-center .view-list{
+	vertical-align: middle;
+    justify-content: flex-start;
+    background: #efefef;
+    border-radius: 6px;
+    padding: 6px 14px;
+    margin-top: 15px;
+}
+
+.fixroom-location .mat-card .view-height-center .view-list div{
+	display: inline-block;
+    height: auto;
+    margin: auto 0px;
+}
+
+.fixroom-location .mat-card .view-height-center .view-list div.btn-align{
+	width: 100%;
+}
+
+/* Report Page Fixes */
+
+.censusgrid2 .totalresi{
+	width: 100%;
+}
+
+.small-2p{
+	font-size: 16px !important;
+}
+
+#sidebar .mat-list-base a.submenunav:hover{
+	background: rgba(0, 0, 0, 0.04);
+}
+
+#sidebar .mat-list-base a.submenunav.active{
+	background: #53B7E5;
+}
+
+@media (max-width:1550px) {
+	.selecteddate span{
+		width: auto !important;
+	}
+}
+
+/* Icons +/- */
+
+.mat-icon-add.material-icon, .ic_plus .mat-icon{
+	height: 20px !important;
+    width: 20px !important;
+	color: #1975b8 !important;
+    cursor: pointer;
+	font-size: 24px !important;
+}
+
+.mat-icon.cancel_icon, .act .mat-icon, .ic_mins .mat-icon{
+	height: 20px !important;
+	color: #ef4036 !important;
+    width: 20px !important;
+    cursor: pointer;
+	font-size: 24px !important;
+}
+
+.act.add-mate-icon .mat-icon, .add-mate-icon .mat-icon{
+	color: #1975b8 !important;
+}

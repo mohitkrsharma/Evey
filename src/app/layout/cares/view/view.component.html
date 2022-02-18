@@ -1,0 +1,756 @@
+<mat-card *ngIf="care">
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>View Care</mat-card-title>
+        <!--  <button mat-flat-button color="primary" (click)="editCare(care._id)" class="btn_main_done">Edit</button> -->
+        &nbsp;&nbsp;
+        <!-- <button *ngIf="show" mat-flat-button color="primary" (click)="addSubCare(care._id)" class="btn_main_done w_auto">Add Sub Care</button> -->
+        &nbsp;&nbsp;
+        <button *ngIf="showQuestion" mat-flat-button color="primary" (click)="addquestion()"
+            class="btn_main_done w_auto">Add Question</button>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list class="custom_list">
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Name <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.name?care.name:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider *ngIf="!show"></mat-divider>
+            <mat-list-item *ngIf="!show">
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Alternative Outcome <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.alternative_outcomes?care.alternative_outcomes:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider *ngIf="!show"></mat-divider>
+            <!-- <mat-list-item *ngIf="!show">
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Selection <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.default_selection?care.default_selection.displayName:'--'}}
+                    </div>
+                </div>
+            </mat-list-item> -->
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Type <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.type?care.type:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Order <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.order?care.order:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider *ngIf="!show"></mat-divider>
+            <mat-list-item *ngIf="!show">
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Default value <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.default_value?care.default_value:'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Min Minutes <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.min?care.min:"-"}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Max Minutes <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.max?care.max:"-"}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Unit <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{care.unit?care.unit:"-"}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Icon <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        <img *ngIf="care.image && care.image.location!=''" [src]="care.image.location" height="50">
+                    </div>
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </mat-card-content>
+    <!-- listing part -->
+</mat-card>
+
+<mat-card class="mt-20" *ngIf="show">
+    <mat-card-content class="view-height-center">
+        <mat-card-header class="d-flex justify-content-between align-center w-100">
+            <mat-card-title>Sub Cares</mat-card-title>
+            <div class="example-button-row text-right w-100">
+                <button *ngIf="show" mat-stroked-button (click)="addSubCare(care._id)" class="btn_Secondary">Add
+                    New</button>
+                <button #deleteButton mat-stroked-button (click)="delete()" class="btn_Secondary">Delete</button>
+            </div>
+        </mat-card-header>
+        <div class="table-responsive mt-20 header-fixed-table-wrpper">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" [matSortActive]="sortActive" [matSortDirection]="sortDirection"
+                class="listing">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="icon">
+                    <th mat-header-cell *matHeaderCellDef>Icon </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <img *ngIf="elements.icon!=''" [src]="elements.icon" height="50">
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element"> 
+                        <!-- {{element[column.id]}}  -->
+                        <span class="iconalign" *ngIf="column.id=='name'" (click)="editCare(element._id)"> <a>{{element[column.id]}}</a> </span>
+                        <span *ngIf="column.id!='name'"> {{element[column.id]}} </span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="change_status">
+                    <th mat-header-cell *matHeaderCellDef> Status</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-slide-toggle (change)="changeCareStatus($event,elements._id)" color="primary"
+                            [checked]="elements.status">
+                        </mat-slide-toggle>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button mat-mini-fab color="primary" (click)="editCare(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="deleteCare(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" *ngIf="elements.name=='Pulse Automatic'" (click)="viewCare(elements._id)">
+                            <mat-icon>remove_red_eye</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="mt-20" *ngIf="showQuestion">
+    <mat-card-content class="view-height-center">
+        <mat-card-header class="d-flex justify-content-between align-center w-100">
+            <mat-card-title>Questionnaire</mat-card-title>
+            <button #deleteButton mat-stroked-button (click)="deleteQues()">Delete</button>
+        </mat-card-header>
+        <div class="table-responsive mt-20 header-fixed-table-wrpper questionnaire">
+            <table mat-table [dataSource]="dataSource1" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)" [matSortActive]="sortActive" [matSortDirection]="sortDirection"
+                #table cdkDropList [cdkDropListData]="dataSource" (cdkDropListDropped)="dropTable($event)">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef width="3%">
+                        <mat-checkbox color="primary" [(ngModel)]="checked1" (click)="selectAllQues()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElementQues(elements._id,elements.checked)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="position">
+                    <th mat-header-cell *matHeaderCellDef width="3%"> </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon style="pointer-events: all;" cdkDragHandle>zoom_out_map</mat-icon>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames1">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element"> {{element[column.id]}}</td>
+                </ng-container>
+                <ng-container matColumnDef="change_status">
+                    <th mat-header-cell *matHeaderCellDef> Status</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-slide-toggle (change)="changeStatus($event,elements._id)" color="primary"
+                            [checked]="elements.status">
+                        </mat-slide-toggle>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button mat-mini-fab color="primary" (click)="editQuestion(elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="deleteQuestion(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns1; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns1;" cdkDrag [cdkDragData]="row"></tr>
+            </table>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #addQuestion>
+    <form [formGroup]="questionForm">
+        <div class="pop_heading">
+            <h3>{{(isEdit?"Edit":"Add")}} Question</h3>
+            <span class="">
+                <mat-icon (click)="closeQuestionDialog()">close</mat-icon>
+            </span>
+        </div>
+
+        <div class="newrule">
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label>Question Type</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-40">
+                        <mat-label>Question Type</mat-label>
+                        <mat-select formControlName="type" [(ngModel)]="question.type"
+                            (selectionChange)="getFieldType($event)">
+                            <ngx-mat-select-search formControlName="searchCtrl" [placeholderLabel]="'Search...'"
+                                [noEntriesFoundLabel]="'Not found'"></ngx-mat-select-search>
+                            <mat-option *ngFor="let item of filteredCountries | async" (click)="getFieldType($event)"
+                                [value]="item.type">{{item.name}}</mat-option>
+                        </mat-select>
+                        <!-- <mat-select formControlName="type" [(ngModel)]="question.type">
+                            <mat-option *ngFor="let item of Question_Types" (click)="getFieldType($event)"
+                                [value]="item.type">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select> -->
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-center form-row">
+                <div class="w-20">
+                    <label>Add Question</label>
+                </div>
+                <div class="w-80">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="Question here.." formControlName="question"
+                            [(ngModel)]="question.question" required>
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+            <div class="selection" *ngIf="isOptionField">
+                <ng-container formArrayName="options">
+                    <div class="d-flex justify-content-between align-center form-row"
+                        *ngFor="let item of optionsPoints.controls; let pointIndex=index" [formGroupName]="pointIndex">
+
+                        <div class="w-20">
+                            <label>Option</label>
+                        </div>
+                        <div class="w-80 d-flex justify-content-between align-center">
+                            <span [ngClass]="btnClass"></span>
+                            <mat-form-field class="w-100">
+                                <input matInput type="text" placeholder="Option {{pointIndex + 1}}"
+                                    formControlName="label" [required]="pointIndex>1">
+                            </mat-form-field>
+                            <button *ngIf="pointIndex>1" class="addopt" (click)="removeOption(pointIndex)">-</button>
+                        </div>
+                    </div>
+                </ng-container>
+
+
+                <div class="d-flex justify-content-between align-center form-row"
+                    *ngIf="optionsPoints.controls.length<4">
+                    <div class="w-20">
+
+                    </div>
+                    <div class="w-80 d-flex justify-content-between align-center">
+                        <button class="addopt" (click)="addOption()">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="adtime">
+            <button mat-button color="basic" (click)="closeQuestionDialog()">Cancel</button>
+            <button mat-button color="primary" (click)="saveQuestionDialog()">Save</button>
+        </div>
+    </form>
+</ng-template>
+
+
+<!-- Start Add/edit Care Pop up -->
+<ng-template #addModal>
+    <div class="popup_design ann_pop">
+        <div class="pop_heading">
+            <h3>{{(isEdit?"Edit Sub Care":"Add Sub Care")}} <span *ngIf="this.care.name">( Parent : {{this.care.name}}
+                    )</span></h3>
+        </div>
+
+        <div class="newrule">
+            <ng-container>
+                <form #f="ngForm">
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput placeholder="Care Name" name="name" [(ngModel)]="subCare.name" required>
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>
+                                    Type</mat-label>
+                                <mat-select [disabled]="isEdit" #type="ngModel" [(ngModel)]="subCare.type"
+                                    (ngModelChange)="onTypeChange($event.value)" name="onTypeChange" required>
+                                    <ngx-mat-select-search [(ngModel)]="typeSearch" placeholderLabel="Select Type"
+                                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                    <mat-option *ngFor="let item of careType |stringFilterBy:typeSearch:'value'"
+                                        [value]="item.key">
+                                        {{item.value}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between form-row"
+                        *ngIf="selectedTypeItem || selectedTypeItemVirus">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>
+                                    Select Outcome</mat-label>
+                                <ng-container>
+                                    <mat-select #alternative_outcomes="ngModel"
+                                        [(ngModel)]="subCare.alternative_outcomes" name="alternative_outcomes"
+                                        [multiple]="true" #multiSelect required>
+                                        <ngx-mat-select-search [(ngModel)]="altSearch" placeholderLabel="Select Outcome"
+                                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                                        <mat-option *ngFor="let item of alternateCare |stringFilterBy:altSearch:'value'"
+                                            [value]="item.key" (click)="select_alt_outcome(item.key)">
+                                            {{item.value}}
+                                        </mat-option>
+                                    </mat-select>
+                                </ng-container>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Order" name="order"
+                                    [(ngModel)]="subCare.order" min="0" required (keypress)="checkAllwoNum($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15" *ngIf="selectedTypeItem">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Default Value" name="default_value"
+                                    [(ngModel)]="subCare.default_value" min="0" required
+                                    (keypress)="checkAllwoNum($event)" onPaste="return false">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Min Time(Minutes)" name="min"
+                                    [(ngModel)]="subCare.min" min="0" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100" >
+                                <input matInput type="number" placeholder="Max Time(Minutes)" name="max"
+                                    [(ngModel)]="subCare.max" min="0" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between form-row icon-gap" *ngIf="caremsg!=''">
+                        <mat-icon color="primary" (click)="onInfoClick()">info</mat-icon>
+                        <div class="w-100 caremsg">
+                            <span *ngIf="isShowCareMsg">{{caremsg}}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between form-row" *ngIf="!multipleInput">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Min Value" name="min_value"
+                                    [(ngModel)]="subCare.min_value" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Max Value" name="max_value"
+                                    [(ngModel)]="subCare.max_value" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between form-row" *ngIf="multipleInput">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Diastolic Min Value" name="min_value"
+                                    [(ngModel)]="subCare.min_value" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Diastolic Max Value" name="max_value"
+                                    [(ngModel)]="subCare.max_value" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between form-row" *ngIf="multipleInput">
+                        <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Systolic Min Value" name="top_min_value"
+                                    [(ngModel)]="subCare.top_min_value" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+                        <div class="w-100 pl-15">
+                            <mat-form-field class="w-100">
+                                <input matInput type="number" placeholder="Systolic Max Value" name="top_max_value"
+                                    [(ngModel)]="subCare.top_max_value" required (keypress)="allwoNumDecimal($event)"
+                                    onPaste="return false">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="d-flex justify-content-between form-row">
+                        <div class="w-50 pr-15">
+                            <mat-form-field class="w-100">
+                                <mat-label>Assets</mat-label>
+                                <ng-container>
+                                    <mat-select #asset_type="ngModel" [(ngModel)]="subCare.asset_type"
+                                        name="asset_type">
+                                        <ngx-mat-select-search [(ngModel)]="assetSearch"
+                                            placeholderLabel="Select Asset Type" noEntriesFoundLabel="Not Found"
+                                            name="search"></ngx-mat-select-search>
+                                        <mat-option
+                                            *ngFor="let item of assetTypeList |stringFilterBy:assetSearch:'displayName'"
+                                            [value]="item._id">
+                                            {{item.displayName}}
+                                        </mat-option>
+                                    </mat-select>
+                                </ng-container>
+                            </mat-form-field>
+                        </div>
+                        <div class="w-50 pl-15" *ngIf="selectedTypeInput">
+                            <mat-form-field class="w-100">
+                                <input matInput type="unit" placeholder="Unit" name="unit" [(ngModel)]="subCare.unit">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                   <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                    <div class="d-flex form-row example-box" *ngFor="let item of subCare.notes;let i=index" cdkDrag>
+                        <div class="example-handle" cdkDragHandle>
+                            <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                              <path d="M0 0h24v24H0z" fill="none"></path>
+                            </svg>
+                          </div>
+                        <div class="w-43 pr-15"> 
+                          <mat-form-field class="w-100">
+                              <input matInput placeholder="Note" type="text" [name]="item.id"  [(ngModel)]="item.value" [ngModelOptions]="{standalone: true}">
+                          </mat-form-field>
+                        </div>
+                        <div class="w-10 ic_plus">
+                          <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+                          class="mat-icon-remove material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                          mat-raised-button="" role="img" (click)="removeCareNote(i)">remove_circle </mat-icon>
+                          <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+                            class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                            mat-raised-button="" role="img" (click)="addCareNote(i)">add_circle
+                          </mat-icon>
+                        </div>
+                      </div>
+                   </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div class="w-50">
+                            <div class="drop-zone">
+                                <div class="addfile">
+                                    <span>
+                                        Upload Icon
+                                        <input name="document" type="file" ng2FileSelect accept="image/*"
+                                        [uploader]="uploader" (change)="onFileChanged($event)">
+                                    </span>
+                                </div>
+
+                                <mat-hint *ngIf="iconSelected!=''">{{iconSelected}}</mat-hint>
+                                <mat-error *ngIf="iconError!=''">{{iconError}}</mat-error>
+                            </div>
+                        </div>
+                        <div class="w-50">
+                            <img *ngIf="subCare.image && subCare.image.location!=undefined"
+                                [src]="subCare.image.location" height="50">
+                        </div>
+                    </div>
+                    <div class="block_facility no_drop_shadow ann_assign_fac">
+                        <h3 class="ann_heading subHeaderClass mt-0">Assigned Facilities</h3>
+                        <div class="newrule">
+
+                            <ng-container *ngIf="showNew">
+                                <div class="d-flex justify-content-between form-row">
+                                    <div class="w-100 pr-15">
+                                        <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+                                            <mat-form-field class="w-100">
+                                                <mat-label>Organization</mat-label>
+                                                <mat-select #organization="ngModel" [(ngModel)]="subCare.organization"
+                                                    (selectionChange)="changeOrg($event.value)"
+                                                    (selectionChange)="select($event,'',0)" name="organization" [disabled]="orgDisable">
+                                                    <ngx-mat-select-search [(ngModel)]="orgSearch"
+                                                        placeholderLabel="Select Organization"
+                                                        noEntriesFoundLabel="Not Found" name="orgSearch">
+                                                    </ngx-mat-select-search>
+                                                    <mat-option
+                                                        *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                                                        [value]="item._id" (focus)="select(item.org_name,'',1)">
+                                                        {{item.org_name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </span>
+                                        <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                                            <mat-form-field class="w-100">
+                                                <mat-label>Organization</mat-label>
+                                                <mat-select #organization="ngModel" [(ngModel)]="subCare.organization"
+                                                    (selectionChange)="changeOrg($event.value)"
+                                                    (selectionChange)="select($event,'',0)" name="organization" [disabled]="orgDisable">
+                                                    <ngx-mat-select-search [(ngModel)]="orgSearch"
+                                                        placeholderLabel="Select Organization"
+                                                        noEntriesFoundLabel="Not Found" name="orgSearch">
+                                                    </ngx-mat-select-search>
+                                                    <mat-option
+                                                        *ngFor="let item of organiz |stringFilterBy:orgSearch:'org_name'"
+                                                        [value]="item._id" (focus)="select(item.org_name,'',1)">
+                                                        {{item.org_name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </span>
+                                    </div>
+                                    <div class="w-100 pl-15">
+                                        <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+                                            <mat-form-field class="w-100">
+                                                <mat-label>Building</mat-label>
+                                                <mat-select #facility="ngModel" [(ngModel)]="subCare.fac"
+                                                    (selectionChange)="changeFac($event.value,subCare)"
+                                                    (selectionChange)="select('',$event,0)" name="facility" [disabled]="facDisable">
+                                                    <ngx-mat-select-search [(ngModel)]="facSearch"
+                                                        placeholderLabel="Select Building"
+                                                        noEntriesFoundLabel="Not Found" name="facSearch">
+                                                    </ngx-mat-select-search>
+                                                    <mat-option
+                                                        *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'"
+                                                        [value]="item._id" (focus)="select('',item,1)">
+                                                        {{item.fac_name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </span>
+                                        <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                                            <mat-form-field class="w-100">
+                                                <mat-label>Facility</mat-label>
+                                                <mat-select #facility="ngModel" [(ngModel)]="subCare.fac"
+                                                    (selectionChange)="changeFac($event.value,subCare)"
+                                                    (selectionChange)="select('',$event,0)" name="facility" [disabled]="facDisable">
+                                                    <ngx-mat-select-search [(ngModel)]="facSearch"
+                                                        placeholderLabel="Select Building"
+                                                        noEntriesFoundLabel="Not Found" name="facSearch">
+                                                    </ngx-mat-select-search>
+                                                    <mat-option
+                                                        *ngFor="let item of faclist |stringFilterBy:facSearch:'fac_name'"
+                                                        [value]="item._id" (focus)="select('',item,1)">
+                                                        {{item.fac_name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </span>
+                                    </div>
+                                    <div class="ic_plus pl-15">
+                                        <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="userFacilityList && userFacilityList.length>0"
+                                        class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                        mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle
+                                    </mat-icon> -->
+                                        <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                                            class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                            mat-raised-button="" role="img" (click)="addFacilityList(subCare)">
+                                            add_circle
+                                        </mat-icon>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <div *ngFor="let item of userFacilityList;let i=index;">
+                                <ng-container>
+                                    <div class="d-flex justify-content-between form-row">
+                                        <div class="w-100 pr-15">
+                                            <mat-form-field class="w-100">
+                                              <input class="added_field" matInput placeholder="Organization" name="orgg"
+                                                [value]="item.org_name" [disabled]=true>
+                                            </mat-form-field>
+                  
+                                          </div>
+                  
+                                          <div class="w-100 pl-15 pr-15">
+                                            <mat-form-field class="w-100">
+                                              <input class="added_field" matInput placeholder="Facility" name="faccc"
+                                                [value]="item.fac_name" [disabled]=true>
+                                            </mat-form-field>
+                                          </div>
+                                        <!-- <div class="w-100 pr-15">
+                                            <span *ngIf="paramId && ismultifac ||!paramId && ismultifac">
+                                                <mat-form-field class="w-100">
+                                                    <mat-label>Organization</mat-label>
+                                                    <mat-select [(value)]="item.org_id" name="organization">
+                                                        <mat-option *ngFor="let item of organiz" [value]="item._id"
+                                                            (focus)="select(item.org_name,'',1)" disabled>
+                                                            {{item.org_name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </span>
+                                            <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                                                <mat-form-field class="w-100">
+                                                    <mat-label>Organization</mat-label>
+                                                    <mat-select [(value)]="item.org_id" name="organization">
+                                                        <mat-option *ngFor="let item of organiz " [value]="item._id"
+                                                            (focus)="select(item.org_name,'',1)" disabled>
+                                                            {{item.org_name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </span>
+                                        </div>
+                                        <div class="w-100 pl-15">
+                                            <span *ngIf=" paramId && ismultifac || !paramId && ismultifac">
+                                                <mat-form-field class="w-100">
+                                                    <mat-label>Facility</mat-label>
+                                                    <mat-select [(value)]="item.fac_id" name="facility">
+                                                        <mat-option [value]="item.fac_id" (focus)="select('',item,1)"
+                                                            disabled>
+                                                            {{item.fac_name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </span>
+                                            <span *ngIf="paramId && !ismultifac || !paramId && !ismultifac">
+                                                <mat-form-field class="w-100">
+                                                    <mat-label>Facility</mat-label>
+                                                    <mat-select [(value)]="item.fac_id" name="facility">
+                                                        <mat-option [value]="item.fac_id" (focus)="select('',item,1)"
+                                                            disabled>
+                                                            {{item.fac_name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </span>
+                                        </div> -->
+                                        <div class="act pl-15">
+                                            <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+                                            class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                            mat-raised-button="" role="img" (click)="addFacilityList(subCare)">
+                                            add_circle
+                                        </mat-icon> -->
+                                            <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                                                class="mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                                                mat-raised-button="" role="img" (click)="onRemoveFac(i)">remove_circle
+                                            </mat-icon>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between mt-20">
+                        <button mat-flat-button color="warn" (click)="cancelForm(subCare)"
+                            class="btn_main_cancle">Cancel</button>
+                        <button mat-flat-button class="ml-10" color="primary" (click)="onSubmit(f)"
+                            class="btn_main_done">Done</button>
+                    </div>
+                </form>
+
+            </ng-container>
+        </div>
+
+
+    </div>
+</ng-template>
+<!-- End Add/edit Care Pop up -->

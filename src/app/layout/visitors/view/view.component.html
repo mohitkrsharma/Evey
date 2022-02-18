@@ -1,0 +1,115 @@
+<mat-card>
+   
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>Visitor Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list *ngIf="visitor">
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Name <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{visitor?.visitor?.name}}
+                    </div>
+                </div>
+            </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Work Phone. <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{visitor?.visitor?.phone}}
+                    </div>
+                </div>
+            </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                       Address. <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{visitor?.visitor?.address}}
+                    </div>
+                </div>
+            </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                       Resident. <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{visitor?.resident_id.first_name}} {{visitor?.resident_id.last_name}}
+                    </div>
+                </div>
+            </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                       Relation <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{visitor?.visitor?.relation}}
+                    </div>
+                </div>
+            </mat-list-item>
+                <mat-divider></mat-divider>
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-30 pr-15">
+                        Visit Date <span>:</span>
+                    </div>
+                    <div class="w-70 pl-15">
+                        {{visitor.ts_created?dateFormat(visitor.ts_created):'--'}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          
+          
+        </mat-list>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="mt-20">
+    
+    <mat-card-header class="d-flex justify-content-between align-center w-100">
+        <mat-card-title>Questionnaire</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list *ngIf="visitor">
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-50 pr-5">
+                       <b> Question</b> 
+                    </div>
+                    <div class="w-50 pl-5">
+                       <b>Answer</b> 
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <ng-template ngFor let-item [ngForOf]="visitor.questions" let-i="index" let-last="last">
+            <mat-list-item>
+                <div class="d-flex view-list w-100">
+                    <div class="w-50 pr-15">
+                        {{item?.question}} <span>:</span>
+                    </div>
+                    <div class="w-50 pl-15">
+                        {{item?.answer}}
+                    </div>
+                </div>
+            </mat-list-item>
+            <mat-divider *ngIf="!last"></mat-divider>
+        </ng-template>
+          
+          
+        </mat-list>
+    </mat-card-content>
+</mat-card>

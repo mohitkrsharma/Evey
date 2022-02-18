@@ -1,0 +1,7 @@
+<div mat-dialog-content class="modal_txt">
+    <p class="text-center mt-0" *ngIf="data.title === 'restore_user'"><span>Are you sure?</span> Restored data</p>
+</div>
+<div mat-dialog-actions class="text-center justify-content-between">
+    <button mat-flat-button (click)="onNoClick()" color="primary" class="mr-10 btn_window_done">Cancel</button>
+    <button mat-flat-button cdkFocusInitial  *ngIf="data.title === 'restore_user'" (click)="restoreData()" class="btn_window_cancle">Restore</button>
+</div> 

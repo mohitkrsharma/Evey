@@ -1,0 +1,220 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Goals</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-tab-group [selectedIndex]="selectedIndexVal.value" (selectedIndexChange)="Ongoaltabchange($event)">
+      <mat-tab label="Census">
+        <form #goalsForm="ngForm">
+          <div>
+            <mat-form-field class="budget-field">
+              <input matInput placeholder="Budget" [(ngModel)]="budgetVal" name="budget_value" required>
+            </mat-form-field>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="w-50 pr-10">
+              <mat-card class="no_drop_shadow bdr_crd resident-level-card">
+                <mat-card-header class="w-100 border-bottom">
+                  <mat-card-title class="ann_heading mt-0">Resident Levels</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <mat-form-field class="w-50">
+                    <mat-label>Add Level</mat-label>
+                    <mat-select #care_level="ngModel" #goalSelect [(ngModel)]="selectedCareLevel"
+                      (selectionChange)="onChangeCareLevel($event.value)" name="care_level" required>
+                      <ngx-mat-select-search [(ngModel)]="careSearch" placeholderLabel="Select Level"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                      <mat-option *ngFor="let item of carelevelData |stringFilterBy:careSearch:'label'"
+                        [value]="item._id"> {{ item.label }} </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <div class="d-flex justify-content-between mt-10" *ngFor="let goal of goals; let i = index">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <input matInput [value]="goal.name" readonly>
+                      </mat-form-field>
+                    </div>
+                    <div class="d-flex w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <input matInput placeholder="Budgeted Goal" [name]="goal.name" [(ngModel)]="goal.value" required>
+                      </mat-form-field>
+                      <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                        class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+                        mat-raised-button="" role="img" (click)="onRemove(i)">remove_circle
+                      </mat-icon>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+            <div class="w-50 pl-10">
+              <mat-card class="no_drop_shadow bdr_crd mb-20">
+                <mat-card-header class="w-100 border-bottom">
+                  <mat-card-title class="ann_heading mt-0">Building</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="d-flex justify-content-between">
+                    <div class="w-50">
+                      <mat-form-field class="w-100">
+                        <input matInput placeholder="Total Units" [value]="totalUnit ? totalUnit : '-'" disabled>
+                      </mat-form-field>
+                    </div>
+                    <div class="w-50 ml-30">
+                      <mat-form-field class="w-100">
+                        <input matInput placeholder="Occupancy Goal" type="number" name="occupancy_goal" min="1"
+                          step="1" (keyup)="onGoalInputChange()" [(ngModel)]="occupancy_goal" required>
+                      </mat-form-field>
+                    </div>
+                    <div class="w-50 ml-30">
+                      <mat-form-field class="w-100">
+                        <input matInput placeholder="Percent Occupancy"
+                          [value]="occupancy_percetage != 'NaN' ? occupancy_percetage + '%' : '-'" disabled>
+                      </mat-form-field>
+                    </div>
+
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        </form>
+      </mat-tab>
+      <mat-tab label="Time">
+        <form #timegoalsForm="ngForm">
+          <div class="d-flex justify-content-between">
+            <div class="w-50 pr-20">
+              <mat-card class="no_drop_shadow bdr_crd resident-level-card">
+                <mat-card-header class="w-100 border-bottom">
+                  <mat-card-title class="ann_heading mt-0">Level</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <mat-form-field class="w-50">
+                    <mat-label>Add Level</mat-label>
+                    <mat-select #care_level="ngModel" #timegoalSelect [(ngModel)]="selectedTimeCareLevel"
+                      (selectionChange)="onChangeTimeCareLevel($event.value)" name="timecare_level" required>
+                      <ngx-mat-select-search [(ngModel)]="timecareSearch" placeholderLabel="Select Level"
+                        noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                      <mat-option *ngFor="let item of carelevelData |stringFilterBy:careSearch:'label'"
+                        [value]="item?._id"> {{ item?.label }} </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div class="d-flex justify-content-between mt-10" *ngFor="let tgoal of timegoals; let i = index">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <input matInput [value]="tgoal.name" readonly>
+                      </mat-form-field>
+                    </div>
+                    <div class="d-flex w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <input type="number" matInput placeholder="Goal per Day (hrs)" [name]="tgoal.name"
+                          [(ngModel)]="tgoal.value" required>
+                      </mat-form-field>
+                      <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+                        class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+                        mat-raised-button="" role="img" (click)="ontimeRemove(i)">remove_circle
+                      </mat-icon>
+                    </div>
+                  </div>
+
+                  <!-- <div class="d-flex justify-content-between mt-10">
+                  <div class="w-100">
+                    <mat-form-field class="w-100">
+                      <input matInput value="Level 1" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="d-flex w-100 pl-15">
+                    <mat-form-field class="w-100">
+                      <input matInput placeholder="Goal per Day (hrs)" required>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mt-10">
+                  <div class="w-100">
+                    <mat-form-field class="w-100">
+                      <input matInput value="Level 2" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="d-flex w-100 pl-15">
+                    <mat-form-field class="w-100">
+                      <input matInput placeholder="Goal" required>
+                    </mat-form-field>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mt-10">
+                  <div class="w-100">
+                    <mat-form-field class="w-100">
+                      <input matInput value="Level 3" readonly>
+                    </mat-form-field>
+                  </div>
+                  <div class="d-flex w-100 pl-15">
+                    <mat-form-field class="w-100">
+                      <input matInput placeholder="Goal" required>
+                    </mat-form-field>
+                  </div>
+                </div> -->
+                </mat-card-content>
+              </mat-card>
+            </div>
+            <div class="w-50 pl-20">
+              <mat-card class="no_drop_shadow bdr_crd resident-level-card">
+                <mat-card-header class="w-100 border-bottom">
+                  <mat-card-title class="ann_heading mt-0">Shift / Performer</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="d-flex justify-content-between mt-10">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <input matInput value="Shift 1" readonly>
+                      </mat-form-field>
+                    </div>
+                    <div class="d-flex w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <input type="number"  min="0" step="" max="24" matInput placeholder="Goal per Performer (hrs)" [(ngModel)]="shift1_timegoal" name="shift1_timegoal" required>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-10">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <input matInput value="Shift 2" readonly>
+                      </mat-form-field>
+                    </div>
+                    <div class="d-flex w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <input type="number" min="0" step="" max="24" matInput placeholder="Goal per Performer (hrs)" [(ngModel)]="shift2_timegoal" name="shift2_timegoal" required>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-10">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <input matInput value="Shift 3"  readonly>
+                      </mat-form-field>
+                    </div>
+                    <div class="d-flex w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <input type="number" min="0" step="" max="24" matInput placeholder="Goal per Performer (hrs)" [(ngModel)]="shift3_timegoal" name="shift3_timegoal" required>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        </form>
+      </mat-tab>
+      <!-- <mat-tab label="Staff Performance" disabled>
+
+      </mat-tab> -->
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>
+
+<div class="d-flex justify-content-between btn_detail">
+  <button mat-flat-button color="warn" class="btn_main_cancle" type="button" (click)="onCancel()">Cancel</button>
+  <button *ngIf="editMode && _commonService.checkPrivilegeModule('goals','edit')" mat-flat-button color="primary"
+    class="ml-10 btn_main_done" type="submit" (click)="onSubmit()">Done</button>
+  <button *ngIf="!editMode && _commonService.checkPrivilegeModule('goals','add')" mat-flat-button color="primary"
+    class="ml-10 btn_main_done" type="submit" (click)="onSubmit()">Done</button>
+</div>

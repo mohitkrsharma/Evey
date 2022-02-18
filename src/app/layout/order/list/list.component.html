@@ -1,0 +1,101 @@
+<mat-card class="view-height ">
+  <mat-card-header>
+    <mat-card-title>Orders To File
+    </mat-card-title>
+    <button mat-stroked-button color="primary" (click)="openUploadModal()" class="btn_Secondary" style="height: 25px; width: 100px; border-radius: 5px;">Upload</button>
+    <mat-card-subtitle class="w-100 mb-0">
+      <div class="d-flex justify-content-between align-center">
+
+        <!-- search record -->
+        <div class="w-30 pr-15">
+        </div>
+
+        <div class="w-70 pl-15">
+          <div class="example-button-row text-right w-100">
+            <ng-container>
+            </ng-container><br><br>
+          </div>
+        </div>
+      </div>
+
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content class="view-height-center">
+    <div *ngIf="orderArray.length > 0">
+      <form class="example-form custom_font" [formGroup]="orderForm" #formDirective="ngForm">
+
+        <div class="row">
+          <ng-container *ngFor="let item of orderArray; let i = index;">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-3">
+              <mat-card class="mat-card-image">
+
+                  <mat-card-content>
+                      <!-- <mat-form-field class="w-100">
+                        <input type="text"
+                               placeholder="Resident Name"
+                               matInput #searchResidentInput
+                               formControlName="resident_name"
+                               (input)="filterResident($event.target.value)"
+                               [matAutocomplete]="autoResident">
+                        <mat-autocomplete #autoResident="matAutocomplete">
+                          <mat-option *ngFor="let option of residentData" [value]="option.value" (click)="selectResidentName(option.key, option.facId)">
+                            {{option.value}}  {{option.room}}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field> -->
+
+                      <!-- resident new starts -->
+                      <mat-form-field class="w-100" style="margin-top: -20px">
+                        <mat-label>Select Resident</mat-label>
+                        <mat-select (openedChange)="openSelectDropdown($event)">
+                          <ngx-mat-select-search formControlName="residentSearch" [(ngModel)]="residentSearch" placeholderLabel="Select Resident Name"
+                            noEntriesFoundLabel="Not Found" name="search" (keyup)="filterResidentData($event)">
+                          </ngx-mat-select-search>
+                          <mat-option *ngFor="let option of residentData |stringFilterBy:residentSearch: 'value'" [value]="option.value" (click)="selectResidentName(option, option.facId)">
+                            {{option.value}}  {{option.room}}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    <!-- resident new ends -->
+
+                  </mat-card-content>
+
+                   <img class="mat-image-card" [src]="item.thumbnailUrl" alt="" (click)="openPDFViewer(item)">
+                   <br>
+                   <br>
+                   <label for="order_date_created" class="w-100 text-center">
+                      {{item.ts_date_created | date: 'LLLL dd yyyy'}}
+                   </label>
+                   <br>
+
+                  <mat-card-actions class=" mt-10 text-rightustify-content-between align-right">
+                    <button mat-stroked-button color="primary" class="btn-main main_btn"
+                      (click)="orderLinkFn(item._id, orderForm.valid, formDirective)">
+                        Link Order
+                    </button>
+                  </mat-card-actions>
+
+              </mat-card>
+            </div>
+        </ng-container>
+        </div>
+      </form>
+    </div>
+
+    <div style="text-align: center; color: #969393" *ngIf="orderArray.length === 0">
+        No Data Found
+    </div>
+
+  </mat-card-content>
+
+  <mat-card-actions *ngIf="data.length > 0">
+    <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[5, 10, 50, 100, 500]"
+      [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+  </mat-card-actions>
+
+</mat-card>
+
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

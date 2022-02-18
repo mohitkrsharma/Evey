@@ -1,0 +1,80 @@
+image: 'node:latest'
+cache:
+  paths:
+    - node_modules/
+    - dist/
+stages:
+  - builddev
+  - buildstaging
+  - deploydev
+  - deploystaging
+  - docker
+build-dev:
+  stage: builddev
+  tags:
+    - dev
+  script:
+    # Install Node Version Manager (NVM) so we can change the node version 
+    - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
+    - ". ~/.nvm/nvm.sh"
+    - nvm --version 
+    - nvm install 14.15.5
+    - nvm use 14.15.5
+    - node -v
+    - npm install
+#    - /usr/bin/ng build
+    - npm run build
+  only:
+    - dev
+build-staging:
+  stage: buildstaging
+  tags:
+    - stagingnew
+  script:
+    - npm install
+#- /usr/bin/ng build
+    - npm run build
+  only:
+    - stagingnew
+deploy-dev:
+  tags:
+    - dev
+  only:
+    - dev
+  stage: deploydev
+  script:
+    - rsync -rav /home/gitlab-runner/builds/357da288/0/root/evey-dev-frontend/ /home/gitlab-runner/builds/357da288/0/root/evey-dev-frontend-Main/
+    - cd /home/gitlab-runner/builds/357da288/0/root/evey-dev-frontend-Main/
+    - pm2 restart app.js --name "Evey-Dev-Frontend"
+deploy-staging:
+  tags:
+    - stagingnew
+  only:
+    - stagingnew
+  stage: deploystaging
+  script:
+    - rsync -rav /home/gitlab-runner/builds/b21ca1b9/0/root/evey-dev-frontend/ /home/gitlab-runner/builds/b21ca1b9/0/root/evey-dev-frontend-eveystaging-main/
+    - cd /home/gitlab-runner/builds/b21ca1b9/0/root/evey-dev-frontend-eveystaging-main/
+    - pm2 restart app.js --name "Evey-Dev-Frontend"
+docker_image:
+  image: docker:19.03.12
+  stage: docker
+  services:
+    - name: docker:19.03.12-dind
+      alias: abc
+  variables:
+    DOCKER_HOST: tcp://thedockerhost:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+    APP_NAME: evey-dev-frontend
+    IMAGE_TAG: ikoble/evey-fe:${APP_NAME}-${CI_JOB_ID}-V${CI_COMMIT_REF_SLUG}
+    CONTAINER_IMAGE_DEV: ikoble/evey-fe:${APP_NAME}-${CI_JOB_ID}-V${CI_COMMIT_SHORT_SHA}
+  script:
+    - ls -l
+    - docker login -u "ikoble" -p "17cc4a16-d21d-47a3-8dd2-22e6825bd9df"
+    - docker build --target=frontend -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+  tags:
+    - k8s
+  only:
+    - k8s

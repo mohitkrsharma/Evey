@@ -1,0 +1,16 @@
+<h3 mat-dialog-title class="mt-0 mb-10">Add Report Name</h3>
+<div mat-dialog-content>
+    <form class="example-form" [formGroup]="reportForm">
+        <div class="d-flex justify-content-between form-row">
+            <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                    <input matInput placeholder="Report Name" class="form-control" formControlName="name" [(ngModel)]="report.name">
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions class="text-center">
+    <button mat-flat-button color="warn" (click)="onNoClick()" class="mr-10">Cancel</button>
+    <button mat-flat-button color="primary" cdkFocusInitial (click)="saveReport(reportForm.valid)">Done</button>
+</div>

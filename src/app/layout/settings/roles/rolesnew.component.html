@@ -1,0 +1,102 @@
+<mat-card>
+
+  <mat-card-header class="d-flex justify-content-between align-items-center">
+    <mat-card-title>Roles & Permission</mat-card-title>
+    <div class="d-flex justify-content-between align-center">
+      <!-- <div class="w-30 pr-15">
+                 <mat-form-field class="w-100">
+                    <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                        id="searchInput" placeholder="Search by Role" />
+                    <!-- <input matInput placeholder="Search"> --
+                </mat-form-field> 
+            </div>-->
+      <div class="w-70 pl-15">
+        <div class="example-button-row text-right w-100">
+          <button mat-stroked-button color="primary" class="ml-3 btn_Secondary" *ngIf="!editRole"
+            (click)="editRole = !editRole">Edit</button>
+          <button mat-stroked-button color="primary" class="ml-3 btn_Secondary" *ngIf="editRole" (click)="addRole()">Add
+            New Role</button>
+        </div>
+      </div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content class="view-height-center">
+    <mat-form-field class="w-20">
+      <mat-select (selectionChange)="changeRole($event)" name="roleType" [(value)]="roleType">
+        <ngx-mat-select-search [(ngModel)]="rolSearch" placeholderLabel="Select Role" noEntriesFoundLabel="Not Found"
+          name="search"></ngx-mat-select-search>
+        <mat-option *ngFor="let item of roleData |stringFilterBy:rolSearch:'role_name'" [value]="item._id">
+          {{item.role_name}}
+        </mat-option>
+      </mat-select>
+      <!--  <mat-select name="roleType"[(value)]="roleType"   (selectionChange)="changeRole($event)">
+               <mat-option *ngFor="let item of roleData" [value]="item._id" >
+                  {{item.role_name}}
+                </mat-option>
+            </mat-select> -->
+    </mat-form-field>
+    <!-- {{roleEdit |json}} -->
+
+    <h3 class="app_detail">Role wise Permission</h3>
+<!--     <ng-container>
+        <ng-template ngFor let-item [ngForOf]="roleData" let-i="index">
+            <ng-container *ngIf="item._id == roleType"> -->
+              <div class="table-responsive mt-20 listing">
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 rolestable"  cellspacing="0" style="width:100%; border:1">
+                        <ng-container matColumnDef="{{ role.position_name }}" *ngFor="let role of positionsz; let positionIndex = index">
+                          <th mat-header-cell *matHeaderCellDef>{{ role.position_name }} </th>
+                          <td mat-cell *matCellDef="let element"> </td>
+                        </ng-container>
+                    </table>
+                  </div>
+            <!-- </ng-container>
+        </ng-template>
+    </ng-container> -->
+  </mat-card-content>
+  <mat-card-actions *ngIf="editRole">
+    <div class="example-button-row text-right w-100 custom_flex">
+      <button mat-stroked-button class="ml-3 btn_main_cancle" (click)="editRole = !editRole">Cancel</button>
+      <button mat-stroked-button color="primary" class="ml-3 btn_main_done" (click)="saveRole()">Done</button>
+    </div>
+  </mat-card-actions>
+
+
+  <ng-template #roleDialog>
+    <form #f="ngForm">
+      <div class="pop_heading">
+        <h3><span *ngIf="!editId">Add</span><span *ngIf="editId">Edit</span> Role</h3>
+        <span class="">
+          <mat-icon (click)="closeRoleDialog()">close</mat-icon>
+        </span>
+      </div>
+      <div class="newrole">
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-form-field class="w-100">
+              <input matInput type="text" placeholder="Role" name="role_name" [(ngModel)]="role.role_name" required>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-checkbox name="web" [(ngModel)]="role.web">Web Access</mat-checkbox>
+            <br>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between form-row">
+          <div class="w-100">
+            <mat-checkbox name="app" [(ngModel)]="role.app">App Access</mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <div class="thebutton">
+        <button mat-button color="basic" (click)="closeRoleDialog()" class="btn_window_cancle">Cancel</button>
+        <button mat-button color="primary" (click)="saveRoleDialog(f)" class="btn_window_done">Save</button>
+      </div>
+    </form>
+  </ng-template>
+
+
+</mat-card>

@@ -1,0 +1,221 @@
+<form #hospitalForm=ngForm autocomplete="off">
+  <div>
+    <h3 mat-dialog-title>{{isEdit?'Edit Hospital':'Add Hospital'}}</h3>
+
+    <div class="d-flex justify-content-between form-row nfc_label">
+      <div class="w-50">
+        <!--  pr-15 -->
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Name" name="name" [(ngModel)]="hospital.name" (keypress)="checkAlpha($event)"
+            onPaste="return false" required>
+        </mat-form-field>
+      </div>
+      <div class="w-50">
+        <!-- pr-15 -->
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Fax" name="fax" [(ngModel)]="hospital.fax" maxlength="14" mask="(000) 000-0000"
+            onPaste="return false" required>
+        </mat-form-field>
+      </div>
+      <!-- <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                    <input matInput placeholder="Department Name" name="department_name" [(ngModel)]="hospital.department_name"
+                        (keypress)="checkAlpha($event)" onPaste="return false">
+                </mat-form-field>
+            </div> -->
+    </div>
+
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100">
+        <!--  pr-15 -->
+        <mat-form-field class="w-100">
+          <input matInput type="text" placeholder="Website Address" name="website_address" #website_address="ngModel"
+            [(ngModel)]="hospital.website_address" onPaste="return false">
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <!--  pr-15 -->
+        <mat-form-field class="w-100">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="  example@domain.com" name="email" [(ngModel)]="hospital.email"
+            pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$" #email="ngModel"
+            (keyup)="hospital.email = $event.target?.value?.toLowerCase()">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- added one multiple phone numbers  -->
+    <!-- <div class="d-flex justify-content-between form-row mt-24"
+            *ngFor="let item of hospital.phone_numbers;let i = index">
+            <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                    <mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+                        <ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Phone"
+                            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+                        <mat-option *ngFor="let i of type_of_contact |stringFilterBy:PhoneNumberTypeSearch:'name'"
+                            [value]="i.name">
+                            {{i.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="d-flex w-100 pl-15">
+                <mat-form-field class="w-100">
+                    <mat-label>{{item.name}} contact</mat-label>
+                    <input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+                        [(ngModel)]="item.value" maxlength="14" mask="(000) 000-0000" [required]=true
+                        [checkDuplicatefield]="[hospital.phone_numbers,i]">
+                </mat-form-field>
+                <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+                    class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                    mat-raised-button="" role="img" (click)="addHospitalPhone(hospitalForm)">
+                    add_circle
+                </mat-icon>
+                <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+                    class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+                    mat-raised-button="" role="img" (click)="removeHospitalField(i)">remove_circle
+                </mat-icon>
+            </div>
+        </div> -->
+
+  <!-- //multiple phone numbers  -->
+  <div class="d-flex justify-content-between form-row mt-24" *ngFor="let item of phoneArr;let i = index">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+          <ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Phone"
+            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+          <mat-option *ngFor="let i of type_of_contact |stringFilterBy:PhoneNumberTypeSearch:'name'"
+            [value]="i.name">
+            {{i.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="d-flex w-100 pl-15">
+      <mat-form-field class="w-100">
+        <mat-label>{{item.name}} contact</mat-label>
+        <input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+          [(ngModel)]="item.value" maxlength="14" mask="(000) 000-0000"
+          [checkDuplicatefield]="[hospital.phone_numbers,i]">
+      </mat-form-field>
+    </div>
+    <div class="act add-mate-icon pl-15">
+      <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+        class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="addHospitalPhone(item)">
+        add_circle
+      </mat-icon>
+    </div>
+
+    <!-- <mat-icon _ngcontent-bgg-c33="" aria-hidden="true" *ngIf="i>0"
+        class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+        mat-raised-button="" role="img" (click)="removeAddedPhoneField(i)">remove_circle
+      </mat-icon> -->
+
+  </div>
+
+  <div class="d-flex justify-content-between form-row mt-24"
+    *ngFor="let item of hospital.phone_numbers;let i = index">
+    <div class="w-100 pr-15">
+      <mat-form-field class="w-100">
+        <mat-select #typeOfNumber="ngModel" [(ngModel)]="item.name" [name]="item + '__' + i" required>
+          <ngx-mat-select-search [(ngModel)]="PhoneNumberTypeSearch" placeholderLabel="Select Phone"
+            noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+          <mat-option *ngFor="let i of type_of_contact |stringFilterBy:PhoneNumberTypeSearch:'name'"
+            [value]="i.name">
+            {{i.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="d-flex w-100 pl-15">
+      <mat-form-field class="w-100">
+        <mat-label>{{item.name}} contact</mat-label>
+        <input matInput placeholder="  (989) 989-9898" name="item.name + '_' + i + 1 + {{item.id}}"
+          [(ngModel)]="item.value" maxlength="14" mask="(000) 000-0000" [required]=true
+          [checkDuplicatefield]="[hospital.phone_numbers,i]">
+      </mat-form-field>
+
+      <!-- <mat-icon _ngcontent-egi-c18="" aria-hidden="true" *ngIf="i==0"
+        class="mat-icon mt-20 material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+        mat-raised-button="" role="img" (click)="addPhysicianPhone(physicianForm, item)">
+        add_circle
+      </mat-icon> -->
+
+    </div>
+    <div class="act pl-15">
+      <mat-icon _ngcontent-bgg-c33="" aria-hidden="true"
+        class="w-100 mt-20 mat-icon material-icon basecolor cursor notranslate material-icons mat-icon-no-color cancel_icon "
+        mat-raised-button="" role="img" (click)="removeHospitalField(i)">remove_circle
+      </mat-icon>
+    </div>
+  </div>
+    <!-- address1 -->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Address 1" name="address1" [(ngModel)]="hospital.address1" required>
+        </mat-form-field>
+      </div>
+      <div class="w-100">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Address 2" name="address2" [(ngModel)]="hospital.address2">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- city state -->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-100">
+        <!--  pr-15 -->
+        <mat-form-field class="w-100">
+          <mat-label>
+            State</mat-label>
+          <mat-select class="medical__popup" #state="ngModel" [(ngModel)]="hospital.state" name="state"
+            (selectionChange)="changeState($event.value)" required>
+            <ngx-mat-select-search [(ngModel)]="staSearch" placeholderLabel="Select State"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of statelist |stringFilterBy:staSearch:'name'" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="w-100">
+        <!--  pl-15 -->
+        <mat-form-field class="w-100">
+          <mat-label>
+            City</mat-label>
+          <mat-select #city="ngModel" [(ngModel)]="hospital.city" name="city" required>
+            <ngx-mat-select-search [(ngModel)]="citSearch" placeholderLabel="Select City"
+              noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+            <mat-option *ngFor="let item of Citielist |stringFilterBy:citSearch:'name'" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- zip medical_profession_type-->
+    <div class="d-flex justify-content-between form-row mt-24">
+      <div class="w-50 pr-15">
+        <mat-form-field class="w-100">
+          <input matInput type="text" placeholder="Zip" name="zip" [(ngModel)]="hospital.zip" mask="00000" maxlength="5"
+            minlength="5" required onPaste="return false">
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+      <button mat-button color="basic" (click)="cancelHospital(hospitalForm)"
+        class="mr-10 cancel_btn p-0">Cancel</button>
+      <button mat-button color="primary" class="done_btn p-0" cdkFocusInitial
+        (click)="addHospital(hospitalForm,hospital)">Done</button>
+    </div>
+
+  </div>
+</form>

@@ -1,0 +1,74 @@
+<form #f="ngForm">
+  <div class="pop_heading">
+    <h2 class="m-0">Contact</h2>
+    <span class="">
+      <mat-icon (click)="onNoClick()">close</mat-icon>
+    </span>
+  </div>
+  <div mat-dialog-content>
+    <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100 ">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Subject" name="subject" [(ngModel)]="support.subject" maxlength="100" required>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="First Name" name="first_name" [(ngModel)]="support.first_name"
+            (keypress)="checkAlpha($event)" required>
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Last Name" name="last_name" [(ngModel)]="support.last_name"
+            (keypress)="checkAlpha($event)" required>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100 pr-15">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Email" name="email" [(ngModel)]="support.email"
+            pattern="^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$"
+            (keyup)="support.email = $event.target.value.toLowerCase()" required>
+        </mat-form-field>
+      </div>
+      <div class="w-100 pl-15">
+        <mat-form-field class="w-100">
+          <input matInput placeholder="Phone" name="phone" [(ngModel)]="support.phone" maxlength="14"
+            mask="(000) 000-0000" required>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100">
+        <mat-form-field class="w-100">
+          <mat-label>Select Priority</mat-label>
+          <mat-select name="priority" [(ngModel)]="support.priority" required>
+            <mat-option *ngFor="let item of list_priority" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between form-row mt-10">
+      <div class="w-100">
+        <mat-form-field class="w-100">
+          <textarea matInput placeholder="How can we help?" name="support_message" [(ngModel)]="support.message"
+            required></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-between mt-20" mat-dialog-actions>
+    <button mat-button color="basic" (click)="onNoClick()" class="cancel_btn mr-10 p-0">Cancel</button>
+    <button mat-button color="primary" cdkFocusInitial (click)="onSubmit(f,support)" class="done_btn p-0">Done</button>
+  </div>
+
+</form>

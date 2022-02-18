@@ -1,0 +1,9 @@
+@import "./../../../styles/_cstm-variable.scss";
+
+.mat-column-resident_name {
+    text-transform: capitalize;
+}
+
+.btn_Secondary{
+    @include btn-main;
+} 

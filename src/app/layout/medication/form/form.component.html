@@ -1,0 +1,1505 @@
+<mat-card style="height: 5.5rem;padding-right: 0; margin-bottom: 30px;">
+  <div class=" w-100 d-flex justify-content-between">
+    <div class="profile_pic">
+      <img *ngIf="paramId && residentdata && residentdata.profile_image"
+        src={{residentdata.profile_image.location?residentdata.profile_image.location:residentdata.profile_image}}
+        class="img-fluid" alt="profile-pic"> <img *ngIf="!paramId" src="./assets/images/149071.png" class="img-fluid"
+        alt="profile-pic">
+      <div *ngIf="paramId && residentdata && residentdata.profile_image === undefined"
+        class="avatar-circle avadar-small circle-pic">
+        <span class="initials">{{'Add Image'}}</span>
+      </div>
+    </div>
+    <mat-card-header class="w-100" style="margin-top: -20px;">
+      <mat-card-title class="mb-0">
+        <div class="row">
+          <div class="col-6" style="text-align: center; margin-top: 25px; margin-bottom: 25px;">{{residentName}}</div>
+          <div class="col-3 ">
+            <ul style="list-style: none; margin-top: 16px; margin-bottom: 16px;">
+              <li *ngIf="residentDOB" style="font-size: 12px;">Date of Birth : <span
+                  style="font-weight: lighter;">{{residentDOB}}</span></li>
+              <li *ngIf="admitDate" style="font-size: 12px;">Admit Date : <span
+                  style="font-weight: lighter;">{{admitDate}}</span></li>
+              <li *ngIf="residentsGender" style="font-size: 12px;">Gender : {{ residentsGender }}</li>
+              <li *ngIf="residentsGender" style="font-size: 12px;">Primary Physician : </li>
+            </ul>
+          </div>
+          <div class="col-3 justify-content-start">
+            <ul style="list-style: none; margin-top: 16px; margin-bottom: 16px;">
+              <li *ngIf="residentsAge" style="font-size: 12px;">Age : {{ residentsAge }}</li>
+            </ul>
+          </div>
+        </div>
+      </mat-card-title>
+      <!-- <mat-card-subtitle>
+        <span *ngIf="residentDOB">Date of Birth : {{residentDOB}}</span>
+      </mat-card-subtitle> -->
+    </mat-card-header>
+
+  </div>
+</mat-card>
+
+<form class="example-form custom_font" *ngIf="orderType == 'medications'" [formGroup]="medicationForm">
+  <mat-card class="view-height">
+    <h3>Medication Order</h3>
+    <div class="row">
+
+      <!-- order view section starts -->
+      <div class="w-30 pdf_view pdf-container" *ngIf="viewPdf">
+        <span *ngIf="fileUrl">
+
+          <!-- <pdf-viewer [src]="fileUrl" [autoresize]="true"
+          [stick-to-page]="true" [zoom]="zoomValue" [zoom-scale]="'page-width'" [original-size]="false">
+        </pdf-viewer> -->
+          <ng2-pdfjs-viewer [pdfSrc]="fileUrl" [openFile]="false" [viewBookmark]="false" [download]="false"
+            [print]="false" [find]="false" [fullScreen]="false" [zoom]="'page-width'" [showSpinner]="true">
+          </ng2-pdfjs-viewer>
+          <div class="pdf-zoom-btn">
+          </div>
+        </span>
+        <span *ngIf="!fileUrl">
+          <input id="upload_file" placeholder="upload" type="file" accept=".pdf" #file (change)="onChange(file)">
+        </span>
+
+      </div>
+      <div class="w-30 non_pdf_view" *ngIf="!viewPdf">
+        <span *ngIf="thumbnailUrl">
+          <img class="image_view" [src]="thumbnailUrl" alt="Default Image">
+        </span>
+        <span *ngIf="!thumbnailUrl">
+          <input id="upload_file" placeholder="upload" type="file" accept=".pdf" #file (change)="onChange(file)">
+          <!-- <mat-icon (click)="file.click">cloud_upload</mat-icon> -->
+        </span>
+      </div>
+      <!-- order view section ends -->
+
+      <!-- medication form fields starts -->
+      <div class="w-70 ml-20">
+        <ng-container>
+          <mat-card-header class="d-flex align-center align-center medication-header">
+            <mat-card-title class="text-center">
+              <mat-button-toggle-group appearance="legacy" name="fontStyle">
+                <mat-button-toggle class="w-50 d-inline-block" [checked]="true" value="prescription"
+                  (click)="changeMedicationType('prescription')">
+                  Medication</mat-button-toggle>
+                <mat-button-toggle class="w-50 d-inline-block" value="Treatment"
+                  (click)="changeMedicationType('treatment')">Treatment
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- <form class="example-form custom_font" [formGroup]="medicationForm"> -->
+
+            <div class="d-flex justify-content-start form-row mt-15">
+
+              <!-- PRN Toggle -->
+              <!-- <div class="pr-15">
+                        <div class="d-flex justify-content-start pad_r15">
+                            PRN
+                            <mat-slide-toggle color="primary" [checked]="medicationDetails?.is_prn" (change)="changeISPRN($event)" class="pl-15"></mat-slide-toggle>
+                        </div>
+                      </div> -->
+
+              <!-- Supply Toggle -->
+              <!-- <div class="">
+                        <div class="d-flex justify-content-start pad_r15">
+                            Supply
+                            <mat-slide-toggle color="primary" [checked]="medicationDetails?.is_supply" (change)="changeISSupply($event)" class="pl-15"></mat-slide-toggle>
+                        </div>
+                      </div> -->
+
+              <!-- Treatment Toggle -->
+              <!-- <div class="pl-15">
+                        <div class="d-flex justify-content-start pad_r15">
+                            Treatment
+                            <mat-slide-toggle color="primary" [checked]="medicationDetails?.isTreatment" (change)="changeIsTreatment($event)" class="pl-15"></mat-slide-toggle>
+                        </div>
+                      </div> -->
+
+              <!-- isGeneric Toggle -->
+              <!-- <div class="pl-15 toggle-btn">
+                        <div class="d-flex justify-content-start pad_r15">
+                            Generic
+                            <mat-slide-toggle color="primary" [checked]="medicationDetails?.isGeneric" (change)="changeIsGeneric($event)" class="pl-15"></mat-slide-toggle>
+                        </div>
+                      </div> -->
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-10">
+
+              <!-- start date -->
+              <!-- <div class="w-100 pr-15">
+                              <mat-form-field class="w-100">
+                                  <input matInput formControlName="start_date" [matDatepicker]="picker_ci"  placeholder="Start Date" [min]="selectedMedicationDate.minDate" (click)="picker_ci.open()" (dateChange)="startDateChangeEvent('change', $event)" [ngModel]="medicationDetails?.start_date" required readonly>
+                                  <mat-datepicker-toggle matSuffix [for]="picker_ci"></mat-datepicker-toggle>
+                                  <mat-datepicker #picker_ci></mat-datepicker>
+                              </mat-form-field>
+                      </div> -->
+
+              <!-- end date -->
+              <!-- <div class="w-100 pl-15">
+                              <mat-form-field class="w-100">
+                                  <input matInput formControlName="end_date" [matDatepicker]="picker2_ci"  placeholder="End Date" [min]="selectedMedicationDate.minDateEnd" (click)="picker2_ci.open()" [ngModel]="medicationDetails?.end_date" required readonly>
+                                  <mat-datepicker-toggle matSuffix [for]="picker2_ci"></mat-datepicker-toggle>
+                                  <mat-datepicker #picker2_ci></mat-datepicker>
+                              </mat-form-field>
+                      </div> -->
+
+              <!-- number of days -->
+              <!-- <div class="w-100 pl-15">
+                        <mat-form-field class="w-100">
+                          <input type="number" matInput placeholder="No. of days" [ngModel]="medicationDetails?.days" formControlName="days" required>
+                        </mat-form-field>
+                      </div> -->
+
+            </div>
+
+            <!-- medication name and strength -->
+            <div class="d-flex justify-content-between form-row mt-10">
+              <div class="w-100 pr-15">
+                <!-- for using as mat select with search -->
+                <!-- <mat-form-field class="w-100">
+                        <mat-label>Medication name and strength</mat-label>
+                        <mat-select formControlName="medication_name" [ngModel]="medicationDetails.medication_name">
+                            <ngx-mat-select-search formControlName="prescriptionSearch" [(ngModel)]="prescriptionSearch" placeholderLabel="Medication name and strength" noEntriesFoundLabel="Not Found"
+                              name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let filters of prescriptionList |stringFilterBy:prescriptionSearch:'value'" [value]="filters.value" (click)="selectPrescription(filters.key)">
+                              {{filters.value}}
+                            </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+                <mat-form-field class="w-100">
+                  <!-- <mat-label>Medication name and strength</mat-label> -->
+                  <mat-label>Prescription Name and Strength</mat-label>
+                  <mat-select formControlName="medication_name" [ngModel]="medicationDetails?.medication_name"
+                    (openedChange)="openSelectDropdown($event)" (infiniteScroll)="getNextDrugBatch()"
+                    [complete]="drugOffset === totalDrugCount" msInfiniteScroll>
+                    <ngx-mat-select-search formControlName="prescriptionSearch" [(ngModel)]="prescriptionSearch"
+                      placeholderLabel="Prescription Name and Strength" noEntriesFoundLabel="Not Found" name="search"
+                      (keyup)="filterDrugData($event)">
+                    </ngx-mat-select-search>
+                    <mat-option [value]="0" (click)="addDrugPopup()" *ngIf="isTreatment">
+                      Add Drug
+                      <mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor pl-160" role="img"
+                        aria-hidden="true">add_circle
+                      </mat-icon>
+                    </mat-option>
+                    <mat-option *ngFor="let filters of prescriptionList" [value]="filters.temp_value"
+                      (click)="selectPrescription(filters.key)">
+                      {{filters.temp_value}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- for using as auto complete -->
+                <!-- <mat-form-field class="w-100">
+                        <input type="text"
+                              placeholder="Medication name and strength"
+                              matInput
+                              [ngModel]="medicationDetails?.medication_name"
+                              formControlName="medication_name"
+                              (input)="filterPrescription($event.target.value)"
+                              [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete">
+                          <mat-option *ngFor="let option of filteredOptions | async" [value]="option.value" (click)="selectPrescription(option.key)">
+                            {{option.value}}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field> -->
+
+              </div>
+            </div>
+
+            <!-- new toggles -->
+            <div class="d-flex justify-content-start form-row mt-15">
+
+              <!-- Allow Substitutions Toggle -->
+              <div class="">
+                <div class="d-flex justify-content-start pad_r15 toggle-btn">
+                  Allow Substitutions
+                  <mat-slide-toggle color="primary" [checked]="medicationDetails?.allowSubstitution"
+                    (change)="changeAllowSubstitution($event)" class="pl-15"></mat-slide-toggle>
+                </div>
+              </div>
+
+              <!-- Brand Name Toggle -->
+              <div class="pl-20">
+                <div class="d-flex justify-content-start pad_r15 toggle-btn">
+                  Brand Name Required
+                  <mat-slide-toggle color="primary" [checked]="medicationDetails?.brandNameRequired"
+                    (change)="changeBrandNameRequired($event)" class="pl-15"></mat-slide-toggle>
+                </div>
+              </div>
+
+              <!-- Needed Stat Toggle -->
+              <div class="pl-20">
+                <div class="d-flex justify-content-start pad_r15 toggle-btn">
+                  Needed Stat
+                  <mat-slide-toggle color="primary" [checked]="medicationDetails?.neededStat"
+                    (change)="changeNeededStat($event)" class="pl-15"></mat-slide-toggle>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-10">
+
+              <!-- start time -->
+              <!-- <div class="w-100 pr-15">
+                      <div class="form-field">
+                        <label class="w-100 d-block time-label">Start Time</label>
+                        <p-calendar class="w-100"  timeOnly="true" formControlName="start_time" hourFormat="24"></p-calendar>
+                      </div>
+
+                    </div> -->
+
+              <!-- end time -->
+              <!-- <div class="w-100 pl-15">
+                      <div class="form-field">
+                        <label class="w-100 d-block time-label">End Time</label>
+                        <p-calendar class="w-100" timeOnly="true" formControlName="end_time" hourFormat="24"></p-calendar>
+                        <mat-error *ngIf="endtimevalidation || minutevalid">End time cannot be less than start time
+                        </mat-error>
+                        <mat-error *ngIf="endvalidationqual">End time and start time cannot be equal</mat-error>
+                        <mat-error *ngIf="equalvalidation">Start time and end time cannot be equal</mat-error>
+                      </div>
+
+                    </div> -->
+
+              <!-- Administration Time -->
+              <!-- <div class="w-100 pr-15">
+                      <mat-form-field class="w-100">
+                        <mat-label>Administration Time</mat-label>
+                        <mat-select formControlName="medication_duration" [ngModel]="medicationDetails?.medication_duration" required>
+                            <ngx-mat-select-search formControlName="mdSearch" [(ngModel)]="mdSearch" placeholderLabel="Administration Time" noEntriesFoundLabel="Not Found"
+                            name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let filters of medicationDurationList |stringFilterBy:mdSearch:'value'" [value]="filters.key">
+                              {{filters.value}}
+                          </mat-option>
+                        </mat-select>
+
+                      </mat-form-field>
+                    </div> -->
+
+              <!-- resident name -->
+              <!-- <div class="w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <input type="text"
+                              placeholder="Resident Name"
+                              matInput #searchResidentInput
+                              [readonly]="medicationId"
+                              [ngModel]="medicationDetails?.resident?.name"
+                              formControlName="resident_name"
+                              (input)="filterResident($event.target.value)"
+                              [matAutocomplete]="autoResident">
+                        <mat-autocomplete #autoResident="matAutocomplete">
+                          <mat-option *ngFor="let option of residentData" [value]="option.value" (click)="selectResidentName(option.key, option.facId)">
+                            {{option.value}}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </div> -->
+
+              <!-- medication schedule -->
+              <!-- <div class="w-100 pl-15">
+                      <mat-form-field class="w-100">
+                        <mat-label>Administration Frequency</mat-label>
+                        <mat-select formControlName="medication_schedule" [ngModel]="medicationDetails?.medicationSchedule?._id">
+                            <ngx-mat-select-search formControlName="msSearch" [(ngModel)]="msSearch" placeholderLabel="Administration Frequency" noEntriesFoundLabel="Not Found"
+                            name="search"></ngx-mat-select-search>
+                            <mat-option *ngFor="let filters of medicationScheduleList |stringFilterBy:msSearch:'value'" [value]="filters.key">
+                              {{filters.value}}
+                          </mat-option>
+                        </mat-select>
+
+                      </mat-form-field>
+                    </div> -->
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-10">
+
+              <ng-container *ngIf="isInsulin == false">
+                <!-- Quantity -->
+                <div class="w-100 pl-15 pr-15">
+                  <mat-form-field class="w-100">
+                    <input type="number" matInput placeholder="Quantity" [ngModel]="medicationDetails?.initialText"
+                      formControlName="initialText" (change)="onChangeEvent($event, 'initialText')">
+                  </mat-form-field>
+                </div>
+
+                <!-- dosage -->
+                <!-- *ngIf="showDosageInput" -->
+                <div class="w-100 pl-15 pr-15">
+                  <mat-form-field class="w-100">
+                    <input matInput placeholder="Dose" [ngModel]="medicationDetails?.dosageValue"
+                      formControlName="dosage" readonly>
+                  </mat-form-field>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="isInsulin == true">
+                <!-- Quantity -->
+                <div class="w-100 pl-15 pr-15 insulin_box">
+
+                  <span>
+                    Dosing Instructions
+                  </span>
+                  <label for="dosing instructions">
+                    Enter Blood Glucose range values and the directed dose.
+                  </label>
+
+                  <div class="newrule">
+
+                    <!-- Add new Row  -->
+                    <ng-container *ngIf="showNew">
+                      <div class="d-flex justify-content-between form-row">
+                        <div formArrayName="insulinDataArray">
+                          <div class="dynamic-section"
+                            *ngFor="let insulinDataArray of medicationForm.get('insulinDataArray')['controls']; let i=index"
+                            [formGroup]="insulinDataArray">
+
+                            <div class="w-100 pl-15 pr-15">
+                              <mat-form-field class="w-100">
+                                <input matInput placeholder="Low" formControlName="low">
+                              </mat-form-field>
+                            </div>
+
+                            <div class="w-100 pl-15 pr-15">
+                              <mat-form-field class="w-100">
+                                <input matInput placeholder="High" (keyup)="insulinHighValueCheck($event)"
+                                  formControlName="high">
+                              </mat-form-field>
+                            </div>
+
+                            <div class="w-100 pl-15 pr-15">
+                              <mat-form-field class="w-100">
+                                <input matInput placeholder="Dose" (change)="onChangeEvent($event, 'insulinDose')"
+                                  formControlName="dose">
+                              </mat-form-field>
+                            </div>
+
+                            <div class="w-100 pl-15 pr-15">
+                              <mat-form-field class="w-100">
+                                <input matInput placeholder="Unit" formControlName="unit">
+                              </mat-form-field>
+                            </div>
+
+                            <div *ngIf="i > 0">
+                              <mat-icon (click)="removeInsulinData(i)" aria-hidden="false"
+                                aria-label="Example cancel icon">cancel</mat-icon>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="ic_plus pl-15">
+                          <mat-icon _ngcontent-egi-c18="" aria-hidden="true"
+                            class="mat-icon-add material-icon basecolor cursor notranslate material-icons mat-icon-no-color"
+                            mat-raised-button="" role="img" (click)="addInsulinData()">add_circle
+                          </mat-icon>
+                        </div>
+                      </div>
+                    </ng-container>
+
+                  </div>
+                </div>
+              </ng-container>
+
+
+              <!-- ndc -->
+              <!-- <div class="w-100 pr-15">
+                      <mat-form-field class="w-100">
+                        <input matInput placeholder="NDC" [ngModel]="medicationDetails?.ndc" formControlName="ndc" readonly>
+                      </mat-form-field>
+                    </div> -->
+
+              <!-- Drug Form -->
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Drug Form" [ngModel]="medicationDetails?.drug?.dosage_form"
+                    formControlName="dosageForm" readonly>
+                </mat-form-field>
+              </div>
+
+              <!-- <div class="w-100 pl-15 pr-15" *ngIf="!showDosageInput">
+                <mat-form-field class="w-100">
+                  <mat-label>Dosage</mat-label>
+                  <mat-select formControlName="dosage" [ngModel]="medicationDetails?.dosage">
+                    <ngx-mat-select-search formControlName="dSearch" [(ngModel)]="dSearch" placeholderLabel="Dosage"
+                      noEntriesFoundLabel="Not Found" name="search"></ngx-mat-select-search>
+
+                    <ng-container *ngIf="showTabletList">
+                      <mat-option *ngFor="let i = index;let filters of dosageList |stringFilterBy:dSearch:'value'"
+                        [value]="filters.value" (click)="onChangeFreqAndDosage('dosage', filters.value)">
+                        {{filters.value}} ({{(drugStrength / 2) * (i + 1)}} mg )
+                      </mat-option>
+                    </ng-container>
+
+                    <ng-container *ngIf="!showTabletList">
+                      <mat-option *ngFor="let filters of dosageList |stringFilterBy:dSearch:'value'"
+                        [value]="filters.value" (click)="onChangeFreqAndDosage('dosage', filters.value)">
+                        {{filters.value}} ({{drugStrength * filters.value}} mg )
+                      </mat-option>
+                    </ng-container>
+                  </mat-select>
+                </mat-form-field>
+              </div> -->
+
+              <!-- route -->
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <input matInput placeholder="Route" [ngModel]="medicationDetails?.route" formControlName="route"
+                    readonly>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <!-- Administration and frequency buttons -->
+            <div class="d-flex justify-content-between form-row mt-20">
+              <div class="w-100">
+                <span>Administration Time and Frequency</span>
+                <div class="d-flex mr-10 mt-20">
+                  <div class="mr-15" *ngFor="let item of medicationDurationList">
+                    <!-- [disabled]="true" -->
+                    <button (click)="selectAdministrationFrequency(item)" mat-raised-button
+                      [ngClass]="{'primary_btn': item.isChecked === true, 'basic_btn' : item.isChecked === false, 'as_needed' : item.value == 'As Needed', 'as_needed_active' : item.value == 'As Needed' && item.isChecked === true }"
+                      class="mr-10 btn_main_done">
+                      {{item.value}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- weekly frequency buttons -->
+            <div class="d-flex justify-content-between form-row mt-20">
+              <div class="w-100">
+                <span>Weekly Frequency</span>
+                <!-- <div class="d-flex mr-10 mt-20">
+                  <div class="mr-15">
+                    <button (click)="alternateDays = !alternateDays" mat-raised-button
+                      [ngClass]="{'primary_btn': alternateDays === true, 'basic_btn' : alternateDays === false }"
+                      class="mr-10 btn_main_done">
+                      Every Other Day
+                    </button>
+                  </div>
+                </div> -->
+                <div class="d-flex mr-10 mt-20">
+                  <div class="mr-15" *ngFor="let item of weeklyDaysArr">
+                    <!-- [disabled]="true" -->
+                    <button (click)="selectWeeklyFrequency(item)" mat-raised-button
+                      [ngClass]="{'primary_btn': item.isChecked === true, 'basic_btn' : item.isChecked === false }"
+                      class="mr-10 btn_main_done">
+                      {{item.value}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-15">
+
+              <!-- number of days -->
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input type="number" matInput placeholder="Duration" [ngModel]="medicationDetails?.days"
+                    formControlName="days" (change)="onChangeEvent($event, 'days')" required>
+                </mat-form-field>
+              </div>
+
+              <!-- total amount -->
+              <div class="w-100 pl-15">
+                <mat-form-field class="w-100">
+                  <!-- (change)="onChangeEvent($event, 'quantity')" -->
+                  <input matInput placeholder="Total Amount" [ngModel]="medicationDetails?.totalQuantity"
+                    formControlName="totalQuantity" readonly>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <!-- sig text -->
+            <div class="d-flex justify-content-between form-row mt-15 sig-text">
+              <!-- <span *ngIf="( medicationForm.value.days != undefined || medicationForm.value.days != null ) || ( medicationForm.value.quantity || medicationForm.value.days != null )"> -->
+              <!-- Take {{ medicationForm.value.dosage }} tablet(s) by mouth {{ selectedAdminstrationFrequency ? selectedAdminstrationFrequency.length : '' }} times per day for {{ medicationForm.value.days }} days.
+                  Dispense {{ medicationForm.value.dosage * selectedAdminstrationFrequency.length * medicationForm.value.days}} tablets. -->
+              <!-- <span
+                *ngIf="(medicationForm.value.days ||  medicationForm.value.quantity) && medicationForm.value.initialText && medicationForm.value.dosage && medicationForm.value.initialText && selectedAdminstrationFrequency.length">
+                {{ medicationForm.value.sigText }}
+              </span> -->
+            </div>
+
+            <!-- instructions -->
+            <!-- <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <mat-label>Instructions</mat-label>
+                            <textarea matInput placeholder="Instructions" [ngModel]="medicationDetails?.instructions" formControlName="instructions"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div> -->
+
+            <!-- Directions -->
+            <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+              <div class="w-100">
+                <mat-form-field class="w-100">
+                  <mat-label>Directions</mat-label>
+                  <textarea matInput placeholder="Directions" [ngModel]="medicationDetails?.instructions"
+                    formControlName="instructions"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- reasons -->
+            <!-- <ng-container *ngIf="isTreatment">
+                    <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+                      <div class="w-100">
+                        <mat-form-field class="w-100">
+                          <mat-label> Reason</mat-label>
+                          <input type="text" matInput placeholder="Reason" [ngModel]="medicationDetails?.reasons" formControlName="reason">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </ng-container> -->
+
+            <!-- vitals buttons -->
+            <div class="d-flex justify-content-between form-row mt-20">
+              <div class="w-100">
+                <span>If required, select the vitals that will need to be check when medication is
+                  administered.</span>
+                <div class="d-flex mr-10 mt-20">
+                  <div class="mr-15" *ngFor="let item of vitalsList">
+                    <button (click)="selectVitals(item)" mat-raised-button
+                      color="{{ item.isChecked == true? 'primary' : 'basic' }}" class="mr-10 btn_main_done">
+                      {{item.value}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-15">
+
+              <!-- Prescribed by -->
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>Prescribed By</mat-label>
+                  <mat-select formControlName="prescribed_by" [ngModel]="medicationDetails?.prescribed_by"
+                    (infiniteScroll)="getNextPhysicianBatch()" [complete]="physicianOffset === totalPrescriberCount"
+                    msInfiniteScroll>
+                    <ngx-mat-select-search formControlName="prescribedSearch" [(ngModel)]="prescribedSearch"
+                      placeholderLabel="Select Prescribed By" noEntriesFoundLabel="Not Found" name="search"
+                      (keyup)="filterPhysicianData($event)">
+                    </ngx-mat-select-search>
+                    <mat-option [value]="0" (click)="addPhysicianPopup()">
+                      Add Physician
+                      <mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor pl-60" role="img"
+                        aria-hidden="true">add_circle
+                      </mat-icon>
+                    </mat-option>
+                    <mat-option *ngFor="let filters of prescriberList" [value]="filters.key"
+                      (click)="selectPhysician(filters)">
+                      {{filters.value}} {{ '(' + filters.medical_profession_type + ')'}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!-- prescribed new ends -->
+
+
+              </div>
+
+
+              <!-- Written Date -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput formControlName="writtenDate" [ngModel]="medicationDetails?.writtenDate"
+                    [matDatepicker]="picker3_ci" placeholder="Written Date" (click)="picker3_ci.open()" required>
+                  <mat-datepicker-toggle matSuffix [for]="picker3_ci"></mat-datepicker-toggle>
+                  <mat-datepicker #picker3_ci></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- prescription -->
+              <!-- <div class="w-100 pl-15 pr-15">
+                      <mat-form-field class="w-100">
+                        <input matInput type="text" placeholder="DEA Number" [ngModel]="medicationDetails?.prescription_number" maxlength="14"
+                          formControlName="prescription_number">
+                      </mat-form-field>
+                    </div> -->
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-10">
+
+              <!-- Refills remaining -->
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input type="number" matInput placeholder="Refills remaining" [ngModel]="medicationDetails?.refills"
+                    formControlName="refills">
+                </mat-form-field>
+              </div>
+
+              <!-- dea number -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput type="text" placeholder="DEA Number"
+                    [ngModel]="medicationDetails?.doctors?.dea_number" formControlName="deaNumber">
+                </mat-form-field>
+              </div>
+
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-10">
+
+
+              <!-- Pharmacy -->
+              <div class="w-100 pr-15">
+
+                <!-- pharmacy old starts -->
+                <!-- <div class="d-flex">
+                        <mat-form-field class="w-100">
+                          <mat-label>Pharmacy</mat-label>
+                          <mat-select formControlName="pharmacy_id" [ngModel]="medicationDetails?.pharmacy_id">
+                              <ngx-mat-select-search formControlName="pharmacySearch" [(ngModel)]="pharmacySearch" placeholderLabel="Pharmacy" noEntriesFoundLabel="Not Found"
+                                name="search"></ngx-mat-select-search>
+                              <mat-option *ngFor="let filters of pharmacyList |stringFilterBy:pharmacySearch:'value'" [value]="filters.key" >
+                                {{filters.value}}
+                              </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                          <mat-icon class="add-icon" (click)="openAddModalPopUp();openAddForm('pharmacy')">add_circle</mat-icon>
+                      </div> -->
+                <!-- pharmacy old ends -->
+
+                <!-- pharmacy new starts -->
+                <div>
+                  <mat-form-field class="w-100">
+                    <mat-label>Pharmacy</mat-label>
+                    <mat-select formControlName="pharmacy_id" [ngModel]="medicationDetails?.pharmacy_id"
+                      (infiniteScroll)="getNextPharmacyBatch()" [complete]="pharmacyOffset === totalPharmacyCount"
+                      msInfiniteScroll>
+                      <ngx-mat-select-search formControlName="pharmacySearch" [(ngModel)]="pharmacySearch"
+                        placeholderLabel="Select Pharmacy" noEntriesFoundLabel="Not Found" name="search"
+                        (keyup)="filterPharmacyData($event)">
+                      </ngx-mat-select-search>
+                      <mat-option [value]="0" (click)="addPharmacyPopup()">
+                        Add Pharmacy
+                        <mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor pl-60" role="img"
+                          aria-hidden="true">add_circle
+                        </mat-icon>
+                      </mat-option>
+                      <mat-option *ngFor="let filters of pharmacyList" [value]="filters.key"
+                        (click)="selectPharmacy(filters)">
+                        {{filters.value}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <!-- pharmacy new ends -->
+              </div>
+
+
+              <!-- administered by -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>Administered By</mat-label>
+                  <mat-select formControlName="administered_by" [ngModel]="medicationDetails?.administered_by">
+                    <ngx-mat-select-search formControlName="administeredSearch" [(ngModel)]="administeredSearch"
+                      placeholderLabel="Administered By" noEntriesFoundLabel="Not Found" name="search">
+                    </ngx-mat-select-search>
+                    <mat-option *ngFor="let filters of administeredList |stringFilterBy:administeredSearch:'value'"
+                      [value]="filters.key">
+                      {{filters.value}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+
+
+            </div>
+
+            <!-- Notes to pharmacy-->
+            <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+              <div class="w-100">
+                <mat-form-field class="w-100">
+                  <mat-label>Note to Pharmacist</mat-label>
+                  <textarea matInput placeholder="Note to Pharmacist" [ngModel]="medicationDetails?.pharmacistNotes"
+                    formControlName="pharmacistNotes"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Note to Care Giver-->
+            <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+              <div class="w-100">
+                <mat-form-field class="w-100">
+                  <mat-label>Note to Care Giver</mat-label>
+                  <textarea matInput placeholder="Note to Care Giver" [ngModel]="medicationDetails?.notes_for_care"
+                    formControlName="notes_for_care"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Note to Progress-->
+            <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+              <div class="w-100">
+                <mat-form-field class="w-100">
+                  <mat-label>Note to Progress</mat-label>
+                  <textarea matInput placeholder="Note to Progress" [ngModel]="medicationDetails?.progress_note"
+                    formControlName="progress_note"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-10 mb-10">
+
+              <!-- Use by date -->
+              <!-- <div class="w-100 pr-15">
+                            <mat-form-field class="w-100">
+                                <input matInput formControlName="expire_date" [ngModel]="medicationDetails?.expire_date" [matDatepicker]="picker3_ci" placeholder="Use by date" [min]="selectedMedicationDate.minExpireDate" (click)="picker3_ci.open()" required readonly>
+                                <mat-datepicker-toggle matSuffix [for]="picker3_ci"></mat-datepicker-toggle>
+                                <mat-datepicker #picker3_ci></mat-datepicker>
+                            </mat-form-field>
+                    </div> -->
+
+            </div>
+
+            <!-- <div class="d-flex justify-content-between">
+                      <button mat-flat-button class="mr-10" color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+                      <div>
+                          <button mat-flat-button color="primary" class="mr-10 btn_main_done"
+                              (click)="medicationSave(medicationForm.valid)">
+                                Record
+                          </button>
+
+                      </div>
+                  </div> -->
+            <!-- </form> -->
+          </mat-card-content>
+        </ng-container>
+      </div>
+      <!-- medication form fields ends -->
+    </div>
+  </mat-card>
+  <div class="d-flex justify-content-between">
+    <button mat-flat-button class="mr-10" color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+    <div>
+      <button mat-flat-button color="primary" class="mr-10 btn_main_done"
+        (click)="medicationSave(medicationForm.valid)">
+        Record
+      </button>
+
+    </div>
+  </div>
+</form>
+
+<form class="example-form custom_font" *ngIf="orderType == 'labs_and_draws'" [formGroup]="labOrderForm">
+  <mat-card class="view-height">
+    <h3>Lab Order</h3>
+    <div class="row">
+
+      <!-- order view section starts -->
+      <div class="w-30 pdf_view pdf-container" *ngIf="viewPdf">
+        <span *ngIf="fileUrl">
+
+          <!-- <pdf-viewer [src]="fileUrl" [autoresize]="true"
+          [stick-to-page]="true" [zoom]="zoomValue" [zoom-scale]="'page-width'" [original-size]="false">
+        </pdf-viewer> -->
+          <ng2-pdfjs-viewer [pdfSrc]="fileUrl" [openFile]="false" [viewBookmark]="false" [download]="false"
+            [print]="false" [find]="false" [fullScreen]="false" [zoom]="'page-width'" [showSpinner]="true">
+          </ng2-pdfjs-viewer>
+          <div class="pdf-zoom-btn">
+          </div>
+        </span>
+        <span *ngIf="!fileUrl">
+          <input id="upload_file" placeholder="upload" type="file" accept=".pdf" #file (change)="onChange(file)">
+        </span>
+
+      </div>
+      <div class="w-30 non_pdf_view" *ngIf="!viewPdf">
+        <span *ngIf="thumbnailUrl">
+          <img class="image_view" [src]="thumbnailUrl" alt="Default Image">
+        </span>
+        <span *ngIf="!thumbnailUrl">
+          <input id="upload_file" placeholder="upload" type="file" accept=".pdf" #file (change)="onChange(file)">
+          <!-- <mat-icon (click)="file.click">cloud_upload</mat-icon> -->
+        </span>
+      </div>
+      <!-- order view section ends -->
+
+      <!-- medication form fields starts -->
+      <div class="w-70 ml-20">
+        <ng-container>
+          <mat-card-content>
+
+            <div class="d-flex justify-content-between form-row">
+
+              <!-- Order Date -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput formControlName="order_date" [min]="minDate" [matDatepicker]="picker3_ci"
+                    placeholder="Order Date" (click)="picker3_ci.open()" required>
+                  <mat-datepicker-toggle matSuffix [for]="picker3_ci"></mat-datepicker-toggle>
+                  <mat-datepicker #picker3_ci></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- Time -->
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput type="time" placeholder="Time" formControlName="order_time">
+                </mat-form-field>
+                <!-- <label class="w-100 time-label">Time</label>
+                  <ejs-timepicker [value]="" formControlName="order_time" [class]="'pickerBorder' " [format]='formatString' [step]='15' [showClearButton]=false></ejs-timepicker> -->
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Date of exam -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput formControlName="exam_date" [matDatepicker]="picker4_ci" placeholder="Date of Exam"
+                    [min]="minDate" (click)="picker4_ci.open()" required>
+                  <mat-datepicker-toggle matSuffix [for]="picker4_ci"></mat-datepicker-toggle>
+                  <mat-datepicker #picker4_ci></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- Time -->
+              <div class="w-100 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput type="time" placeholder="Exam Time" formControlName="exam_time">
+                </mat-form-field>
+                <!-- <div class="w-100">
+                <label class="w-100 time-label">Time</label>
+                <ejs-timepicker [format]='formatString' [step]='15' [showClearButton]=false></ejs-timepicker>
+               </div> -->
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Prescribed by -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>Prescriber</mat-label>
+                  <mat-select formControlName="prescriber" (infiniteScroll)="getNextPhysicianBatch()"
+                    [complete]="physicianOffset === totalPrescriberCount" msInfiniteScroll>
+                    <ngx-mat-select-search [(ngModel)]="prescribedSearch" [ngModelOptions]="{ standalone: true }"
+                      placeholderLabel="Select Prescriber" noEntriesFoundLabel="Not Found" name="search"
+                      (keyup)="filterPhysicianData($event)">
+                    </ngx-mat-select-search>
+                    <mat-option [value]="0" (click)="addPhysicianPopup()">
+                      Add Prescriber
+                    </mat-option>
+                    <mat-option *ngFor="let filters of prescriberList" [value]="filters.key"
+                      (click)="selectPhysician(filters)">
+                      {{filters.value}} {{ '(' + filters.medical_profession_type + ')'}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!-- prescribed new ends -->
+
+
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+              <p style="margin-left: 15px; font: inherit; color: gray;">Order Received by</p>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+              <!-- Order Received by -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-radio-button value="fax" [(ngModel)]="orderReceivedBy" [checked]="true">Fax</mat-radio-button>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-radio-button value="phone" [(ngModel)]="orderReceivedBy">Phone</mat-radio-button>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-radio-button value="paper" [(ngModel)]="orderReceivedBy">Paper</mat-radio-button>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Diagnostic or Standard Lab -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-select placeholder="Diagnostic or Standard Lab" (selectionChange)="setDiagnostic()"
+                    [(ngModel)]="diagnosticDropValue" formControlName="lab_kind">
+                    <mat-option *ngFor="let s of diagnosticsOrStandard" value="{{s.value}}">{{s.name}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div *ngIf="showSymptoms" class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Diagnostic or Standard Lab -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>Symptoms</mat-label>
+                  <mat-select multiple formControlName="symptoms" (infiniteScroll)="getNextSymptomsBatch()"
+                    [complete]="symptomOffset === totalSymptomsCount" msInfiniteScroll>
+                    <ngx-mat-select-search [(ngModel)]="symptomSearch" [ngModelOptions]="{ standalone: true }"
+                      placeholderLabel="Select Symptoms" noEntriesFoundLabel="Not Found" name="search"
+                      (keyup)="filterSymptomData($event)">
+                    </ngx-mat-select-search>
+                    <mat-option [value]="0" class="hide-checkbox" (click)="addSymptomPopup()">
+                      Add Symptom
+                    </mat-option>
+                    <mat-option *ngFor="let filters of symptomsList" [value]="filters.name"
+                      (click)="selectSymptom(filters)">
+                      {{filters.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-select placeholder="Select Lab Type" formControlName="lab_type">
+                    <mat-option *ngFor="let lab of labTypeList" [value]="lab.value">{{ lab.name }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Select Testing Device -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>Testing Device</mat-label>
+                  <mat-select formControlName="testing_device" [ngModel]="labOrderDetails?.testing_device"
+                    (infiniteScroll)="getNextPhysicianBatch()" [complete]="physicianOffset === totalPrescriberCount"
+                    msInfiniteScroll>
+                    <ngx-mat-select-search [(ngModel)]="testingDeviceSearch" [ngModelOptions]="{standalone:true}"
+                      placeholderLabel="Select Testing Device" noEntriesFoundLabel="Not Found" name="search">
+                    </ngx-mat-select-search>
+                    <mat-option [value]="0" (click)="addTestingDevicePopup()">
+                      Add Testing Device
+                      <!-- <mat-icon mat-raised-button class="mat-icon material-icon basecolor cursor pl-60" role="img"
+                        aria-hidden="true">add_circle
+                      </mat-icon> -->
+                    </mat-option>
+                    <mat-option *ngFor="let filters of testingDeviceList" [value]="filters.key"
+                      (click)="selectTestingDevice(filters)">
+                      {{filters.value}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Lab processor -->
+              <div class="w-100 pl-15 pr-15">
+                <div class="carelist">
+                  <div class="selectr">
+                    <mat-form-field class="w-100">
+                      <mat-label>Select Lab processor</mat-label>
+                      <mat-select formControlName="lab_processor">
+                        <ngx-mat-select-search [(ngModel)]="labProcessorSearch" [ngModelOptions]="{standalone: true}"
+                          placeholderLabel="Select lab processor" noEntriesFoundLabel="Not Found" name="search">
+                        </ngx-mat-select-search>
+                        <mat-option (click)="labProcessorInBuilding()" [value]="is_lab_processor_in_building">
+                          {{ 'Perform in Building' }}
+                        </mat-option>
+                        <span
+                          *ngFor="let group of labProcessorlist |stringFilterBy:labProcessorSearch:'name'; let i = index ;">
+                          <mat-optgroup [label]="group.name" *ngIf="group?.departments && group?.departments?.length"
+                            (click)="activeToggler(i,$event)">
+                            <mat-icon aria-hidden="true"
+                              class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                              mat-raised-button="" role="img"
+                              *ngIf="group?.departments && group?.departments?.length && i != activeClassIndex">
+                              expand_more</mat-icon>
+                            <mat-icon aria-hidden="true"
+                              class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                              mat-raised-button="" role="img"
+                              *ngIf="group?.departments && group?.departments?.length && i === activeClassIndex">
+                              expand_less</mat-icon>
+                            <mat-option [class.active]="i === activeClassIndex"
+                              *ngFor="let department of group?.departments" [value]="department._id" multiple>
+                              <span class="pl-5">{{department.name}}</span>
+                            </mat-option>
+                          </mat-optgroup>
+                          <mat-option *ngIf="!group?.departments?.length && group.name"
+                            [class.active]="i === activeClassIndex" [value]="group._id">
+                            <span class="pl-5">
+                              {{group.name}}
+                            </span>
+                          </mat-option>
+
+                        </span>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Select Processor -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <mat-label>Send a copy of Results</mat-label>
+                  <mat-select formControlName="result_copy" [ngModel]="labOrderDetails?.result_copy"
+                    (infiniteScroll)="getNextPhysicianBatch()" [complete]="physicianOffset === totalPrescriberCount"
+                    msInfiniteScroll multiple>
+                    <ngx-mat-select-search [(ngModel)]="prescribedSearch" [ngModelOptions]="{standalone:true}"
+                      placeholderLabel="Select Recipients to send" noEntriesFoundLabel="Not Found" name="search"
+                      (keyup)="filterPhysicianData($event)">
+                    </ngx-mat-select-search>
+                    <mat-option [value]="0" class="hide-checkbox" (click)="addRecipientPopup()">
+                      Add Recipient
+                    </mat-option>
+                    <mat-option *ngFor="let filters of prescriberList" [value]="filters.key"
+                      (click)="selectPhysician(filters)">
+                      {{filters.value}} {{ '(' + filters.medical_profession_type + ')'}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="w-10 pl-15 pr-15" *ngIf="sendCopyCount">
+                <button mat-stroked-button class="btn-secondary">{{sendCopyCount}} {{ 'selected' }}</button>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5 nfc_label note_textarea">
+
+              <!-- Notes -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <textarea matInput placeholder="Notes" formControlName="notes"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5 nfc_label note_textarea">
+
+              <!-- Progress Note -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <textarea matInput placeholder="Progress Note(Internal Only)"
+                    formControlName="progress_note"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+              <!-- Progress Note -->
+              <div class="w-100 pl-15 pr-15" style="text-align: right;">
+                <mat-slide-toggle [(ngModel)]="is_Stat">Stat</mat-slide-toggle>
+              </div>
+            </div>
+
+            <!-- instructions -->
+            <!-- <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+                    <div class="w-100">
+                      <mat-form-field class="w-100">
+                        <mat-label>Instructions</mat-label>
+                            <textarea matInput placeholder="Instructions" [ngModel]="medicationDetails?.instructions" formControlName="instructions"></textarea>
+                      </mat-form-field>
+                    </div>
+                  </div> -->
+
+            <!-- Directions -->
+
+            <!-- reasons -->
+            <!-- <ng-container *ngIf="isTreatment">
+                    <div class="d-flex justify-content-between form-row mt-20 nfc_label note_textarea">
+                      <div class="w-100">
+                        <mat-form-field class="w-100">
+                          <mat-label> Reason</mat-label>
+                          <input type="text" matInput placeholder="Reason" [ngModel]="medicationDetails?.reasons" formControlName="reason">
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </ng-container> -->
+
+          </mat-card-content>
+        </ng-container>
+      </div>
+      <!-- medication form fields ends -->
+    </div>
+  </mat-card>
+  <div class="d-flex justify-content-between">
+    <button mat-flat-button class="mr-10" color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+    <div>
+      <button mat-flat-button color="primary" class="mr-10 btn_main_done" (click)="addAnotherLabOrder()">
+        Send and Add Another
+      </button>
+      <button mat-flat-button color="primary" class="mr-10 btn_main_done" (click)="labOrderSave(labOrderForm.valid)">
+        Send
+      </button>
+
+    </div>
+  </div>
+</form>
+
+<form class="example-form custom_font" *ngIf="orderType == 'misc'" [formGroup]="miscOrderForm">
+  <mat-card class="view-height">
+    <h3>Miscellaneous Order</h3>
+    <div class="row">
+
+      <!-- order view section starts -->
+      <div class="w-30 pdf_view pdf-container" *ngIf="viewPdf">
+        <span *ngIf="fileUrl">
+
+          <!-- <pdf-viewer [src]="fileUrl" [autoresize]="true"
+          [stick-to-page]="true" [zoom]="zoomValue" [zoom-scale]="'page-width'" [original-size]="false">
+        </pdf-viewer> -->
+          <ng2-pdfjs-viewer [pdfSrc]="fileUrl" [openFile]="false" [viewBookmark]="false" [download]="false"
+            [print]="false" [find]="false" [fullScreen]="false" [zoom]="'page-width'" [showSpinner]="true">
+          </ng2-pdfjs-viewer>
+          <div class="pdf-zoom-btn">
+          </div>
+        </span>
+        <span *ngIf="!fileUrl">
+          <input id="upload_file" placeholder="upload" type="file" accept=".pdf" #file (change)="onChange(file)">
+        </span>
+
+      </div>
+      <div class="w-30 non_pdf_view" *ngIf="!viewPdf">
+        <span *ngIf="thumbnailUrl">
+          <img class="image_view" [src]="thumbnailUrl" alt="Default Image">
+        </span>
+        <span *ngIf="!thumbnailUrl">
+          <input id="upload_file" placeholder="upload" type="file" accept=".pdf" #file (change)="onChange(file)">
+          <!-- <mat-icon (click)="file.click">cloud_upload</mat-icon> -->
+        </span>
+      </div>
+      <!-- order view section ends -->
+
+      <!-- medication form fields starts -->
+      <div class="w-70 ml-20">
+        <ng-container>
+          <mat-card-content>
+
+            <div class="d-flex justify-content-between form-row">
+
+              <!-- Order Date -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput formControlName="order_date" [min]="minDate" [matDatepicker]="picker3_ci"
+                    placeholder="Order Date" (click)="picker3_ci.open()" required>
+                  <mat-datepicker-toggle matSuffix [for]="picker3_ci"></mat-datepicker-toggle>
+                  <mat-datepicker #picker3_ci></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!--Start Time -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <input matInput type="time" placeholder="Start Time" formControlName="start_time">
+                </mat-form-field>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+              <p style="margin-left: 15px; font: inherit; color: gray;">Order Received by</p>
+            </div>
+
+            <div class="d-flex justify-content-between form-row">
+              <!-- Order Received by -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-radio-button value="fax" [(ngModel)]="orderReceivedBy" [checked]="true">Fax</mat-radio-button>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-radio-button value="phone" [(ngModel)]="orderReceivedBy">Phone</mat-radio-button>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-radio-button value="paper" [(ngModel)]="orderReceivedBy">Paper</mat-radio-button>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Prescriber -->
+              <div class="w-100 pr-15">
+
+                <!-- prescribed new starts -->
+                <div class="w-100 pl-15">
+                  <mat-form-field class="w-100">
+                    <mat-label>Prescribers</mat-label>
+                    <mat-select formControlName="prescriber" [ngModel]="miscOrderDetails?.prescribed_by"
+                      (infiniteScroll)="getNextPhysicianBatch()" [complete]="physicianOffset === totalPrescriberCount"
+                      msInfiniteScroll>
+                      <ngx-mat-select-search formControlName="prescribedSearch" [(ngModel)]="prescribedSearch"
+                        placeholderLabel="Select Prescribed By" noEntriesFoundLabel="Not Found" name="search"
+                        (keyup)="filterPhysicianData($event)">
+                      </ngx-mat-select-search>
+                      <mat-option [value]="0" (click)="addPhysicianPopup()">
+                        Add Prescriber
+                      </mat-option>
+                      <mat-option *ngFor="let filters of prescriberList" [value]="filters.key"
+                        (click)="selectPhysician(filters)">
+                        {{filters.value}} {{ '(' + filters.medical_profession_type + ')'}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <!-- prescribed new ends -->
+
+
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+
+              <!-- Care -->
+              <div class="w-100 pl-15 pr-15">
+                <div class="carelist">
+                  <div class="selectr">
+                    <mat-form-field class="w-100">
+                      <mat-label>Select Care</mat-label>
+                      <mat-select formControlName="cares" [(ngModel)]="selectedCare.care_id"
+                        (selectionChange)="careSelect(selectedCare)">
+                        <ngx-mat-select-search [(ngModel)]="carSearch" [ngModelOptions]="{standalone: true}"
+                          placeholderLabel="Select Care" noEntriesFoundLabel="Not Found" name="search">
+                        </ngx-mat-select-search>
+                        <span *ngFor="let group of carelist |stringFilterBy:carSearch:'value'; let i = index ;">
+                          <mat-optgroup [label]="group.value" *ngIf="group?.subCares && group?.subCares?.length"
+                            (click)="activeToggler(i,$event)">
+                            <img class="cares-image"
+                              *ngIf="group.image!='' && group?.subCares && group?.subCares?.length" [src]="group.image"
+                              width="30px" />
+                            <mat-icon aria-hidden="true"
+                              class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                              mat-raised-button="" role="img"
+                              *ngIf="group?.subCares && group?.subCares?.length && i != activeClassIndex">expand_more
+                            </mat-icon>
+                            <mat-icon aria-hidden="true"
+                              class="material-icon basecolor cursor notranslate material-icons mat-icon-no-color cares-down-icon"
+                              mat-raised-button="" role="img"
+                              *ngIf="group?.subCares && group?.subCares?.length && i === activeClassIndex">expand_less
+                            </mat-icon>
+                            <mat-option [class.active]="i === activeClassIndex" *ngFor="let subCare of group?.subCares"
+                              [value]="subCare.key">
+                              <img *ngIf="subCare.image!=''" [src]="subCare.image" width="30px" />
+                              <span class="pl-5">{{subCare.value}}</span>
+                            </mat-option>
+                          </mat-optgroup>
+
+                          <mat-option *ngIf="!group?.subCares?.length && group.value"
+                            [class.disable]="group.hasSubCares" [class.active]="i === activeClassIndex"
+                            [disabled]="group.hasSubCares" [value]="group.key">
+                            <img *ngIf="group.image!=''" [src]="group.image" width="30px" />
+                            <span [class.pl-33]="group.image ==''" class="pl-5">
+                              {{group.value}}
+                            </span>
+                          </mat-option>
+
+                        </span>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between mt-5">
+
+              <!-- Recipient -->
+              <div class="w-100 pl-15 pr-15">
+                <!-- <mat-form-field class="w-100">
+                <input matInput type="text" name="search" (keyup)="getAllRecipientList(searchRecipient)" class="form-control" [(ngModel)]="searchRecipient"
+                    placeholder="Enter Recipient" />
+               </mat-form-field> -->
+                <mat-form-field class="w-100">
+                  <mat-label>Select Recipient</mat-label>
+                  <mat-select>
+                    <ngx-mat-select-search [(ngModel)]="searchRecipient" [ngModelOptions]="{ standalone: true }"
+                      placeholderLabel="Select Recipient" noEntriesFoundLabel="Not Found" name="search"
+                      (keyup)="getAllRecipientList(searchRecipient)">
+                    </ngx-mat-select-search>
+                    <mat-option [disabled]="filters._id == '1'" *ngFor="let filters of recipientsList"
+                      [value]="filters._id">
+                      {{filters.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between mt-5">
+
+              <div *ngIf="sendCopyCount > 0" class="d-flex w-100 pl-15 pr-15">
+                <span><input matInput [(ngModel)]="sendCopyCount" [ngModelOptions]="{ standalone:true }"
+                    readonly>Selected</span>
+              </div>
+
+              <div class="w-100 pl-15 pr-15 btn-right">
+                <button mat-stroked-button class="btn_Secondary" (click)="addRecipientPopup()">Send Copy</button>
+              </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5 nfc_label note_textarea">
+
+              <!-- Notes -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <textarea matInput placeholder="Notes (Sent with order)" formControlName="notes"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5 nfc_label note_textarea">
+
+              <!-- Progress Note -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <textarea matInput placeholder="Progress Note(Internal Only)"
+                    formControlName="progress_note"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div *ngIf="eMarToggle" class="d-flex justify-content-between form-row mt-5 nfc_label note_textarea">
+
+              <!-- Additional Information -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-form-field class="w-100">
+                  <textarea matInput placeholder="Additional Information (Displayed in eMAR)"
+                    formControlName="aditional_info"></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+              <!-- Progress Note -->
+              <div class="w-100 pl-15 pr-15">
+                <mat-slide-toggle>Self Managed</mat-slide-toggle>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-slide-toggle>PRN</mat-slide-toggle>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-slide-toggle>Stat</mat-slide-toggle>
+              </div>
+              <div class="w-100 pl-15 pr-15">
+                <mat-slide-toggle [(ngModel)]="eMarToggle" [ngModelOptions]="{ standalone: true }">Display on eMAR
+                </mat-slide-toggle>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between form-row mt-5">
+              <div *ngIf="careScheduleOrder?.length" class="w-100 pl-15">
+                <div class="timeset timeset_desc"
+                  *ngIf="careScheduleOrder[0]['repeat_on'] && careScheduleOrder[0]['repeat'] == 'every_week'">
+                  <p>{{ careScheduleOrder[0]['care']['name'] }} care occurs every {{
+                    weekDayTextInForm(careScheduleOrder[0]['repeat_on']) }}</p>
+                </div>
+                <div class="timeset timeset_desc" *ngIf="careScheduleOrder[0].repeat == 'every_day'">
+                  <p>{{ careScheduleOrder[0]['care']['name'] }} care occurs everyday.</p>
+                </div>
+                <div class="timeset timeset_desc"
+                  *ngIf="careScheduleOrder[0]['repeat'] == 'every_month' || careScheduleOrder[0]['repeat'] == 'every_year'">
+                  <p *ngIf="careScheduleOrder[0]['repeat_option'] == 'on_day'">{{ careScheduleOrder[0]['care']['name']
+                    }} care occurs <span *ngIf="careScheduleOrder[0]['repeat'] == 'every_year'">every {{
+                      careScheduleOrder[0].startDate | date: 'MMMM' }}</span><span
+                      *ngIf="careScheduleOrder[0]['repeat'] == 'every_month'">on day</span> {{
+                    careScheduleOrder[0].startDate | date: 'dd'}} </p>
+                  <p *ngIf="careScheduleOrder[0]['repeat_option'] == 'on_week_number'">{{
+                    careScheduleOrder[0]['care']['name'] }} care occurs <span
+                      *ngIf="careScheduleOrder[0]['repeat'] == 'every_year'"> every year on the {{
+                      careScheduleOrder[0].startDate | weekNumber | alphaNumber }} {{ careScheduleOrder[0].startDate |
+                      date: 'EEEE' }} of {{ careScheduleOrder[0].startDate | date: 'MMMM' }}</span> <span
+                      *ngIf="careScheduleOrder[0]['repeat'] == 'every_month'"> on the {{ careScheduleOrder[0].startDate
+                      | weekNumber | alphaNumber }} {{ careScheduleOrder[0].startDate | date: 'EEEE' }}</span> </p>
+                  <p *ngIf="careScheduleOrder[0]['repeat_option'] == 'on_last_week'">{{
+                    careScheduleOrder[0]['care']['name']}} care occurs <span
+                      *ngIf="careScheduleOrder[0]['repeat'] == 'every_year'"> every year on the last {{
+                      careScheduleOrder[0].startDate | date: 'EEEE' }} of {{ careScheduleOrder[0].startDate | date:
+                      'MMMM' }}</span> <span *ngIf="careScheduleOrder[0]['repeat'] == 'every_month'"> on the last {{
+                      careScheduleOrder[0].startDate | date: 'EEEE' }}</span> </p>
+                </div>
+                <div class="timeset timeset_desc"
+                  *ngIf="careScheduleOrder[0]['repeat'] == 'custom_weekly' || careScheduleOrder[0]['repeat'] == 'custom_monthly' || careScheduleOrder[0]['repeat'] == 'custom_yearly'">
+                  <p *ngIf="careScheduleOrder[0]['repeat_option']">
+                    {{ careScheduleOrder[0]['care']['name'] }} {{ customScheduleString }}
+                  </p>
+                </div>
+              </div>
+              <div class="w-100 pl-15 pr-15 btn-right">
+                <button mat-stroked-button color="primary" [disabled]="!selectedCare.care_id"
+                  class="mr-10 mt-20 btn_Secondary" (click)="openScheduleCare()">
+                  Schedule
+                </button>
+              </div>
+
+            </div>
+
+          </mat-card-content>
+        </ng-container>
+      </div>
+      <!-- medication form fields ends -->
+    </div>
+  </mat-card>
+  <div class="d-flex justify-content-between">
+    <button mat-flat-button class="mr-10" color="warn" (click)="cancelForm()" class="btn_main_cancle">Cancel</button>
+    <div>
+      <!-- <button mat-flat-button color="primary" class="mr-10 btn_main_done"
+        (click)="addAnotherMiscOrder()">
+        Send and Add Another
+      </button> -->
+      <button mat-flat-button color="primary" class="mr-10 btn_main_done" (click)="miscOrderSave(miscOrderForm.valid)">
+        Send
+      </button>
+
+    </div>
+  </div>
+</form>
+
+<!-- Add Doctor or Pharmacy Popup -->
+<ng-template #addForm>
+  <div class="">
+    <form [formGroup]="addDoctorPharmacyForm" class="example-form custom_font">
+      <div class="d-flex justify-content-between form-row pop_heading">
+        <h3>Add {{formName === 'doctor'? 'Doctor': 'Pharmacy'}} Name</h3>
+      </div>
+      <div class="d-flex justify-content-between form-row">
+        <div class="w-100 pl-15">
+          <mat-form-field class="w-100">
+            <input matInput placeholder="Name" formControlName="name" required>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+    <div class="d-flex justify-content-between btn_report_pop">
+      <button mat-flat-button class="mr-10 btn_main_cancle" color="warn" (click)="cancelAddForm()">Cancel</button>
+
+      <button mat-flat-button color="primary" (click)="addData(addDoctorPharmacyForm.valid)" class="btn_main_done">Add
+      </button>
+    </div>
+  </div>
+</ng-template>

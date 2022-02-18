@@ -1,0 +1,29 @@
+<form>
+	<div>
+		<h3 mat-dialog-title>{{'Resident'}}</h3>
+
+		<div class="d-flex justify-content-between form-row" style="text-align: center;">
+			<div class="w-100 pr-15" >
+				<mat-form-field class="w-100">
+					<mat-label>Select Resident</mat-label>
+					<mat-select (openedChange)="openSelectDropdown($event)">
+					  <ngx-mat-select-search [(ngModel)]="residentSearch" placeholderLabel="Select Resident Name"
+						noEntriesFoundLabel="Not Found" name="search" (keyup)="filterResidentData($event)">
+					  </ngx-mat-select-search>
+					  <mat-option *ngFor="let option of residentData |stringFilterBy:residentSearch: 'value'" [value]="option.value" (click)="selectResidentName(option, option.facId)">
+						{{option.value}}  {{option.room}}
+					  </mat-option>
+					</mat-select>
+				  </mat-form-field>
+			</div>
+		</div>
+
+		<div class="d-flex align-items-center justify-content-between action_btn" mat-dialog-actions>
+			<button mat-button color="basic" (click)="cancel()"
+				class="mr-10 cancel_btn p-0">Cancel</button>
+			<button mat-button color="primary" class="done_btn p-0" cdkFocusInitial
+				(click)="done()">Done</button>
+		</div>
+
+	</div>
+</form>

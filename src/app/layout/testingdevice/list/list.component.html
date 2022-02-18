@@ -1,0 +1,80 @@
+<mat-card class="view-height">
+    <mat-card-header>
+        <mat-card-title class="dash_heading">Testing Device</mat-card-title>
+        <mat-card-subtitle class="w-100 mb-0">
+            <div class="d-flex justify-content-between align-center">
+                <div class="w-30 pr-15">
+                    <mat-form-field class="w-100">
+                        <input matInput type="text" name="search" class="form-control" [(ngModel)]="search" #searchInput
+                            id="searchInput" placeholder="Search Device" />
+                    </mat-form-field>
+                </div>
+                <div class="w-70 pl-15">
+                    <div class="example-button-row text-right w-100">
+                        <button mat-stroked-button *ngIf="commonService.checkPrivilegeModule('hospital','add')"
+                            class="ml-3" (click)="addTestingDevicePopup()" class="btn_Secondary">Add
+                            New</button>
+                        <button #deleteButton *ngIf="commonService.checkPrivilegeModule('hospital','delete')"
+                            mat-stroked-button class="ml-3" (click)="delete()" class="btn_Secondary">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="view-height-center" *ngIf="dataSource">
+        <div class="table-responsive mt-20 header-fixed-table-wrpper listing">
+            <table *ngIf="data.length" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8"
+                (matSortChange)="sortData($event)"
+                matSortDisableClear class="custom_width">
+                <ng-container matColumnDef="checkbox">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox color="primary" [(ngModel)]="checked" (click)="selectAll()"> </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let elements">
+                        <mat-checkbox color="primary" [(ngModel)]="elements.checked"
+                            (click)="selectElement(elements._id,elements.checked)"> </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+                    <th mat-header-cell *matHeaderCellDef [mat-sort-header]=" column.sort?column.id:null"
+                        [disabled]="column.sort?false: true"> {{column.value}} </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element[column.id]}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th width="200" mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let elements">
+                        <button mat-mini-fab *ngIf="commonService.checkPrivilegeModule('hospital','edit')"
+                            color="primary" (click)="editDevice(elements, elements._id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab *ngIf="commonService.checkPrivilegeModule('hospital','delete')"
+                            color="primary" (click)="deleteDevice(elements._id)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <p *ngIf="!data.length" style="text-align: center; color: #949494;">No data found</p>
+        </div>
+    </mat-card-content>
+    <div class="w-100 totalCount">
+        <div class="w-90">
+            <mat-card-actions>
+                <mat-paginator [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+                    [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+            </mat-card-actions>
+        </div>
+        <div class="w-10 tcText">
+            <span class="span-pos" (click)="getTotalCount()">Total Count:</span>
+            <mat-spinner *ngIf="isLoading" class="countPos" [diameter]="20"></mat-spinner>
+            <span *ngIf="isClicked" class="countPos">{{ totalCount }}</span>
+        </div>
+    </div>
+</mat-card>

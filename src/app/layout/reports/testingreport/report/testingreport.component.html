@@ -1,0 +1,57 @@
+<mat-card class="view-height">
+
+<mat-card-header>
+  <mat-card-subtitle class="w-100 mb-5 d-flex justify-content-between">
+      <mat-card-title class="mb-0">Testing History Report</mat-card-title>
+      <div class="report_export_btn d-flex align-center">
+        <img *ngIf="resultcount && commonService.checkPrivilegeModule('reports','export')" (click)="exportXlsx()" class="export_image" src="assets/images/download-xls-icon.svg"/>
+        <img *ngIf="!resultcount && commonService.checkPrivilegeModule('reports','export')" class="export_imagepdf_unselect" src="assets/images/PDF unselect.svg" />
+        <img *ngIf="resultcount && commonService.checkPrivilegeModule('reports','export')" (click)="downloadAll()" class="export_imagepdf" src="assets/images/select-pdf.svg" />
+      </div>
+  </mat-card-subtitle>
+</mat-card-header>
+<mat-card-content class="view-height-center">
+
+  <div class="shifttimencreated d-flex align-items-center mb-20">
+
+    <div class="shifttime">
+      <h4 class="m-0">{{selectShift}}</h4>
+    </div>
+
+    <div class="created">
+
+      <h4>Created by: {{userName}}</h4>
+      <span>{{start_date | timezoneWiseMomentDate:timezone}}-{{end_date | timezoneWiseMomentDate:timezone}}</span>
+
+    </div>
+
+  </div>
+
+  <mat-card-content *ngIf="!resultcount">
+
+    <p style="text-align: center; color: #969393" class="message_text">No Data Found</p>
+
+  </mat-card-content>
+
+  <div *ngIf="resultcount" class="table-responsive mt-20 header-fixed-table-wrpper listing">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="{{column.id}}" *ngFor="let column of columnNames">
+              <th mat-header-cell *matHeaderCellDef > {{column.value}} </th>
+              <td mat-cell *matCellDef="let element">
+                  {{element[column.id]}}
+              </td>
+
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+  </div>
+</mat-card-content>
+<mat-card-actions>
+  <mat-paginator *ngIf="resultcount" [length]=count [pageSize]=pagiPayload.pageSize [pageSizeOptions]="[10, 50, 100, 500]"
+      [pageIndex]=pagiPayload.pageIndex (page)="getServerData($event)"></mat-paginator>
+</mat-card-actions>
+</mat-card>
+<button mat-mini-fab color="primary" class="toptoscroll" *ngIf="isShow" (click)="gotoTop()">
+  <mat-icon>keyboard_arrow_up</mat-icon>
+</button>

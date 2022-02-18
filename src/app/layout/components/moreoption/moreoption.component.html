@@ -1,0 +1,10 @@
+<ng-container *ngIf="dropoption && dropoption != ''" >
+    <mat-menu #appMenu="matMenu" xPosition="before">
+        <ng-container *ngFor="let link of dropoption.links" >
+            <button mat-menu-item (click)="navigateToLinnk(link.link)" >{{ link.name }}</button>
+        </ng-container>
+    </mat-menu>
+    <button mat-icon-button [matMenuTriggerFor]="appMenu">
+        {{ dropoption.name }} <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+</ng-container>

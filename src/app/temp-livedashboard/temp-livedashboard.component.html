@@ -1,0 +1,550 @@
+<header class="main-header" (window:beforeunload)="doBeforeUnload()" (window:unload)="doUnload()">
+  <div class="heading">
+    <ng-container *ngIf="shift['rotation'] == 1">{{ shift["rotation"] }}<sup>st</sup></ng-container>
+    <ng-container *ngIf="shift['rotation'] == 2">{{ shift["rotation"] }}<sup>nd</sup></ng-container>
+    <ng-container *ngIf="shift['rotation'] == 3">{{ shift["rotation"] }}<sup>rd</sup></ng-container>
+    Shift
+    <span *ngIf="shift['rotation'] == 1"> 6:00AM - 2:00PM</span>
+    <span *ngIf="shift['rotation'] == 2"> 2:00PM - 10:00PM</span>
+    <span *ngIf="shift['rotation'] == 3"> 10:00PM - 6:00AM</span>
+  </div>
+  <div class="nav-brand d-flex align-center">
+    <img src="assets/logo/dashboard_logo.svg" />
+  </div>
+  <div class="current-time">
+    <div class="datetime">
+      {{ _date }}
+      <span></span>
+      <mat-icon>access_time</mat-icon>{{ _time }}
+    </div>
+    <span>{{ _facilityName }}</span>
+  </div>
+</header>
+
+<div class="content-wrapper">
+  <div class="report-detail">
+
+    <div class="report-grid">
+
+      <!-- total cares count -->
+      <div class="grid border-top blue">
+        <div class="count">
+          {{ _performedCareCount }}
+        </div>
+        <div class="title">
+          Total Cares Performed
+        </div>
+      </div>
+
+      <!-- time spent on cares -->
+      <div class="grid border-top blue">
+        <div class="count">
+
+          <div *ngIf="formattedTime(_performedCareTotalTime).hours > 0"> {{ formattedTime(_performedCareTotalTime).hours }}
+            <span> h </span>
+          </div>
+          <div *ngIf="formattedTime(_performedCareTotalTime).minutes > 0"> {{ formattedTime(_performedCareTotalTime).minutes }}
+            <span> min </span>
+          </div>
+          <div *ngIf="!formattedTime(_performedCareTotalTime).minutes">
+            0 <span> min </span>
+          </div>
+        </div>
+        <div class="title">
+          Time Spent on Cares
+        </div>
+      </div>
+
+      <!-- unassigned time on cares -->
+      <div class="grid border-top blue">
+        <div class="count">
+          <div *ngIf="formattedTime(_unassignedCareTotalTime).hours>0"> {{ formattedTime(_unassignedCareTotalTime).hours }}
+            <span> h </span>
+          </div>
+          <div *ngIf="formattedTime(_unassignedCareTotalTime).minutes > 0"> {{ formattedTime(_unassignedCareTotalTime).minutes }} 
+            <span> min </span>
+          </div>
+          <div *ngIf="!formattedTime(_unassignedCareTotalTime).minutes">
+            0 <span> min </span>
+          </div>
+        </div>
+        <div class="title">
+          Time Unassigned
+        </div>
+      </div>
+
+      <!-- total time taken for cares -->
+      <div class="grid border-top blue">
+        <div class="count">
+          <div *ngIf="formattedTime(_totalCareTime).hours > 0"> {{ formattedTime(_totalCareTime).hours }} <span> h
+            </span>
+          </div>
+          <div *ngIf="formattedTime(_totalCareTime).minutes > 0"> {{ formattedTime(_totalCareTime).minutes }} <span>
+              min </span></div>
+          <div *ngIf="!formattedTime(_totalCareTime).minutes">
+            0 <span> min </span>
+          </div>
+        </div>
+        <div class="title">
+          Total Time
+        </div>
+      </div>
+
+      <!-- missed care counts -->
+      <div class="grid border-top falls">
+        <div class="count">
+          {{_missedCareCount}}
+        </div>
+        <div class="title">
+          Missed Care(s)
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="common-side">
+    <div class="left-side">
+
+      <div class="h-100 top-side">
+
+        <div class="open_performer">
+
+          <!-- performed care data list -->
+          <div class="table-grid first">
+
+            
+            <div class="grid-heading cardbox_head">
+              Performers <span>({{_performersData.length}})</span>
+            </div>
+
+            <!-- new mat table starts -->
+            <div class="table-wrapper table-performer">
+              <mat-table class="table scroller" [dataSource]="performersDataSource" matSort *ngIf="_performersData.length">
+
+                <!-- performer column -->
+                <ng-container matColumnDef="performer">
+                  <thead>
+                    <th mat-header-cell *matHeaderCellDef>Performer</th>
+                  </thead>
+                  <tbody>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.userData.last_name }},
+                      {{ element.userData.first_name }}</td>
+                  </tbody>
+                </ng-container>
+
+                <!-- cares column -->
+                <ng-container matColumnDef="cares">
+                  <thead>
+                    <th mat-header-cell *matHeaderCellDef class="cdk-column-totalcare">Cares</th>
+                  </thead>
+                  <tbody>
+                    <td mat-cell *matCellDef="let element" class="cdk-column-totalcare"> {{ element.report ? element.report.totalCare : '-'}}</td>
+                  </tbody>
+                </ng-container>
+
+                <!-- time_on_care column -->
+                <ng-container matColumnDef="time_on_care">
+                  <thead>
+                    <th mat-header-cell *matHeaderCellDef class="mat-column-time">Time on Care</th>
+                  </thead>
+                  <tbody>
+                    <td mat-cell *matCellDef="let element" class="mat-column-time">
+                      <div *ngIf="formattedTime(element.report.totalCareTime).hours > 0"> {{ formattedTime(element.report.totalCareTime).hours }} 
+                        <span> h </span>
+                      </div>
+                      <div *ngIf="formattedTime(element.report.totalCareTime).minutes > 0"> {{ formattedTime(element.report.totalCareTime).minutes }} <span>
+                          min </span>
+                      </div>
+                      <div *ngIf="!formattedTime(element.report.totalCareTime).minutes">
+                        0 <span> min </span>
+                      </div>
+                      <!-- {{ performerTIme(element.report.totalCareTime) }} -->
+                    </td>
+                  </tbody>
+
+                </ng-container>
+
+                <!-- unassigned column -->
+                <ng-container matColumnDef="unassigned">
+                  <th mat-header-cell *matHeaderCellDef class="cdk-column-totalcare">
+                    Unassigned
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="cdk-column-totalcare">
+                    <div *ngIf="formattedTime(element.report.totalUnassignedTime).hours > 0"> {{ formattedTime(element.report.totalUnassignedTime).hours }} 
+                      <span> h </span>
+                    </div>
+                    <div *ngIf="formattedTime(element.report.totalUnassignedTime).minutes > 0"> {{ formattedTime(element.report.totalUnassignedTime).minutes }} <span>
+                        min </span>
+                    </div>
+                    <div *ngIf="!formattedTime(element.report.totalUnassignedTime).minutes">
+                      0 <span> min </span>
+                    </div>
+                    <!-- {{ performerTIme(element.report.totalUnassignedTime) }} -->
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedPerformersColumns;sticky:true;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedPerformersColumns"></tr>
+              </mat-table>
+            </div>
+            <!-- new mat table ends -->
+          </div>
+
+          <!-- open care data list -->
+          <div class="table-grid opcare second">
+            <div class="grid-heading d-flex justify-content-start">
+              <div class="d-flex align-items-center cardbox_head">
+
+                <img src="assets/images/open_care_icon.svg" /> Open Care
+                <span>({{_openCaresCount}})</span>
+              </div>
+
+            </div>
+            <div class="table-wrapper table-open-care">
+              <mat-table class="scroller" [dataSource]="openCareData" matSort *ngIf="_openCaresCount">
+                <ng-container matColumnDef="resident">
+                  <thead>
+                    <th width="15%" mat-header-cell *matHeaderCellDef>Resident</th>
+                  </thead>
+                  <tbody>
+                    <td mat-cell *matCellDef="let element">{{ element.resident | titlecase }}</td>
+                  </tbody>
+                </ng-container>
+                <ng-container matColumnDef="room">
+                  <thead>
+                    <th width="15%" mat-header-cell *matHeaderCellDef class="room_details">Rm</th>
+                  </thead>
+                  <tbody>
+                    <td mat-cell *matCellDef="let element" class="room_in">{{ element.room }}</td>
+                  </tbody>
+                </ng-container>
+                <ng-container matColumnDef="care">
+                  <thead>
+                    <th width="15%" mat-header-cell *matHeaderCellDef>Care</th>
+                  </thead>
+                  <tbody>
+                    <td mat-cell *matCellDef="let element">
+                      <span class="d-flex align-center">
+                        <!-- <img src="{{ element.icons ? removeunderscore(element.icons) : '' }}" /> -->
+                        <span>
+                          {{ element.care }}
+                        </span>
+                      </span>
+                    </td>
+                  </tbody>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="pausedtime">
+                  <th style="text-align: center;" width="15%" mat-header-cell *matHeaderCellDef>
+                    Paused Time
+                  </th>
+                  <td mat-cell *matCellDef="let element" class=" text-center">
+                    {{ element.pausedtime ? formattedCareTIme(element.pausedtime) : '' }}
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsNew;sticky:true;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsNew"></tr>
+              </mat-table>
+
+              <div class="no-img" *ngIf="!_openCaresCount">
+                <svg xmlns="http://www.w3.org/2000/svg" width="368.986" height="368.986" viewBox="0 0 368.986 368.986">
+                  <g id="Group_139" data-name="Group 139" transform="translate(-2554 -1486)">
+                    <path id="Path_124" data-name="Path 124"
+                      d="M426.985,628.493c0,101.893-82.6,184.493-184.493,184.493S58,730.385,58,628.493,140.6,444,242.492,444s184.5,82.605,184.493,184.5ZM242.493,484.934A143.558,143.558,0,1,0,386.051,628.492,143.558,143.558,0,0,0,242.493,484.934Z"
+                      transform="translate(2496.001 1042)" fill="#32a53e" />
+                    <circle id="Ellipse_28" data-name="Ellipse 28" cx="161.671" cy="161.671" r="161.671"
+                      transform="translate(2577 1509)" fill="#32a53e" />
+                    <path id="Path_125" data-name="Path 125"
+                      d="M268.241,471.916,124.52,615.638,65.2,556.314,85,536.507l40.563,40.563L249.509,452.945Z"
+                      transform="translate(2571.552 1133.585)" fill="#fff" stroke="#fff" stroke-linecap="round"
+                      stroke-linejoin="round" stroke-width="1.25" />
+                  </g>
+                </svg>
+                <h3>
+                  Well Done
+                </h3>
+                <p>No pending Open Care for this shift</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="check-ins-wrapper second">
+
+          <div class="table-grid level ">
+
+            <!-- level 1 chart data -->
+            <div class="chart-side">
+
+              <div class="grid-heading cardbox_head">Level 1 / Safety and Supervision / Short-Term</div>
+
+              <div class="greybg">
+
+                <div class="chart-warpper2">
+
+                  <!-- level 1 previous shift chart -->
+                  <div>
+                    <div class="chart-container">
+                      <canvas id="doughnutChart2"></canvas>
+                      <div class="count">
+                        <div class="time">
+                          {{ previousShiftTime }}
+                        </div>
+                        <span>{{ previousShiftCheckinCount }}</span><span>/{{ previousShiftTotalCount }} </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+
+                    <!-- level 1 second last shift chart -->
+                    <div class="chart-container">
+                      <canvas id="doughnutChart3"></canvas>
+                      <div class="count">
+                        <div class="time">
+                          {{ secondLastShiftTime }}
+                        </div>
+                        <span>{{ secondLastShiftCheckinCount }}</span><span>/{{ secondLastShiftTotalCount }} </span>
+                      </div>
+                    </div>
+
+                    <!-- level 1 third last shift chart -->
+                    </div>
+                    <div>
+                    <div class="chart-container">
+                      <canvas id="doughnutChart4"></canvas>
+                      <div class="count">
+                        <div class="time">
+                          {{ thirdLastShiftTime }}
+                        </div>
+                        <span>{{ thirdLastShiftCheckinCount }}</span><span>/{{ thirdLastShiftTotalCount }} </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- level 1 current shift chart  -->
+                <div class="d-flex align-center donut ">
+                  <div class="chart-warpper">
+                    <div class="" style="width: 100%;">
+                      <canvas id="doughnutChart1"></canvas>
+                    </div>
+                  </div>
+                  <div class="data">
+                    <div class="time">
+                      {{ currentShiftTime }}
+                    </div>
+
+
+                    <div class="count">
+                      {{ currentShiftCheckinCount }}<span>/{{ currentShiftTotalCount }} </span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- outstanding data list -->
+            <div class="missed-checkin">
+              <div class="table-grid checkins">
+                <div class="grid-heading">
+                  <div class="d-flex align-items-center cardbox_head">
+                    <img src="assets/images/missed-icon.svg" />
+                    Outstanding
+                    <span *ngIf="missedCheckInCount">({{ missedCheckInCount }})</span>
+                  </div>
+                </div>
+                <div class="table-wrapper table-mis-checkin">
+                  <mat-table class="scroller" #table [dataSource]="outStandingDataSource" matSort>
+                    <ng-container matColumnDef="resident" class="residnetOutstading">
+                      <th width="50%" class="residentHeader" mat-header-cell *matHeaderCellDef>Resident</th>
+                      <td mat-cell *matCellDef="let element">
+                        {{ element.name }}
+                        <span *ngIf="checkIsolation(element._id); let data" class="relative">
+                          <img *ngIf="data.isolation_end_date!='Indefinite'" src="./assets/images/alarm.svg" width="22"
+                            height="22">
+                          <img *ngIf="data.isolation_end_date=='Indefinite'" src="./assets/images/alarminfinity.svg"
+                            width="22" height="22">
+                          <span *ngIf="data.isolation_end_date!='Indefinite'"
+                            class="badgenumber">{{data.isolation_days}}</span>
+                        </span>
+                        <span *ngIf="checkPositive(element._id); let data1" class="relative">
+                          <img *ngIf="data1.testing_status=='Positive'" src="./assets/images/positive.svg" width="28">
+                        </span>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="room_num">
+                      <th width="50%" mat-header-cell *matHeaderCellDef class="t-center residentRm">Rm</th>
+                      <td mat-cell *matCellDef="let element" class="t-center">
+                        {{ element.roomName }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="is_out_of_fac">
+                      <th width="" mat-header-cell *matHeaderCellDef class="t-center residentFac">Facility</th>
+                      <td mat-cell *matCellDef="let element" class="t-center">
+                        <span style="color:#F04A40 !important" *ngIf="element.is_out_of_fac !== false">OUT</span>
+                        <span style="color:#3DB64C" *ngIf="element.is_out_of_fac == false">IN</span>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsMissed;sticky:true;"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsMissed"></tr>
+                  </mat-table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- all other levels chart -->
+          <div class="all_levels">
+
+            <!-- level 2 chart data -->
+            <div class="level_2 table-grid level mr-15 ">
+              <div class="grid-heading sub_heding level_design">
+                <h4>Level 2</h4>
+                <span class="d-block"> 
+                  {{ currentShiftTime }}
+                  <!-- {{ levelTwoTimeValue }}  -->
+                </span>
+              </div>
+              <div class="chart-warpper2 new_chat">
+                <div class="chart-container">
+                  <canvas id="doughnutChart5"></canvas>
+                  <div class="count">
+                    <span>{{ levelTwoCheckinCount }}</span><span>/{{ levelTwoTotalCount }} </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- level 3 chart data -->
+            <div class="level_2 table-grid level mr-15 ">
+              <div class="grid-heading sub_heding level_design">
+                <h4>Level 3</h4>
+                <span class="d-block">
+                  {{ currentShiftTime }}
+                  <!-- {{ levelThreeTimeValue }} -->
+                </span>
+              </div>
+              <div class="chart-warpper2 new_chat">
+                <div class="chart-container">
+
+                  <canvas id="doughnutChart6"></canvas>
+                  <div class="count">
+                    <span>{{ levelThreeCheckinCount }}</span><span>/{{ levelThreeTotalCount }} </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- supervision chart data -->
+            <div class="level_2 table-grid level ">
+              <div class="grid-heading sub_heding level_design">
+                <h4>Supervision</h4>
+                <span class="d-block"> {{ currentShiftTime }} </span>
+              </div>
+              <div class="chart-warpper2 new_chat">
+                <div class="chart-container">
+
+                  <canvas id="doughnutChart7"></canvas>
+                  <div class="count">
+                    <span>{{ supervisionCheckinCount }}</span><span>/{{ supervisionTotalCount }} </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+    <div class="right-side">
+
+      <!-- logged in users data -->
+      <div class="table-grid grid with-heading loggedinusers">
+       
+        <div class="w-100 h-100 ">
+          <div class="card font_custom  performance_dash">
+            <app-loggedinusers></app-loggedinusers>
+          </div>
+        </div>
+
+    </div>
+
+      <!-- missed care data -->
+      <!-- <div class="care table-grid opcare second">
+
+        <div class="grid-heading d-flex justify-content-start">
+          <div class="d-flex align-items-center sub_heding">
+
+            <img src="assets/images/open_care_icon.svg" /> Missed Cares
+            <span>({{_missedCareCount}})</span>
+          </div>
+
+        </div>
+        <div class="table-wrapper table-miscare-data shift_dashboard_table">
+          <mat-table class="scroller" [dataSource]="missedCareSource" matSort
+            *ngIf="missedCareSource.filteredData?.length">
+
+            <ng-container matColumnDef="resident">
+              <thead>
+                <th width="15%" mat-header-cell *matHeaderCellDef></th>
+              </thead>
+              <tbody>
+                <td mat-cell *matCellDef="let element">{{element.resident.last_name }},{{ element.resident.first_name }}
+                  {{element.zone && element.zone.room ?element.zone.room :''}}<br><span>{{ element.careLevalData[0] }}
+                  </span><span>{{ element.careData.name }}</span></td>
+              </tbody>
+            </ng-container>
+            <ng-container matColumnDef="time">
+              <th width="15%" mat-header-cell *matHeaderCellDef class=" text_right">
+              </th>
+              <td mat-cell *matCellDef="let element" class=" text_right">
+                -{{scheduleTime(element) }}
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="missedColumnsNew;sticky:true;"></tr>
+            <tr mat-row *matRowDef="let row; columns: missedColumnsNew"></tr>
+          </mat-table>
+
+          <div class="no-img" *ngIf="!missedCareSource.filteredData?.length">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="368.986" height="368.986" viewBox="0 0 368.986 368.986">
+              <g id="Group_139" data-name="Group 139" transform="translate(-2554 -1486)">
+                <path id="Path_124" data-name="Path 124"
+                  d="M426.985,628.493c0,101.893-82.6,184.493-184.493,184.493S58,730.385,58,628.493,140.6,444,242.492,444s184.5,82.605,184.493,184.5ZM242.493,484.934A143.558,143.558,0,1,0,386.051,628.492,143.558,143.558,0,0,0,242.493,484.934Z"
+                  transform="translate(2496.001 1042)" fill="#32a53e" />
+                <circle id="Ellipse_28" data-name="Ellipse 28" cx="161.671" cy="161.671" r="161.671"
+                  transform="translate(2577 1509)" fill="#32a53e" />
+                <path id="Path_125" data-name="Path 125"
+                  d="M268.241,471.916,124.52,615.638,65.2,556.314,85,536.507l40.563,40.563L249.509,452.945Z"
+                  transform="translate(2571.552 1133.585)" fill="#fff" stroke="#fff" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="1.25" />
+              </g>
+            </svg>
+            <h3>
+              Well Done
+            </h3>
+            <p>No pending Missed Care</p>
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+</div>
+<ng-template #connectionModal>
+  <p>Internet is not their</p>
+</ng-template>

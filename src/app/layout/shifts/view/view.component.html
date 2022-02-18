@@ -1,0 +1,54 @@
+<mat-card>
+  <mat-card-header class="d-flex justify-content-between align-center w-100">
+    <mat-card-title>View Shift</mat-card-title>
+    <button mat-flat-button color="warn" class="mr-10" (click)="cancel()">Cancel</button>
+    <!--         <button mat-flat-button color="primary" (click)="editNFC(nfc._id)">Edit</button>
+ -->
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list *ngIf="shift">
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Shift name <span>:</span>
+          </div>
+          <div class="w-70 pl-15" *ngIf="shift.shift_name !=''">
+            {{ shift.shift_name }}
+          </div>
+          <div class="w-70 pl-15" *ngIf="shift.shift_name ==''">
+            {{ shift.shift_name }}
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            Start Time <span>:</span>
+          </div>
+          <div class="w-70 pl-15" *ngIf="shift.start_time">
+            {{ shift.start_time }}
+          </div>
+          <div class="w-70 pl-15" *ngIf="!shift.start_time">
+            --
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <mat-list-item>
+        <div class="d-flex view-list w-100">
+          <div class="w-30 pr-15">
+            End Time <span>:</span>
+          </div>
+          <div class="w-70 pl-15" *ngIf="shift.end_time">
+            {{shift.end_time}}
+          </div>
+          <div class="w-70 pl-15" *ngIf="!shift.end_time">
+            --
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
